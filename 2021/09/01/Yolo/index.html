@@ -27,22 +27,22 @@
 <meta property="og:site_name" content="Xavier ZXY">
 <meta property="og:description" content="Yolo  V1简介  在Yolo v1提出之前，R-CNN算法在目标领域独占鳌头，但由于R-CNN的网络结构是双阶段(two stage)的特点，使得它的检测速度不能满足实时性。2016年，Joseph Redmon、Santosh Divvala、Ross Girshick等人提出了一种单阶段（one-stage）的目标检测网络。它的检测速度非常快，每秒可以处理45帧图片，能够轻松地实时运行。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/.com//Reference/blog/source_posts/Yolo/image-20210901165626159.png">
-<meta property="og:image" content="http://example.com/.com//Reference/blog/source_posts/Yolo/image-20210901165701134.png">
-<meta property="og:image" content="http://example.com/.com//Reference/blog/source_posts/Yolo/image-20210901170536157.png">
+<meta property="og:image" content="http://example.com/.com//image-20210901165626159.png">
+<meta property="og:image" content="http://example.com/.com//image-20210901165701134.png">
+<meta property="og:image" content="http://example.com/.com//image-20210901170536157.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20200728191358184.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dqaW5qaWU=,size_16,color_FFFFFF,t_70#pic_center">
-<meta property="og:image" content="http://example.com/.com//Reference/blog/source_posts/Yolo/image-20210901171156371.png">
-<meta property="og:image" content="http://example.com/.com//Reference/blog/source_posts/Yolo/image-20210901174713003.png">
+<meta property="og:image" content="http://example.com/.com//image-20210901171156371.png">
+<meta property="og:image" content="http://example.com/.com//image-20210901174713003.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/2020072912091262.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dqaW5qaWU=,size_16,color_FFFFFF,t_70#pic_center">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20200729133801417.png#pic_center">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20200729140413942.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dqaW5qaWU=,size_16,color_FFFFFF,t_70#pic_center">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20200730004622368.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dqaW5qaWU=,size_16,color_FFFFFF,t_70#pic_center">
 <meta property="article:published_time" content="2021-09-01T02:33:21.000Z">
-<meta property="article:modified_time" content="2021-09-01T10:04:38.464Z">
+<meta property="article:modified_time" content="2021-09-01T10:12:58.439Z">
 <meta property="article:author" content="Xavier ZXY">
 <meta property="article:tag" content="Yolo">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/.com//Reference/blog/source_posts/Yolo/image-20210901165626159.png">
+<meta name="twitter:image" content="http://example.com/.com//image-20210901165626159.png">
 
 <link rel="canonical" href="http://example.com/2021/09/01/Yolo/">
 
@@ -186,7 +186,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2021-09-01 10:33:21 / 修改时间：18:04:38" itemprop="dateCreated datePublished" datetime="2021-09-01T10:33:21+08:00">2021-09-01</time>
+              <time title="创建时间：2021-09-01 10:33:21 / 修改时间：18:12:58" itemprop="dateCreated datePublished" datetime="2021-09-01T10:33:21+08:00">2021-09-01</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -215,14 +215,14 @@
       
         <h1 id="Yolo-V1"><a href="#Yolo-V1" class="headerlink" title="Yolo  V1"></a>Yolo  V1</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>  在Yolo v1提出之前，R-CNN算法在目标领域独占鳌头，但由于R-CNN的网络结构是双阶段(two stage)的特点，使得它的检测速度不能满足实时性。2016年，Joseph Redmon、Santosh Divvala、Ross Girshick等人提出了一种单阶段（one-stage）的目标检测网络。它的检测速度非常快，每秒可以处理45帧图片，能够轻松地实时运行。由于其速度之快和其使用的特殊方法，作者将其取名为：You Only Look Once</p>
 <p>  YOLO 的核心思想就是把目标检测转变成一个<strong>回归问题</strong>，利用整张图作为网络的输入，仅仅经过一个神经网络，得到bounding box（边界框） 的位置及其所属的类别。</p>
-<p><img src="/.com//Reference\blog\source_posts\Yolo\image-20210901165626159.png" alt="image-20210901165626159"></p>
+<p><img src="/.com//image-20210901165626159.png" alt="image-20210901165626159"></p>
 <h2 id="实现细节"><a href="#实现细节" class="headerlink" title="实现细节"></a>实现细节</h2><h3 id="检测策略"><a href="#检测策略" class="headerlink" title="检测策略"></a>检测策略</h3><ul>
 <li>将一幅图像分成 S×S个网格（grid cell），若某个 object 的中心落在这个网格中，则这个网格就负责预测这个object。</li>
 <li>每个网格要预测 B 个bounding box，每个 bounding box 要预测 (x, y, w, h) 和 confidence 共5个值。</li>
 <li>每个网格还要预测一个类别信息，记为 C 个类。</li>
 <li>总的来说，S×S 个网格，每个网格预测 B个bounding box ，预测 C 个类。网络输出就是一个 S × S × (5×B+C) 的张量。</li>
 </ul>
-<h3 id="目标损失函数"><a href="#目标损失函数" class="headerlink" title="目标损失函数"></a>目标损失函数</h3><p><img src="/.com//Reference\blog\source_posts\Yolo\image-20210901165701134.png" alt="image-20210901165701134"></p>
+<h3 id="目标损失函数"><a href="#目标损失函数" class="headerlink" title="目标损失函数"></a>目标损失函数</h3><p><img src="/.com//image-20210901165701134.png" alt="image-20210901165701134"></p>
 <ul>
 <li>损失由三部分组成，分别是：坐标预测损失，置信度损失，类别预测损失</li>
 </ul>
@@ -233,7 +233,7 @@
 <li>引进Anchor机制</li>
 </ul>
 <h2 id="网络结构"><a href="#网络结构" class="headerlink" title="网络结构"></a>网络结构</h2><p>Yolo v2采用Darknet-19作为特征提取网络</p>
-<p><img src="/.com//Reference\blog\source_posts\Yolo\image-20210901170536157.png" alt="image-20210901170536157"></p>
+<p><img src="/.com//image-20210901170536157.png" alt="image-20210901170536157"></p>
 <ul>
 <li>使用多个3*3卷积核</li>
 <li>在每一层的卷积之后，都增加了Batch Normalization进行预处理</li>
@@ -242,7 +242,7 @@
 <h2 id="改进方法"><a href="#改进方法" class="headerlink" title="改进方法"></a>改进方法</h2><h3 id="Batch-Normalization"><a href="#Batch-Normalization" class="headerlink" title="Batch Normalization"></a>Batch Normalization</h3><p>Batch Normalization简称BN，即批量标准化，对数据进行预处理，能够提高训练速度，提升训练效果。</p>
 <p><img src="https://img-blog.csdnimg.cn/20200728191358184.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dqaW5qaWU=,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p>
 <h3 id="引入Anchor-Box机制"><a href="#引入Anchor-Box机制" class="headerlink" title="引入Anchor Box机制"></a>引入Anchor Box机制</h3><p>引入Anchor Box锚框机制，加快前期网络训练收敛速度</p>
-<p><img src="/.com//Reference\blog\source_posts\Yolo\image-20210901171156371.png" alt="image-20210901171156371"></p>
+<p><img src="/.com//image-20210901171156371.png" alt="image-20210901171156371"></p>
 <h3 id="Convolution-With-Anchor-Boxes"><a href="#Convolution-With-Anchor-Boxes" class="headerlink" title="Convolution With Anchor Boxes"></a>Convolution With Anchor Boxes</h3><p>Yolo v1中，一张图片被分割成7x7网络，当一个网格中同时出现多个类时，就无法检测出所有类，Yolo v2做出了相应的改进：</p>
 <ul>
 <li>提高最后的卷积层的输出的分辨率特征</li>
@@ -250,7 +250,7 @@
 </ul>
 <h3 id="聚类方法选择Anchors"><a href="#聚类方法选择Anchors" class="headerlink" title="聚类方法选择Anchors"></a>聚类方法选择Anchors</h3><h3 id="Fine-Grained-Features"><a href="#Fine-Grained-Features" class="headerlink" title="Fine-Grained Features"></a>Fine-Grained Features</h3><p>细粒度特征， 可理解为不同层之间的特征融合，从而来提高对小目标的检测能力。</p>
 <h1 id="Yolo-V3"><a href="#Yolo-V3" class="headerlink" title="Yolo V3"></a>Yolo V3</h1><h2 id="简介-2"><a href="#简介-2" class="headerlink" title="简介"></a>简介</h2><p>2018年，作者 Redmon 又在 YOLOv2 的基础上做了一些改进。特征提取部分采用darknet-53网络结构代替原来的darknet-19，利用特征金字塔网络结构实现了多尺度检测，分类方法使用逻辑回归代替了softmax，在兼顾实时性的同时保证了目标检测的准确性。</p>
-<h2 id="网络结构-1"><a href="#网络结构-1" class="headerlink" title="网络结构"></a>网络结构</h2><p><img src="/.com//Reference\blog\source_posts\Yolo\image-20210901174713003.png" alt="image-20210901174713003"></p>
+<h2 id="网络结构-1"><a href="#网络结构-1" class="headerlink" title="网络结构"></a>网络结构</h2><p><img src="/.com//image-20210901174713003.png" alt="image-20210901174713003"></p>
 <p><img src="https://img-blog.csdnimg.cn/2020072912091262.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dqaW5qaWU=,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p>
 <ul>
 <li>DBL： 一个卷积层、一个批量归一化层和一个Leaky ReLU组成的基本卷积单元。</li>
