@@ -20,30 +20,35 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="ZXY 想去看极光">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Xavier ZXY">
-<meta property="og:url" content="http://example.com/index.html">
+  <meta name="description" content="本文为参加Datawhale组队学习时所写，如若需了解细致内容，请去到Datawhale官方开源课程基于transformers的自然语言处理(NLP)入门 (datawhalechina.github.io) 前言常见的NLP任务 文本分类  对单个，两个或者多段文本进行分类  序列标注  对文本序列中的token，字或者词进行分类  问答任务  抽取式问答  从一段给定的文本之中找到答案 多选">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于Transformers的自然语言处理(NLP)入门">
+<meta property="og:url" content="http://example.com/2021/09/13/nlp-transformers/index.html">
 <meta property="og:site_name" content="Xavier ZXY">
-<meta property="og:description" content="ZXY 想去看极光">
+<meta property="og:description" content="本文为参加Datawhale组队学习时所写，如若需了解细致内容，请去到Datawhale官方开源课程基于transformers的自然语言处理(NLP)入门 (datawhalechina.github.io) 前言常见的NLP任务 文本分类  对单个，两个或者多段文本进行分类  序列标注  对文本序列中的token，字或者词进行分类  问答任务  抽取式问答  从一段给定的文本之中找到答案 多选">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://huggingface.co/course/static/chapter1/model_parameters.png">
+<meta property="article:published_time" content="2021-09-13T10:32:07.000Z">
+<meta property="article:modified_time" content="2021-09-13T10:59:41.672Z">
 <meta property="article:author" content="Xavier ZXY">
+<meta property="article:tag" content="Datawhale组队学习">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://huggingface.co/course/static/chapter1/model_parameters.png">
 
-<link rel="canonical" href="http://example.com/">
+<link rel="canonical" href="http://example.com/2021/09/13/nlp-transformers/">
 
 
 <script id="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome : true,
-    isPost : false,
+    isHome : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>Xavier ZXY</title>
+  <title>基于Transformers的自然语言处理(NLP)入门 | Xavier ZXY</title>
   
 
 
@@ -151,9 +156,10 @@
         <div class="content-wrap">
           
 
-          <div class="content index posts-expand">
+          <div class="content post posts-expand">
             
-      
+
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
@@ -169,10 +175,9 @@
       <meta itemprop="name" content="Xavier ZXY">
     </span>
       <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/09/13/nlp-transformers/" class="post-title-link" itemprop="url">基于Transformers的自然语言处理(NLP)入门</a>
-        </h2>
+        <h1 class="post-title" itemprop="name headline">
+          基于Transformers的自然语言处理(NLP)入门
+        </h1>
 
         <div class="post-meta">
             <span class="post-meta-item">
@@ -209,7 +214,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>本文为参加Datawhale组队学习时所写，如若需了解细致内容，请去到Datawhale官方开源课程<a target="_blank" rel="noopener" href="https://datawhalechina.github.io/learn-nlp-with-transformers/#/">基于transformers的自然语言处理(NLP)入门 (datawhalechina.github.io)</a></p>
+        <p>本文为参加Datawhale组队学习时所写，如若需了解细致内容，请去到Datawhale官方开源课程<a target="_blank" rel="noopener" href="https://datawhalechina.github.io/learn-nlp-with-transformers/#/">基于transformers的自然语言处理(NLP)入门 (datawhalechina.github.io)</a></p>
 <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><h2 id="常见的NLP任务"><a href="#常见的NLP任务" class="headerlink" title="常见的NLP任务"></a>常见的NLP任务</h2><ul>
 <li><p><strong>文本分类</strong>  对单个，两个或者多段文本进行分类</p>
 </li>
@@ -229,116 +234,38 @@
 </ul>
 </li>
 </ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/09/13/nlp-transformers/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
+<span id="more"></span>
+
+<h2 id="Transformer的兴起"><a href="#Transformer的兴起" class="headerlink" title="Transformer的兴起"></a>Transformer的兴起</h2><p>2017年，Transformer模型结构首次被提出并在机器翻译上取得了效果。2018年Bert模型使用Transformer模型结构进行大规模语言预训练，刷新了许多NLP任务榜单的最高分。2019年-2021年，研究人员将<strong>Transformer</strong>这种模型结构<strong>预训练+微调</strong>这种方式结合，提出了一系列Transformer模型结构，训练方法的改进。Transformer的模型结构优异。使得其参数量可以非常庞大从而容纳更多的信息，随着预训练不断提升以及近年来计算能力的提升，越来越好的Transformer不断涌现。</p>
+<p><img src="https://huggingface.co/course/static/chapter1/model_parameters.png" alt="Number of parameters of recent Transformers models"></p>
+
     </div>
 
     
     
     
+
       <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
+          <div class="post-tags">
+              <a href="/tags/Datawhale%E7%BB%84%E9%98%9F%E5%AD%A6%E4%B9%A0/" rel="tag"># Datawhale组队学习</a>
+          </div>
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/09/01/Yolo/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/autor.jpg">
-      <meta itemprop="name" content="Xavier ZXY">
-      <meta itemprop="description" content="ZXY 想去看极光">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Xavier ZXY">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/09/01/Yolo/" class="post-title-link" itemprop="url">Yolo</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-09-01 10:33:21" itemprop="dateCreated datePublished" datetime="2021-09-01T10:33:21+08:00">2021-09-01</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-09-02 16:40:30" itemprop="dateModified" datetime="2021-09-02T16:40:30+08:00">2021-09-02</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">深度学习</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/" itemprop="url" rel="index"><span itemprop="name">计算机视觉</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="Yolo-V1"><a href="#Yolo-V1" class="headerlink" title="Yolo  V1"></a>Yolo  V1</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>  在Yolo v1提出之前，R-CNN算法在目标领域独占鳌头，但由于R-CNN的网络结构是双阶段(two stage)的特点，使得它的检测速度不能满足实时性。2016年，Joseph Redmon、Santosh Divvala、Ross Girshick等人提出了一种单阶段（one-stage）的目标检测网络。它的检测速度非常快，每秒可以处理45帧图片，能够轻松地实时运行。由于其速度之快和其使用的特殊方法，作者将其取名为：You Only Look Once</p>
-<p>  YOLO 的核心思想就是把目标检测转变成一个<strong>回归问题</strong>，利用整张图作为网络的输入，仅仅经过一个神经网络，得到bounding box（边界框） 的位置及其所属的类别。</p>
-<p><img src="/2021/09/01/Yolo/image-20210901165626159.png" alt="image-20210901165626159"></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/09/01/Yolo/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
         
-      
-    </div>
 
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/09/01/Yolo/" rel="prev" title="Yolo">
+      <i class="fa fa-chevron-left"></i> Yolo
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
       </footer>
+    
   </article>
   
   
-  
-
-
   
 
 
@@ -391,6 +318,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E7%9A%84NLP%E4%BB%BB%E5%8A%A1"><span class="nav-number">1.1.</span> <span class="nav-text">常见的NLP任务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Transformer%E7%9A%84%E5%85%B4%E8%B5%B7"><span class="nav-number">1.2.</span> <span class="nav-text">Transformer的兴起</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
