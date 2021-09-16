@@ -20,30 +20,45 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="ZXY 想去看极光">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Xavier ZXY">
-<meta property="og:url" content="http://example.com/index.html">
+  <meta name="description" content="本文为参加Datawhale组队学习时所写，如若需了解细致内容，请去到Datawhale官方开源课程基于transformers的自然语言处理(NLP)入门 (datawhalechina.github.io) 图解BERTBERT首先在大规模无监督语料上进行预训练，然后在预训练好的参数基础上增加一个与任务相关的神经网络层，并在该任务的数据上进行微调训，最终取得很好的效果。BERT的这个训练过程可">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于Transformers的自然语言处理(NLP)入门(二)">
+<meta property="og:url" content="http://example.com/2021/09/16/nlp-transformer-2/index.html">
 <meta property="og:site_name" content="Xavier ZXY">
-<meta property="og:description" content="ZXY 想去看极光">
+<meta property="og:description" content="本文为参加Datawhale组队学习时所写，如若需了解细致内容，请去到Datawhale官方开源课程基于transformers的自然语言处理(NLP)入门 (datawhalechina.github.io) 图解BERTBERT首先在大规模无监督语料上进行预训练，然后在预训练好的参数基础上增加一个与任务相关的神经网络层，并在该任务的数据上进行微调训，最终取得很好的效果。BERT的这个训练过程可">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2021/09/16/nlp-transformer-2/image-20210916201227474.png">
+<meta property="og:image" content="http://example.com/2021/09/16/nlp-transformer-2/image-20210916201315406.png">
+<meta property="og:image" content="http://example.com/2021/09/16/nlp-transformer-2/image-20210916201401391.png">
+<meta property="og:image" content="http://example.com/2021/09/16/nlp-transformer-2/image-20210916201508262.png">
+<meta property="og:image" content="http://example.com/2021/09/16/nlp-transformer-2/image-20210916201653599.png">
+<meta property="og:image" content="http://example.com/2021/09/16/nlp-transformer-2/image-20210916202452414.png">
+<meta property="og:image" content="http://example.com/2021/09/16/nlp-transformer-2/image-20210916203051304.png">
+<meta property="og:image" content="http://example.com/2021/09/16/nlp-transformer-2/image-20210916203432692.png">
+<meta property="og:image" content="http://example.com/2021/09/16/nlp-transformer-2/image-20210916203706328.png">
+<meta property="og:image" content="http://example.com/2021/09/16/nlp-transformer-2/image-20210916205038216.png">
+<meta property="article:published_time" content="2021-09-16T11:26:59.000Z">
+<meta property="article:modified_time" content="2021-09-16T13:08:52.714Z">
 <meta property="article:author" content="Xavier ZXY">
+<meta property="article:tag" content="Datawhale组队学习">
+<meta property="article:tag" content="NLP入门">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/09/16/nlp-transformer-2/image-20210916201227474.png">
 
-<link rel="canonical" href="http://example.com/">
+<link rel="canonical" href="http://example.com/2021/09/16/nlp-transformer-2/">
 
 
 <script id="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome : true,
-    isPost : false,
+    isHome : false,
+    isPost : true,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>Xavier ZXY</title>
+  <title>基于Transformers的自然语言处理(NLP)入门(二) | Xavier ZXY</title>
   
 
 
@@ -152,9 +167,10 @@
         <div class="content-wrap">
           
 
-          <div class="content index posts-expand">
+          <div class="content post posts-expand">
             
-      
+
+    
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
@@ -170,10 +186,9 @@
       <meta itemprop="name" content="Xavier ZXY">
     </span>
       <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/09/16/nlp-transformer-2/" class="post-title-link" itemprop="url">基于Transformers的自然语言处理(NLP)入门(二)</a>
-        </h2>
+        <h1 class="post-title" itemprop="name headline">
+          基于Transformers的自然语言处理(NLP)入门(二)
+        </h1>
 
         <div class="post-meta">
             <span class="post-meta-item">
@@ -210,7 +225,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>本文为参加Datawhale组队学习时所写，如若需了解细致内容，请去到Datawhale官方开源课程<a target="_blank" rel="noopener" href="https://datawhalechina.github.io/learn-nlp-with-transformers/#/">基于transformers的自然语言处理(NLP)入门 (datawhalechina.github.io)</a></p>
+        <p>本文为参加Datawhale组队学习时所写，如若需了解细致内容，请去到Datawhale官方开源课程<a target="_blank" rel="noopener" href="https://datawhalechina.github.io/learn-nlp-with-transformers/#/">基于transformers的自然语言处理(NLP)入门 (datawhalechina.github.io)</a></p>
 <h1 id="图解BERT"><a href="#图解BERT" class="headerlink" title="图解BERT"></a>图解BERT</h1><p>BERT首先在大规模无监督语料上进行预训练，然后在预训练好的参数基础上增加一个与任务相关的神经网络层，并在该任务的数据上进行微调训，最终取得很好的效果。BERT的这个训练过程可以简述为：预训练+微调（finetune），已经成为最近几年最流行的NLP解决方案的范式。</p>
 <h2 id="BERT句子分类"><a href="#BERT句子分类" class="headerlink" title="BERT句子分类"></a>BERT句子分类</h2><ul>
 <li><p>下载在无监督语料上与训练好的Bert模型，一般对应了3个文件：BERT模型配置文件(用来确定Transformer的层数，隐藏层的大小)，BERT模型参数，BERT词表(BERT所能处理的所有token)</p>
@@ -221,220 +236,54 @@
 <p>BERT进行句子分类，判断一个邮件是”垃圾邮件”或者”非垃圾邮件”</p>
 <p><img src="/2021/09/16/nlp-transformer-2/image-20210916201227474.png" alt="垃圾邮件分类"></p>
 <p>我们在BERT模型上增加一个简单的classifier层，由于这一层神经网络参数是新添加的，一开始只能随机初始化它的参数，所以需要用对应的监督数据来训练这个classifier。由于classifier是连接在BERT模型之上的，训练的时候也可以更新BERT的参数。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/09/16/nlp-transformer-2/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
+<span id="more"></span>
+
+<p><img src="/2021/09/16/nlp-transformer-2/image-20210916201315406.png" alt="BERT句子分类"></p>
+<h2 id="模型结构"><a href="#模型结构" class="headerlink" title="模型结构"></a>模型结构</h2><p>BERT原始论文提出了BERT-base和BERT—large两个模型，base的参数量比large少一些，可以形象的表示为下图的样子。</p>
+<p><img src="/2021/09/16/nlp-transformer-2/image-20210916201401391.png" alt="BERT base/large"></p>
+<p>BERT模型结构基本上就是Transformer的encoder部分，BERT-base对应的是12层encoder，BERT-large对应的是24层encoder。</p>
+<p><img src="/2021/09/16/nlp-transformer-2/image-20210916201508262.png" alt="BERT-base的12层encoder"></p>
+<h2 id="模型输入"><a href="#模型输入" class="headerlink" title="模型输入"></a>模型输入</h2><p>BERT模型输入有一点特殊的地方是在一句话最开始拼接了一个**[CLS] token<strong>，如下图所示。这个特殊的</strong>[CLS] token**经过BERT得到的向量表示通常被用作当前的句子表示。</p>
+<p><img src="/2021/09/16/nlp-transformer-2/image-20210916201653599.png" alt="模型输入"></p>
+<h2 id="模型输出"><a href="#模型输出" class="headerlink" title="模型输出"></a>模型输出</h2><p>BERT输入的所有token经过BERt编码后，会在每个位置输出一个大小为 hidden_size（在 BERT-base中是 768）的向量。</p>
+<p><img src="/2021/09/16/nlp-transformer-2/image-20210916202452414.png" alt="output"></p>
+<p>对于上面提到的句子分类的例子，我们直接使用第1个位置的向量输出（对应的是[CLS]）传入classifier网络，然后进行分类任务，如下图所示</p>
+<p><img src="/2021/09/16/nlp-transformer-2/image-20210916203051304.png" alt="分类器"></p>
+<h2 id="预训练任务：Masked-Language-Model"><a href="#预训练任务：Masked-Language-Model" class="headerlink" title="预训练任务：Masked Language Model"></a>预训练任务：Masked Language Model</h2><p>BERT是基于Masked language model进行预训练的：将输入文本序列的部分（15%）单词随机Mask掉，让BERT来预测这些被Mask的词语。</p>
+<p><img src="/2021/09/16/nlp-transformer-2/image-20210916203432692.png" alt="BERT mask"></p>
+<h2 id="预训练任务：相邻句子判断"><a href="#预训练任务：相邻句子判断" class="headerlink" title="预训练任务：相邻句子判断"></a>预训练任务：相邻句子判断</h2><p>BERt在预训练时，还引入了一个新的任务：判断两个句子是否是相邻句子。如下图所示：输入是sentence A和sentence B，经过BERT编码之后，使用CLS token的向量表示来预测两个句子是否是相邻句子。</p>
+<p><img src="/2021/09/16/nlp-transformer-2/image-20210916203706328.png" alt="2个句子任务"></p>
+<h2 id="BERT的应用"><a href="#BERT的应用" class="headerlink" title="BERT的应用"></a>BERT的应用</h2><p>BERT论文展示了BERT在多种任务上的应用，如下图所示。可以用来判断两个句子是否相似，判断单个句子的情感，用来做抽取式问答，用来做序列标注。</p>
+<p><img src="/2021/09/16/nlp-transformer-2/image-20210916205038216.png" alt="BERT应用"></p>
+
     </div>
 
     
     
     
+
       <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
+          <div class="post-tags">
+              <a href="/tags/Datawhale%E7%BB%84%E9%98%9F%E5%AD%A6%E4%B9%A0/" rel="tag"># Datawhale组队学习</a>
+              <a href="/tags/NLP%E5%85%A5%E9%97%A8/" rel="tag"># NLP入门</a>
+          </div>
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/09/13/nlp-transformers/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/autor.jpg">
-      <meta itemprop="name" content="Xavier ZXY">
-      <meta itemprop="description" content="ZXY 想去看极光">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Xavier ZXY">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/09/13/nlp-transformers/" class="post-title-link" itemprop="url">基于Transformers的自然语言处理(NLP)入门(一)</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-09-13 18:32:07" itemprop="dateCreated datePublished" datetime="2021-09-13T18:32:07+08:00">2021-09-13</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-09-16 19:28:58" itemprop="dateModified" datetime="2021-09-16T19:28:58+08:00">2021-09-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">深度学习</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%87%AA%E7%84%B6%E8%AF%AD%E8%A8%80%E5%A4%84%E7%90%86/" itemprop="url" rel="index"><span itemprop="name">自然语言处理</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>本文为参加Datawhale组队学习时所写，如若需了解细致内容，请去到Datawhale官方开源课程<a target="_blank" rel="noopener" href="https://datawhalechina.github.io/learn-nlp-with-transformers/#/">基于transformers的自然语言处理(NLP)入门 (datawhalechina.github.io)</a></p>
-<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><h2 id="常见的NLP任务"><a href="#常见的NLP任务" class="headerlink" title="常见的NLP任务"></a>常见的NLP任务</h2><ul>
-<li><p><strong>文本分类</strong>  对单个，两个或者多段文本进行分类</p>
-</li>
-<li><p><strong>序列标注</strong>  对文本序列中的token，字或者词进行分类</p>
-</li>
-<li><p><strong>问答任务</strong></p>
-<ul>
-<li><strong>抽取式问答</strong>  从一段给定的文本之中找到答案</li>
-<li><strong>多选式回答</strong>  从多个选项中选出一个正确答案</li>
-</ul>
-</li>
-<li><p><strong>生成任务</strong></p>
-<ul>
-<li><strong>语言模型</strong>  根据已有的一段文字生成一个字</li>
-<li><strong>摘要生成</strong>  根据一大段文字生成一小段总结性文字</li>
-<li><strong>机器翻译</strong>  将源语言翻译成为目标语言</li>
-</ul>
-</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/09/13/nlp-transformers/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
         
-      
-    </div>
 
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/09/01/Yolo/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/autor.jpg">
-      <meta itemprop="name" content="Xavier ZXY">
-      <meta itemprop="description" content="ZXY 想去看极光">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Xavier ZXY">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/09/01/Yolo/" class="post-title-link" itemprop="url">Yolo</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-09-01 10:33:21" itemprop="dateCreated datePublished" datetime="2021-09-01T10:33:21+08:00">2021-09-01</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-09-02 16:40:30" itemprop="dateModified" datetime="2021-09-02T16:40:30+08:00">2021-09-02</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">深度学习</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/" itemprop="url" rel="index"><span itemprop="name">计算机视觉</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="Yolo-V1"><a href="#Yolo-V1" class="headerlink" title="Yolo  V1"></a>Yolo  V1</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>  在Yolo v1提出之前，R-CNN算法在目标领域独占鳌头，但由于R-CNN的网络结构是双阶段(two stage)的特点，使得它的检测速度不能满足实时性。2016年，Joseph Redmon、Santosh Divvala、Ross Girshick等人提出了一种单阶段（one-stage）的目标检测网络。它的检测速度非常快，每秒可以处理45帧图片，能够轻松地实时运行。由于其速度之快和其使用的特殊方法，作者将其取名为：You Only Look Once</p>
-<p>  YOLO 的核心思想就是把目标检测转变成一个<strong>回归问题</strong>，利用整张图作为网络的输入，仅仅经过一个神经网络，得到bounding box（边界框） 的位置及其所属的类别。</p>
-<p><img src="/2021/09/01/Yolo/image-20210901165626159.png" alt="image-20210901165626159"></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/09/01/Yolo/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
         
-      
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/09/13/nlp-transformers/" rel="prev" title="基于Transformers的自然语言处理(NLP)入门(一)">
+      <i class="fa fa-chevron-left"></i> 基于Transformers的自然语言处理(NLP)入门(一)
+    </a></div>
+      <div class="post-nav-item"></div>
     </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
       </footer>
+    
   </article>
   
   
-  
-
-
   
 
 
@@ -487,6 +336,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%BE%E8%A7%A3BERT"><span class="nav-number">1.</span> <span class="nav-text">图解BERT</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#BERT%E5%8F%A5%E5%AD%90%E5%88%86%E7%B1%BB"><span class="nav-number">1.1.</span> <span class="nav-text">BERT句子分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E7%BB%93%E6%9E%84"><span class="nav-number">1.2.</span> <span class="nav-text">模型结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E8%BE%93%E5%85%A5"><span class="nav-number">1.3.</span> <span class="nav-text">模型输入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E8%BE%93%E5%87%BA"><span class="nav-number">1.4.</span> <span class="nav-text">模型输出</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%84%E8%AE%AD%E7%BB%83%E4%BB%BB%E5%8A%A1%EF%BC%9AMasked-Language-Model"><span class="nav-number">1.5.</span> <span class="nav-text">预训练任务：Masked Language Model</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%84%E8%AE%AD%E7%BB%83%E4%BB%BB%E5%8A%A1%EF%BC%9A%E7%9B%B8%E9%82%BB%E5%8F%A5%E5%AD%90%E5%88%A4%E6%96%AD"><span class="nav-number">1.6.</span> <span class="nav-text">预训练任务：相邻句子判断</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BERT%E7%9A%84%E5%BA%94%E7%94%A8"><span class="nav-number">1.7.</span> <span class="nav-text">BERT的应用</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
