@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/learn-apple.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/learn32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/learn16x16.png">
+  <link rel="mask-icon" href="/images/learn.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="本文为参加Datawhale组队学习时所写，如若需了解细致内容，请去到Datawhale官方开源课程基于transformers的自然语言处理(NLP)入门 (datawhalechina.github.io) 图解GPT什么是语言模型本文主要描述和对比两种语言模型  自编码(auto-encoder)语言模型 自回归(auto-regressive)语言模型  自编码语言模型代表就是BERT。自">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于Transformers的自然语言处理(NLP)入门(三)">
+<meta property="og:url" content="http://example.com/2021/09/18/nlp-transformer-3/index.html">
+<meta property="og:site_name" content="Xavier ZXY">
+<meta property="og:description" content="本文为参加Datawhale组队学习时所写，如若需了解细致内容，请去到Datawhale官方开源课程基于transformers的自然语言处理(NLP)入门 (datawhalechina.github.io) 图解GPT什么是语言模型本文主要描述和对比两种语言模型  自编码(auto-encoder)语言模型 自回归(auto-regressive)语言模型  自编码语言模型代表就是BERT。自">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2021/09/18/nlp-transformer-3/image-20210918200729037.png">
+<meta property="og:image" content="http://example.com/2021/09/18/nlp-transformer-3/image-20210918203321168.png">
+<meta property="og:image" content="http://example.com/2021/09/18/nlp-transformer-3/image-20210918203439661.png">
+<meta property="og:image" content="http://example.com/2021/09/18/nlp-transformer-3/image-20210918203607920.png">
+<meta property="og:image" content="http://example.com/2021/09/18/nlp-transformer-3/image-20210918203756070.png">
+<meta property="og:image" content="http://example.com/2021/09/18/nlp-transformer-3/image-20210918203859377.png">
+<meta property="og:image" content="http://example.com/2021/09/18/nlp-transformer-3/image-20210918204007767.png">
+<meta property="og:image" content="http://example.com/2021/09/18/nlp-transformer-3/image-20210918204045901.png">
+<meta property="og:image" content="http://example.com/2021/09/18/nlp-transformer-3/image-20210918204214467.png">
+<meta property="og:image" content="http://example.com/2021/09/18/nlp-transformer-3/image-20210918204327430.png">
+<meta property="og:image" content="http://example.com/2021/09/18/nlp-transformer-3/image-20210918204752948.png">
+<meta property="og:image" content="http://example.com/2021/09/18/nlp-transformer-3/image-20210918205045809.png">
+<meta property="og:image" content="http://example.com/2021/09/18/nlp-transformer-3/image-20210918205349065.png">
+<meta property="og:image" content="http://example.com/2021/09/18/nlp-transformer-3/image-20210918205418308.png">
+<meta property="og:image" content="http://example.com/2021/09/18/nlp-transformer-3/image-20210918205515342.png">
+<meta property="article:published_time" content="2021-09-18T11:49:59.000Z">
+<meta property="article:modified_time" content="2021-09-18T12:58:49.115Z">
+<meta property="article:author" content="Xavier ZXY">
+<meta property="article:tag" content="Datawhale组队学习">
+<meta property="article:tag" content="NLP入门">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/09/18/nlp-transformer-3/image-20210918200729037.png">
+
+<link rel="canonical" href="http://example.com/2021/09/18/nlp-transformer-3/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>基于Transformers的自然语言处理(NLP)入门(三) | Xavier ZXY</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+  <a target="_blank" rel="noopener" href="https://github.com/XavierZXY" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Xavier ZXY</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/09/18/nlp-transformer-3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/autor.jpg">
+      <meta itemprop="name" content="Xavier ZXY">
+      <meta itemprop="description" content="ZXY 想去看极光">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xavier ZXY">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          基于Transformers的自然语言处理(NLP)入门(三)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-09-18 19:49:59 / 修改时间：20:58:49" itemprop="dateCreated datePublished" datetime="2021-09-18T19:49:59+08:00">2021-09-18</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">深度学习</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%87%AA%E7%84%B6%E8%AF%AD%E8%A8%80%E5%A4%84%E7%90%86/" itemprop="url" rel="index"><span itemprop="name">自然语言处理</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本文为参加Datawhale组队学习时所写，如若需了解细致内容，请去到Datawhale官方开源课程<a target="_blank" rel="noopener" href="https://datawhalechina.github.io/learn-nlp-with-transformers/#/">基于transformers的自然语言处理(NLP)入门 (datawhalechina.github.io)</a></p>
+<h1 id="图解GPT"><a href="#图解GPT" class="headerlink" title="图解GPT"></a>图解GPT</h1><h2 id="什么是语言模型"><a href="#什么是语言模型" class="headerlink" title="什么是语言模型"></a>什么是语言模型</h2><p>本文主要描述和对比两种语言模型</p>
+<ul>
+<li>自编码(auto-encoder)语言模型</li>
+<li>自回归(auto-regressive)语言模型</li>
+</ul>
+<p><strong>自编码语言模型</strong>代表就是BERT。自编码语言模型通过随机mask输入的部分单词，然后预训练的目标是预测被mask的单词，不仅可以融入上文信息，还可以自然地融入下文信息。</p>
+<span id="more"></span>
+
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210918200729037.png" alt="Bert mask"></p>
+<p>自编码语言模型的优缺点</p>
+<ul>
+<li>优点：自然地融入双向语言模型，同时看到被预测的单词的上下文</li>
+<li>缺点：训练和预测不一致。训练的时候引入了[mask]标记，但是在预测阶段往往没有mask标记，导致预训练阶段和Fine-tuning阶段不一致。</li>
+</ul>
+<p><strong>自回归语言模型：</strong>语言模型根据输入句子的一部分文本来预测下一个词。日常生活中最常见的就是输入法提示，它可以根据输入的内容，给出提示。</p>
+<p>自回归语言模型的优点和缺点：</p>
+<ul>
+<li>优点：对于生成类地NLP任务，比如文本摘要，机器翻译等从左向右的生成内容，天然和自回归语言模型契合。</li>
+<li>缺点：由于一般是从左到右(当然也可能从左到右)，所以只能利用上文或者下文地信息，不能同时利用上下文。 </li>
+</ul>
+<p>GPT-2属于自回归语言模型，相比于手机app上的输入提示，GPT-2更加复杂，功能也更加强大。</p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210918203321168.png" alt="多种GPT模型"></p>
+<h2 id="基于Transformer的语言模型"><a href="#基于Transformer的语言模型" class="headerlink" title="基于Transformer的语言模型"></a>基于Transformer的语言模型</h2><p>原始的Transformer模型是由 Encoder部分和Decoder部分组成的，它们都是由多层transformer堆叠而成的。原始Transformer的seq2seq结构很适合机器翻译，因为机器翻译正是将一个文本序列翻译为另一种语言的文本序列。</p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210918203439661.png" alt="原始Transformer结构"></p>
+<p>但如果要使用Transformer来解决语言模型任务，并不需要完整的Encoder部分和Decoder部分，于是在原始Transformer之后的许多研究工作中，人们尝试只使用Transformer Encoder或者Decoder，并且将它们堆得层数尽可能高，然后使用大量的训练语料和大量的计算资源（数十万美元用于训练这些模型）进行预训练。比如BERT只使用了Encoder部分进行masked language model（自编码）训练，GPT-2便是只使用了Decoder部分进行自回归（auto regressive）语言模型训练。</p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210918203607920.png" alt="GPT,BERT,Transformer-XL"></p>
+<h2 id="Transformer进化"><a href="#Transformer进化" class="headerlink" title="Transformer进化"></a>Transformer进化</h2><p>Transformer的Encoder进化成了BERT，Decoder进化成了GPT2。</p>
+<p>首先是Encoder部分。</p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210918203756070.png" alt="encoder"></p>
+<p>原始的Transformer论文中的Encoder部分接受特定长度的输入（如 512 个 token）。如果一个输入序列比这个限制短，我们可以使用pad填充序列的其余部分。</p>
+<p>再回顾下Decoder部分 与Encoder相比，Decoder部分多了一个Encoder-Decoder self-attention层，使Decoder可以attention到Encoder编码的特定的信息。</p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210918203859377.png" alt="decoder"></p>
+<p>Decoder中的的 Masked Self-Attention会屏蔽未来的token。具体来说，它不像 BERT那样直接将输入的单词随机改为mask，而是通过改变Self-Attention的计算，来屏蔽未来的单词信息。</p>
+<p>例如，我们想要计算位置4的attention，我们只允许看到位置4以前和位置4的token。</p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210918204007767.png" alt="attention"></p>
+<p>由于BERT是基于Encoder构建的，BERT使用是Self Attention层，而GPT2基于Decoder构建，GPT-2 使用masked Self Attention。一个正常的 Self Attention允许一个位置关注到它两边的信息，而masked Self Attention只让模型看到左边的信息：</p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210918204045901.png" alt="self attention and mask self attention"></p>
+<p>OpenAI的GPT2中Transformer-Decoder结构。基于Transformer-Decoder部分进行语言模型训练。由于去掉了Encoder部分，于是Encoder-Decoder self attention也不再需要。</p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210918204214467.png" alt="transformer-decoder"></p>
+<h2 id="GPT2概述"><a href="#GPT2概述" class="headerlink" title="GPT2概述"></a>GPT2概述</h2><p><img src="/2021/09/18/nlp-transformer-3/image-20210918204327430.png" alt="GPT2"></p>
+<p>GPT-2能够处理1024 个token。每个token沿着自己的路径经过所有的Decoder层。试用一个训练好的GPT-2模型的最简单方法是让它自己生成文本（这在技术上称为：生成无条件文本）。或者，我们可以给它一个提示，让它谈论某个主题（即生成交互式条件样本）。</p>
+<p>在漫无目的情况下，我们可以简单地给它输入一个特殊的<s>初始token，让它开始生成单词。</s></p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210918204752948.png" alt="GPT2初始token"></p>
+<p>由于模型只有一个输入，因此只有一条活跃路径。<s> token在所有Decoder层中依次被处理，然后沿着该路径生成一个向量。根据这个向量和模型的词汇表给所有可能的词计算出一个分数。在下图的例子中，我们选择了概率最高的 the。下一步，我们把第一步的输出添加到我们的输入序列，然后让模型做下一个预测。</s></p>
+<p>第二条路径是此计算中唯一活动的路径。GPT-2 的每一层都保留了它对第一个 token所编码的信息，而且会在处理第二个 token 时直接使用它：GPT-2 不会根据第2个 token 重新计算第一个 token。</p>
+<h2 id="GPT2详解"><a href="#GPT2详解" class="headerlink" title="GPT2详解"></a>GPT2详解</h2><p>与之前我们讨论的其他 NLP 模型一样，GPT-2 在嵌入矩阵中查找输入的单词的对应的 embedding 向量。如下图所示：每一行都是词的 embedding：这是一个数值向量，可以表示一个词并捕获一些含义。这个向量的大小在不同的 GPT-2 模型中是不同的。最小的模型使用的 embedding 大小是 768。</p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210918205045809.png" alt="token embedding"></p>
+<p>于是在开始时，我们会在嵌入矩阵查找第一个 token <s> 的 embedding。在把这个 embedding 传给模型的第一个模块之前，我们还需要融入位置编码，这个位置编码能够指示单词在序列中的顺序。</s></p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210918205349065.png" alt="位置编码"></p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210918205418308.png" alt="token+position"></p>
+<p>输入的处理：得到词向量+位置编码</p>
+<h3 id="多层Decoder"><a href="#多层Decoder" class="headerlink" title="多层Decoder"></a>多层Decoder</h3><p>第一层Decoder现在可以处理 <s> token所对应的向量了：首先通过 Self Attention 层，然后通过全连接神经网络。一旦Transformer 的第1个Decoder处理了<s> token，依旧可以得到一个向量，这个结果向量会再次被发送到下一层Decoder。</s></s></p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210918205515342.png" alt="多层编码"></p>
+<h3 id="Decoder中的self-attention"><a href="#Decoder中的self-attention" class="headerlink" title="Decoder中的self-attention"></a>Decoder中的self-attention</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">机器人第2定律：机器人必须服从人给予 它 的命令，当 该命令 与 第一定律 冲突时例外。</span><br></pre></td></tr></table></figure>
+
+<p>例句中包含了多个代词。如果不结合它们所指的上下文，就无法理解或者处理这些词。当一个模型处理这个句子，它必须能够知道：</p>
+<ul>
+<li>它 指的是机器人</li>
+<li>该命令 指的是这个定律的前面部分，也就是 人给予 它 的命令</li>
+<li>第一定律 指的是机器人第一定律</li>
+</ul>
+<p>self-attention所做的事情是：它通过对句子片段中每个词的相关性打分，并将这些词的表示向量根据相关性加权求和，从而让模型能够将词和其他相关词向量的信息融合起来。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Datawhale%E7%BB%84%E9%98%9F%E5%AD%A6%E4%B9%A0/" rel="tag"># Datawhale组队学习</a>
+              <a href="/tags/NLP%E5%85%A5%E9%97%A8/" rel="tag"># NLP入门</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/09/16/nlp-transformer-2/" rel="prev" title="基于Transformers的自然语言处理(NLP)入门(二)">
+      <i class="fa fa-chevron-left"></i> 基于Transformers的自然语言处理(NLP)入门(二)
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%BE%E8%A7%A3GPT"><span class="nav-number">1.</span> <span class="nav-text">图解GPT</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.1.</span> <span class="nav-text">什么是语言模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8ETransformer%E7%9A%84%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.2.</span> <span class="nav-text">基于Transformer的语言模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Transformer%E8%BF%9B%E5%8C%96"><span class="nav-number">1.3.</span> <span class="nav-text">Transformer进化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GPT2%E6%A6%82%E8%BF%B0"><span class="nav-number">1.4.</span> <span class="nav-text">GPT2概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GPT2%E8%AF%A6%E8%A7%A3"><span class="nav-number">1.5.</span> <span class="nav-text">GPT2详解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E5%B1%82Decoder"><span class="nav-number">1.5.1.</span> <span class="nav-text">多层Decoder</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Decoder%E4%B8%AD%E7%9A%84self-attention"><span class="nav-number">1.5.2.</span> <span class="nav-text">Decoder中的self-attention</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Xavier ZXY"
+      src="/images/autor.jpg">
+  <p class="site-author-name" itemprop="name">Xavier ZXY</p>
+  <div class="site-description" itemprop="description">ZXY 想去看极光</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xavierzxy" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xavierzxy" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zxy_xavier@163.com" title="E-Mail → mailto:zxy_xavier@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Xavier ZXY</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
