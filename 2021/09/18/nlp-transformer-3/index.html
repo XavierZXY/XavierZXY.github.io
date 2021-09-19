@@ -77,7 +77,7 @@
 <meta property="og:image" content="http://example.com/2021/09/18/nlp-transformer-3/image-20210919154829762.png">
 <meta property="og:image" content="http://example.com/2021/09/18/nlp-transformer-3/image-20210919154944710.png">
 <meta property="article:published_time" content="2021-09-18T11:49:59.000Z">
-<meta property="article:modified_time" content="2021-09-19T07:50:02.882Z">
+<meta property="article:modified_time" content="2021-09-19T08:03:14.559Z">
 <meta property="article:author" content="Xavier ZXY">
 <meta property="article:tag" content="Datawhale组队学习">
 <meta property="article:tag" content="NLP入门">
@@ -243,7 +243,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-09-19 15:50:02" itemprop="dateModified" datetime="2021-09-19T15:50:02+08:00">2021-09-19</time>
+                <time title="修改时间：2021-09-19 16:03:14" itemprop="dateModified" datetime="2021-09-19T16:03:14+08:00">2021-09-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -312,17 +312,17 @@
 <p><img src="/2021/09/18/nlp-transformer-3/image-20210918204214467.png" alt="transformer-decoder"></p>
 <h2 id="GPT2概述"><a href="#GPT2概述" class="headerlink" title="GPT2概述"></a>GPT2概述</h2><p><img src="/2021/09/18/nlp-transformer-3/image-20210918204327430.png" alt="GPT2"></p>
 <p>GPT-2能够处理1024 个token。每个token沿着自己的路径经过所有的Decoder层。试用一个训练好的GPT-2模型的最简单方法是让它自己生成文本（这在技术上称为：生成无条件文本）。或者，我们可以给它一个提示，让它谈论某个主题（即生成交互式条件样本）。</p>
-<p>在漫无目的情况下，我们可以简单地给它输入一个特殊的<s>初始token，让它开始生成单词。</s></p>
+<p>在漫无目的情况下，我们可以简单地给它输入一个特殊的s初始token，让它开始生成单词。</p>
 <p><img src="/2021/09/18/nlp-transformer-3/image-20210918204752948.png" alt="GPT2初始token"></p>
-<p>由于模型只有一个输入，因此只有一条活跃路径。<s> token在所有Decoder层中依次被处理，然后沿着该路径生成一个向量。根据这个向量和模型的词汇表给所有可能的词计算出一个分数。在下图的例子中，我们选择了概率最高的 the。下一步，我们把第一步的输出添加到我们的输入序列，然后让模型做下一个预测。</s></p>
+<p>由于模型只有一个输入，因此只有一条活跃路径。s token在所有Decoder层中依次被处理，然后沿着该路径生成一个向量。根据这个向量和模型的词汇表给所有可能的词计算出一个分数。在下图的例子中，我们选择了概率最高的 the。下一步，我们把第一步的输出添加到我们的输入序列，然后让模型做下一个预测。</p>
 <p>第二条路径是此计算中唯一活动的路径。GPT-2 的每一层都保留了它对第一个 token所编码的信息，而且会在处理第二个 token 时直接使用它：GPT-2 不会根据第2个 token 重新计算第一个 token。</p>
 <h2 id="GPT2详解"><a href="#GPT2详解" class="headerlink" title="GPT2详解"></a>GPT2详解</h2><p>与之前我们讨论的其他 NLP 模型一样，GPT-2 在嵌入矩阵中查找输入的单词的对应的 embedding 向量。如下图所示：每一行都是词的 embedding：这是一个数值向量，可以表示一个词并捕获一些含义。这个向量的大小在不同的 GPT-2 模型中是不同的。最小的模型使用的 embedding 大小是 768。</p>
 <p><img src="/2021/09/18/nlp-transformer-3/image-20210918205045809.png" alt="token embedding"></p>
-<p>于是在开始时，我们会在嵌入矩阵查找第一个 token <s> 的 embedding。在把这个 embedding 传给模型的第一个模块之前，我们还需要融入位置编码，这个位置编码能够指示单词在序列中的顺序。</s></p>
+<p>于是在开始时，我们会在嵌入矩阵查找第一个 token s 的 embedding。在把这个 embedding 传给模型的第一个模块之前，我们还需要融入位置编码，这个位置编码能够指示单词在序列中的顺序。</p>
 <p><img src="/2021/09/18/nlp-transformer-3/image-20210918205349065.png" alt="位置编码"></p>
 <p><img src="/2021/09/18/nlp-transformer-3/image-20210918205418308.png" alt="token+position"></p>
 <p>输入的处理：得到词向量+位置编码</p>
-<h3 id="多层Decoder"><a href="#多层Decoder" class="headerlink" title="多层Decoder"></a>多层Decoder</h3><p>第一层Decoder现在可以处理 <s> token所对应的向量了：首先通过 Self Attention 层，然后通过全连接神经网络。一旦Transformer 的第1个Decoder处理了<s> token，依旧可以得到一个向量，这个结果向量会再次被发送到下一层Decoder。</s></s></p>
+<h3 id="多层Decoder"><a href="#多层Decoder" class="headerlink" title="多层Decoder"></a>多层Decoder</h3><p>第一层Decoder现在可以处理 s token所对应的向量了：首先通过 Self Attention 层，然后通过全连接神经网络。一旦Transformer 的第1个Decoder处理了s token，依旧可以得到一个向量，这个结果向量会再次被发送到下一层Decoder。</p>
 <p><img src="/2021/09/18/nlp-transformer-3/image-20210918205515342.png" alt="多层编码"></p>
 <h3 id="Decoder中的self-attention"><a href="#Decoder中的self-attention" class="headerlink" title="Decoder中的self-attention"></a>Decoder中的self-attention</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">机器人第2定律：机器人必须服从人给予 它 的命令，当 该命令 与 第一定律 冲突时例外。</span><br></pre></td></tr></table></figure>
 
