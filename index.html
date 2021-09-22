@@ -158,6 +158,295 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/09/22/nlp-transformer-5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/autor.jpg">
+      <meta itemprop="name" content="Xavier ZXY">
+      <meta itemprop="description" content="ZXY 想去看极光">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xavier ZXY">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/22/nlp-transformer-5/" class="post-title-link" itemprop="url">基于Transformers的自然语言处理(NLP)入门(四)</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-09-22 14:35:03 / 修改时间：19:52:00" itemprop="dateCreated datePublished" datetime="2021-09-22T14:35:03+08:00">2021-09-22</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">深度学习</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%87%AA%E7%84%B6%E8%AF%AD%E8%A8%80%E5%A4%84%E7%90%86/" itemprop="url" rel="index"><span itemprop="name">自然语言处理</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>本文为参加Datawhale组队学习时所写，如若需了解细致内容，请去到Datawhale官方开源课程<a target="_blank" rel="noopener" href="https://datawhalechina.github.io/learn-nlp-with-transformers/#/">基于transformers的自然语言处理(NLP)入门 (datawhalechina.github.io)</a></p>
+<h1 id="应用一个BERT"><a href="#应用一个BERT" class="headerlink" title="应用一个BERT"></a>应用一个BERT</h1><h2 id="BERT-based-Models"><a href="#BERT-based-Models" class="headerlink" title="BERT-based Models"></a>BERT-based Models</h2><p>首先，以下所有的模型都是基于<code>BertPreTrainedModel</code>这一抽象基类的，而后者则基于一个更大的基类<code>PreTrainedModel</code>。这里我们关注<code>BertPreTrainedModel</code>的功能：</p>
+<p>用于初始化模型权重，同时维护继承自<code>PreTrainedModel</code>的一些标记身份或者加载模型时的类变量。 下面，首先从预训练模型开始分析。</p>
+<h2 id="Bert-For-PreTraining"><a href="#Bert-For-PreTraining" class="headerlink" title="Bert For PreTraining"></a>Bert For PreTraining</h2><p>BERT预训练任务包括两个：</p>
+<ul>
+<li>Masked Language Model(MLM): 在句子中随机用[MASK]替换一部分单词，然后将句子传入BERT中编码每一个单词的意思，最终用[MASK]的编码信息预测该位置的正确单词，这一任务旨在根据上下文理解单词的意思；</li>
+<li>Next Sentence Prediction(NSP): 将句子对A和B输入BERT，使用[CLS]的编码信息进行预测B是否为A的下一句，这一任务旨在训练模型理解预测句子之间的关系。</li>
+</ul>
+<p><img src="/2021/09/22/nlp-transformer-5/image-20210922144852137.png" alt="bert pretraining"></p>
+<p>而对应到代码中，这一融合两个任务的模型就是<code>BertForPreTraining</code>，其中包含两个组件：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BertForPreTraining</span>(<span class="params">BertPreTrainedModel</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, config</span>):</span></span><br><span class="line">        <span class="built_in">super</span>().__init__(config)</span><br><span class="line"></span><br><span class="line">        self.bert = BertModel(config)</span><br><span class="line">        self.cls = BertPreTrainingHeads(config)</span><br><span class="line"></span><br><span class="line">        self.init_weights()</span><br></pre></td></tr></table></figure>
+
+<p><code>BertPreTrainingHeads</code>则是负责两个任务的预测模块：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BertPreTrainingHeads</span>(<span class="params">nn.Module</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, config</span>):</span></span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        self.predictions = BertLMPredictionHead(config)</span><br><span class="line">        self.seq_relationship = nn.Linear(config.hidden_size, <span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span>(<span class="params">self, sequence_output, pooled_output</span>):</span></span><br><span class="line">        prediction_scores = self.predictions(sequence_output)</span><br><span class="line">        seq_relationship_score = self.seq_relationship(pooled_output)</span><br><span class="line">        <span class="keyword">return</span> prediction_scores, seq_relationship_score </span><br></pre></td></tr></table></figure>
+
+<p>这个类用于预测<code>[MASK]</code>位置的输出在每个词作为类别的分类输出</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BertLMPredictionHead</span>(<span class="params">nn.Module</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, config</span>):</span></span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        self.transform = BertPredictionHeadTransform(config)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># The output weights are the same as the input embeddings, but there is</span></span><br><span class="line">        <span class="comment"># an output-only bias for each token.</span></span><br><span class="line">        self.decoder = nn.Linear(config.hidden_size, config.vocab_size, bias=<span class="literal">False</span>)</span><br><span class="line"></span><br><span class="line">        self.bias = nn.Parameter(torch.zeros(config.vocab_size))</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Need a link between the two variables so that the bias is correctly resized with `resize_token_embeddings`</span></span><br><span class="line">        self.decoder.bias = self.bias</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span>(<span class="params">self, hidden_states</span>):</span></span><br><span class="line">        hidden_states = self.transform(hidden_states)</span><br><span class="line">        hidden_states = self.decoder(hidden_states)</span><br><span class="line">        <span class="keyword">return</span> hidden_states</span><br></pre></td></tr></table></figure>
+
+<p>注意到：</p>
+<ul>
+<li><p>该类重新初始化了一个全 0 向量作为预测权重的 bias；</p>
+</li>
+<li><p>该类的输出形状为[batch_size, seq_length, vocab_size]，即预测每个句子每个词是什么类别的概率值（注意这里没有做 softmax）；</p>
+</li>
+<li><p>又一个封装的类：BertPredictionHeadTransform，用来完成一些线性变换：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BertPredictionHeadTransform</span>(<span class="params">nn.Module</span>):</span></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, config</span>):</span></span><br><span class="line">      <span class="built_in">super</span>().__init__()</span><br><span class="line">      self.dense = nn.Linear(config.hidden_size, config.hidden_size)</span><br><span class="line">      <span class="keyword">if</span> <span class="built_in">isinstance</span>(config.hidden_act, <span class="built_in">str</span>):</span><br><span class="line">          self.transform_act_fn = ACT2FN[config.hidden_act]</span><br><span class="line">      <span class="keyword">else</span>:</span><br><span class="line">          self.transform_act_fn = config.hidden_act</span><br><span class="line">      self.LayerNorm = nn.LayerNorm(config.hidden_size, eps=config.layer_norm_eps)</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">forward</span>(<span class="params">self, hidden_states</span>):</span></span><br><span class="line">      hidden_states = self.dense(hidden_states)</span><br><span class="line">      hidden_states = self.transform_act_fn(hidden_states)</span><br><span class="line">      hidden_states = self.LayerNorm(hidden_states)</span><br><span class="line">      <span class="keyword">return</span> hidden_states</span><br></pre></td></tr></table></figure></li>
+<li><p>labels：形状为[batch_size, seq_length] ，代表 MLM 任务的标签，注意这里对于原本未被遮盖的词设置为 -100，被遮盖词才会有它们对应的 id，和任务设置是反过来的。</p>
+<ul>
+<li>例如，原始句子是I want to [MASK] an apple，这里我把单词eat给遮住了输入模型，对应的label设置为[-100, -100, -100, 【eat对应的id】, -100, -100]；</li>
+<li>为什么要设置为 -100 而不是其他数？因为torch.nn.CrossEntropyLoss默认的ignore_index=-100，也就是说对于标签为 100 的类别输入不会计算 loss。</li>
+</ul>
+</li>
+<li><p>next_sentence_label：这一个输入很简单，就是 0 和 1 的二分类标签。</p>
+</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/09/21/practical-machine-learning-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/autor.jpg">
+      <meta itemprop="name" content="Xavier ZXY">
+      <meta itemprop="description" content="ZXY 想去看极光">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xavier ZXY">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/21/practical-machine-learning-1/" class="post-title-link" itemprop="url">实用机器学习(一)</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-09-21 16:23:57" itemprop="dateCreated datePublished" datetime="2021-09-21T16:23:57+08:00">2021-09-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-09-22 20:56:39" itemprop="dateModified" datetime="2021-09-22T20:56:39+08:00">2021-09-22</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/%E5%AE%9E%E7%94%A8%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">实用机器学习</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>本文为学校李沐沐神的2021斯坦福秋季课程，实用机器学习时所做的笔记，仅供学习复习回顾，不作任何商业用途，详细信息请访问***<a target="_blank" rel="noopener" href="https://space.bilibili.com/1567748478">跟李沐学AI</a>***</p>
+<h1 id="课程介绍"><a href="#课程介绍" class="headerlink" title="课程介绍"></a>课程介绍</h1><p>机器学习工作流程</p>
+<p><img src="/2021/09/21/practical-machine-learning-1/image-20210921165637795.png" alt="ML Workflow"></p>
+<p><img src="/2021/09/21/practical-machine-learning-1/image-20210921165812892.png" alt="image-20210921165812892"><img src="/2021/09/21/practical-machine-learning-1/image-20210921165812973.png" alt="ML Workflow"></p>
+<h1 id="数据获取"><a href="#数据获取" class="headerlink" title="数据获取"></a>数据获取</h1><p><img src="/2021/09/21/practical-machine-learning-1/image-20210922201024824.png" alt="数据获取"></p>
+<p>寻找数据集的一些网站</p>
+<p><a target="_blank" rel="noopener" href="https://paperswithcode.com/sota">Papers With Code</a>   论文复现代码以及用到的一些数据集</p>
+<p><a target="_blank" rel="noopener" href="https://www.kaggle.com/datasets">Kaggle Datasets</a>  Kaggle竞赛平台</p>
+<p><a target="_blank" rel="noopener" href="https://gas.graviti.cn/open-datasets">Graviti 格物钛</a>  国内数据集收集平台</p>
+<p>各大框架的开源数据集，各类比赛的数据集等等。</p>
+<h2 id="数据融合"><a href="#数据融合" class="headerlink" title="数据融合"></a>数据融合</h2><p>收集的数据集并不一定能够完全满足当前训练数据的要求，要根据数据情况对收集的数据进行一定的融合，处理。对于<strong>0</strong>值或者<strong>NaN</strong>等特殊数据，要进行处理。</p>
+<p><img src="/2021/09/21/practical-machine-learning-1/image-20210922202600100.png" alt="data intergration"></p>
+<h2 id="数据生成"><a href="#数据生成" class="headerlink" title="数据生成"></a>数据生成</h2><p>在无法找到足够的数据集的情况下，我们可以去生成相应的数据集。使用<strong>GANs</strong>去增大数据集体量，也可以通过<strong>数据增强</strong>，来增多我们的数据集。例如在CV问题中，我们经常使用对图像的裁剪，旋转，拉伸来增强我们的数据集。</p>
+<p><img src="/2021/09/21/practical-machine-learning-1/image-20210922203152721.png" alt="数据增强"></p>
+<h1 id="网页数据抓取"><a href="#网页数据抓取" class="headerlink" title="网页数据抓取"></a>网页数据抓取</h1><h2 id="网页抓取工具"><a href="#网页抓取工具" class="headerlink" title="网页抓取工具"></a>网页抓取工具</h2><p>凭借python工具，通过一个带浏览器表示的url请求，来向web网站抓取数据。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver</span><br><span class="line">chrome_options = webdriver.ChromeOptions()</span><br><span class="line">chrome_optinos.headless = <span class="literal">True</span>  <span class="comment"># 通过添加浏览器标识，可以减少网站对于爬虫的反爬限制，但同一IP地址短时间发起多个请求时，依旧会被认为异常行为</span></span><br><span class="line">chrome = webdriver.Chrome(chrome_options=chrome_options)</span><br><span class="line"></span><br><span class="line">page = chrome.get(url)</span><br></pre></td></tr></table></figure>
+
+<h2 id="Legal-Consideration"><a href="#Legal-Consideration" class="headerlink" title="Legal Consideration"></a>Legal Consideration</h2><p><strong>虽然我们只是出于学习的目的去收集数据，但我们绝对不能去侵害别人的隐私信息！！！</strong></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/09/20/nlp-transformer-4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/autor.jpg">
+      <meta itemprop="name" content="Xavier ZXY">
+      <meta itemprop="description" content="ZXY 想去看极光">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xavier ZXY">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/20/nlp-transformer-4/" class="post-title-link" itemprop="url">基于Transformers的自然语言处理(NLP)入门(四)</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-09-20 09:50:53 / 修改时间：10:14:58" itemprop="dateCreated datePublished" datetime="2021-09-20T09:50:53+08:00">2021-09-20</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">深度学习</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%87%AA%E7%84%B6%E8%AF%AD%E8%A8%80%E5%A4%84%E7%90%86/" itemprop="url" rel="index"><span itemprop="name">自然语言处理</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>本文为参加Datawhale组队学习时所写，如若需了解细致内容，请去到Datawhale官方开源课程<a target="_blank" rel="noopener" href="https://datawhalechina.github.io/learn-nlp-with-transformers/#/">基于transformers的自然语言处理(NLP)入门 (datawhalechina.github.io)</a></p>
+<h1 id="实现一个BERT"><a href="#实现一个BERT" class="headerlink" title="实现一个BERT"></a>实现一个BERT</h1><p><img src="/2021/09/20/nlp-transformer-4/image-20210920095401141.png" alt="BERT结构"></p>
+<p>BERT Tokenization 分词模型（BertTokenizer）</p>
+<p>BERT Model 本体模型（BertModel）</p>
+<ul>
+<li>BertEmbeddings</li>
+<li>BertEncoder<ul>
+<li>BertLayer<ul>
+<li>BertAttention</li>
+<li>BertIntermediate</li>
+<li>BertOutput</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>BertPooler</li>
+</ul>
+<h2 id="Tokenization分词-BertTokenizer"><a href="#Tokenization分词-BertTokenizer" class="headerlink" title="Tokenization分词-BertTokenizer"></a>Tokenization分词-BertTokenizer</h2>
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/09/18/nlp-transformer-3/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -597,20 +886,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-count">7</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-count">5</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-count">4</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
