@@ -20,12 +20,12 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="本文为学校李沐沐神的2021斯坦福秋季课程，实用机器学习时所做的笔记，仅供学习复习回顾，不作任何商业用途，详细信息请访问***跟李沐学AI*** 课程介绍机器学习工作流程   数据获取 寻找数据集的一些网站 Papers With Code   论文复现代码以及用到的一些数据集 Kaggle Datasets  Kaggle竞赛平台 Graviti 格物钛  国内数据集收集平台 各大框架的开源数据">
+  <meta name="description" content="本文为学习李沐2021斯坦福秋季课程《实用机器学习》时所做的笔记，仅供学习复习回顾，不作任何商业用途，详细信息请访问跟李沐学AI 课程介绍机器学习工作流程">
 <meta property="og:type" content="article">
 <meta property="og:title" content="实用机器学习(一)">
 <meta property="og:url" content="http://example.com/2021/09/21/practical-machine-learning-1/index.html">
 <meta property="og:site_name" content="Xavier ZXY">
-<meta property="og:description" content="本文为学校李沐沐神的2021斯坦福秋季课程，实用机器学习时所做的笔记，仅供学习复习回顾，不作任何商业用途，详细信息请访问***跟李沐学AI*** 课程介绍机器学习工作流程   数据获取 寻找数据集的一些网站 Papers With Code   论文复现代码以及用到的一些数据集 Kaggle Datasets  Kaggle竞赛平台 Graviti 格物钛  国内数据集收集平台 各大框架的开源数据">
+<meta property="og:description" content="本文为学习李沐2021斯坦福秋季课程《实用机器学习》时所做的笔记，仅供学习复习回顾，不作任何商业用途，详细信息请访问跟李沐学AI 课程介绍机器学习工作流程">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/2021/09/21/practical-machine-learning-1/image-20210921165637795.png">
 <meta property="og:image" content="http://example.com/2021/09/21/practical-machine-learning-1/image-20210921165812892.png">
@@ -34,7 +34,7 @@
 <meta property="og:image" content="http://example.com/2021/09/21/practical-machine-learning-1/image-20210922202600100.png">
 <meta property="og:image" content="http://example.com/2021/09/21/practical-machine-learning-1/image-20210922203152721.png">
 <meta property="article:published_time" content="2021-09-21T08:23:57.000Z">
-<meta property="article:modified_time" content="2021-09-22T12:56:39.082Z">
+<meta property="article:modified_time" content="2021-09-23T07:09:22.743Z">
 <meta property="article:author" content="Xavier ZXY">
 <meta property="article:tag" content="李沐">
 <meta name="twitter:card" content="summary">
@@ -199,7 +199,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-09-22 20:56:39" itemprop="dateModified" datetime="2021-09-22T20:56:39+08:00">2021-09-22</time>
+                <time title="修改时间：2021-09-23 15:09:22" itemprop="dateModified" datetime="2021-09-23T15:09:22+08:00">2021-09-23</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -226,10 +226,13 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>本文为学校李沐沐神的2021斯坦福秋季课程，实用机器学习时所做的笔记，仅供学习复习回顾，不作任何商业用途，详细信息请访问***<a target="_blank" rel="noopener" href="https://space.bilibili.com/1567748478">跟李沐学AI</a>***</p>
+        <p>本文为学习李沐2021斯坦福秋季课程《实用机器学习》时所做的笔记，仅供学习复习回顾，不作任何商业用途，详细信息请访问<a target="_blank" rel="noopener" href="https://space.bilibili.com/1567748478">跟李沐学AI</a></p>
 <h1 id="课程介绍"><a href="#课程介绍" class="headerlink" title="课程介绍"></a>课程介绍</h1><p>机器学习工作流程</p>
 <p><img src="/2021/09/21/practical-machine-learning-1/image-20210921165637795.png" alt="ML Workflow"></p>
-<p><img src="/2021/09/21/practical-machine-learning-1/image-20210921165812892.png" alt="image-20210921165812892"><img src="/2021/09/21/practical-machine-learning-1/image-20210921165812973.png" alt="ML Workflow"></p>
+<p><img src="/2021/09/21/practical-machine-learning-1/image-20210921165812892.png" alt="image-20210921165812892"></p>
+<p><img src="/2021/09/21/practical-machine-learning-1/image-20210921165812973.png" alt="ML Workflow"></p>
+<span id="more"></span>
+
 <h1 id="数据获取"><a href="#数据获取" class="headerlink" title="数据获取"></a>数据获取</h1><p><img src="/2021/09/21/practical-machine-learning-1/image-20210922201024824.png" alt="数据获取"></p>
 <p>寻找数据集的一些网站</p>
 <p><a target="_blank" rel="noopener" href="https://paperswithcode.com/sota">Papers With Code</a>   论文复现代码以及用到的一些数据集</p>
