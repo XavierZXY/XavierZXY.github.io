@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/learn-apple.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/learn32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/learn16x16.png">
+  <link rel="mask-icon" href="/images/learn.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="使用Transoformer解决NLP问题文本分类GLUE榜单包含了9个句子级别的分类任务，分别是：  CoLA (Corpus of Linguistic Acceptability) 鉴别一个句子是否语法正确. MNLI (Multi-Genre Natural Language Inference) 给定一个假设，判断另一个句子与该假设的关系：entails, contradicts 或者">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于Transformers的自然语言处理(NLP)入门(四)">
+<meta property="og:url" content="http://example.com/2021/09/25/nlp-transformer-4/index.html">
+<meta property="og:site_name" content="Xavier ZXY">
+<meta property="og:description" content="使用Transoformer解决NLP问题文本分类GLUE榜单包含了9个句子级别的分类任务，分别是：  CoLA (Corpus of Linguistic Acceptability) 鉴别一个句子是否语法正确. MNLI (Multi-Genre Natural Language Inference) 给定一个假设，判断另一个句子与该假设的关系：entails, contradicts 或者">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2021/09/25/nlp-transformer-4/image-20210925113158435.png">
+<meta property="article:published_time" content="2021-09-25T01:55:35.000Z">
+<meta property="article:modified_time" content="2021-09-25T03:53:19.726Z">
+<meta property="article:author" content="Xavier ZXY">
+<meta property="article:tag" content="Datawhale组队学习">
+<meta property="article:tag" content="NLP入门">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/09/25/nlp-transformer-4/image-20210925113158435.png">
+
+<link rel="canonical" href="http://example.com/2021/09/25/nlp-transformer-4/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>基于Transformers的自然语言处理(NLP)入门(四) | Xavier ZXY</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+  <a target="_blank" rel="noopener" href="https://github.com/XavierZXY" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Xavier ZXY</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/09/25/nlp-transformer-4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/autor.jpg">
+      <meta itemprop="name" content="Xavier ZXY">
+      <meta itemprop="description" content="ZXY 想去看极光">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xavier ZXY">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          基于Transformers的自然语言处理(NLP)入门(四)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-09-25 09:55:35 / 修改时间：11:53:19" itemprop="dateCreated datePublished" datetime="2021-09-25T09:55:35+08:00">2021-09-25</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">深度学习</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%87%AA%E7%84%B6%E8%AF%AD%E8%A8%80%E5%A4%84%E7%90%86/" itemprop="url" rel="index"><span itemprop="name">自然语言处理</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="使用Transoformer解决NLP问题"><a href="#使用Transoformer解决NLP问题" class="headerlink" title="使用Transoformer解决NLP问题"></a>使用Transoformer解决NLP问题</h1><h2 id="文本分类"><a href="#文本分类" class="headerlink" title="文本分类"></a>文本分类</h2><p>GLUE榜单包含了9个句子级别的分类任务，分别是：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://nyu-mll.github.io/CoLA/">CoLA</a> (Corpus of Linguistic Acceptability) 鉴别一个句子是否语法正确.</li>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1704.05426">MNLI</a> (Multi-Genre Natural Language Inference) 给定一个假设，判断另一个句子与该假设的关系：entails, contradicts 或者 unrelated。</li>
+<li><a target="_blank" rel="noopener" href="https://www.microsoft.com/en-us/download/details.aspx?id=52398">MRPC</a> (Microsoft Research Paraphrase Corpus) 判断两个句子是否互为paraphrases.</li>
+<li><a target="_blank" rel="noopener" href="https://rajpurkar.github.io/SQuAD-explorer/">QNLI</a> (Question-answering Natural Language Inference) 判断第2句是否包含第1句问题的答案。</li>
+<li><a target="_blank" rel="noopener" href="https://data.quora.com/First-Quora-Dataset-Release-Question-Pairs">QQP</a> (Quora Question Pairs2) 判断两个问句是否语义相同。</li>
+<li><a target="_blank" rel="noopener" href="https://aclweb.org/aclwiki/Recognizing_Textual_Entailment">RTE</a> (Recognizing Textual Entailment)判断一个句子是否与假设成entail关系。</li>
+<li><a target="_blank" rel="noopener" href="https://nlp.stanford.edu/sentiment/index.html">SST-2</a> (Stanford Sentiment Treebank) 判断一个句子的情感正负向.</li>
+<li><a target="_blank" rel="noopener" href="http://ixa2.si.ehu.es/stswiki/index.php/STSbenchmark">STS-B</a> (Semantic Textual Similarity Benchmark) 判断两个句子的相似性（分数为1-5分）。</li>
+<li><a target="_blank" rel="noopener" href="https://cs.nyu.edu/faculty/davise/papers/WinogradSchemas/WS.html">WNLI</a> (Winograd Natural Language Inference) Determine if a sentence with an anonymous pronoun and a sentence with this pronoun replaced are entailed or not.</li>
+</ul>
+<span id="more"></span>
+
+<p>对于以上任务，我们将展示如何使用简单的Dataset库加载数据集，同时使用transformer中的<code>Trainer</code>接口对预训练模型进行微调。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#  glue数据集的人物列表</span></span><br><span class="line">GLUE_TASKS = [<span class="string">&quot;cola&quot;</span>, <span class="string">&quot;mnli&quot;</span>, <span class="string">&quot;mnli-mm&quot;</span>, <span class="string">&quot;mrpc&quot;</span>, <span class="string">&quot;qnli&quot;</span>, <span class="string">&quot;qqp&quot;</span>, <span class="string">&quot;rte&quot;</span>, <span class="string">&quot;sst2&quot;</span>, <span class="string">&quot;stsb&quot;</span>, <span class="string">&quot;wnli&quot;</span>]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">task = <span class="string">&quot;cola&quot;</span></span><br><span class="line">model_checkpoint = <span class="string">&quot;distilbert-base-uncased&quot;</span>  <span class="comment"># 模型权重检查点</span></span><br><span class="line">batch_size = <span class="number">16</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="加载数据"><a href="#加载数据" class="headerlink" title="加载数据"></a>加载数据</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> datasets <span class="keyword">import</span> load_dataset, load_metric</span><br><span class="line"><span class="comment">#  除mnli-mm任务，其他任务都可以通过任务名直接加载</span></span><br><span class="line">actual_task = <span class="string">&quot;mnli&quot;</span> <span class="keyword">if</span> task == <span class="string">&quot;mnli-mm&quot;</span> <span class="keyword">else</span> task</span><br><span class="line">dataset = load_dataset(<span class="string">&quot;glue&quot;</span>, actual_task)  <span class="comment"># 加载数据集</span></span><br><span class="line">metric = load_metric(<span class="string">&#x27;glue&#x27;</span>, actual_task)  <span class="comment"># 加载metric评估标准</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#  dataset结构</span></span><br><span class="line">DatasetDict(&#123;</span><br><span class="line">    train: Dataset(&#123;</span><br><span class="line">        features: [<span class="string">&#x27;sentence&#x27;</span>, <span class="string">&#x27;label&#x27;</span>, <span class="string">&#x27;idx&#x27;</span>],</span><br><span class="line">        num_rows: <span class="number">8551</span></span><br><span class="line">    &#125;)</span><br><span class="line">    validation: Dataset(&#123;</span><br><span class="line">        features: [<span class="string">&#x27;sentence&#x27;</span>, <span class="string">&#x27;label&#x27;</span>, <span class="string">&#x27;idx&#x27;</span>],</span><br><span class="line">        num_rows: <span class="number">1043</span></span><br><span class="line">    &#125;)</span><br><span class="line">    test: Dataset(&#123;</span><br><span class="line">        features: [<span class="string">&#x27;sentence&#x27;</span>, <span class="string">&#x27;label&#x27;</span>, <span class="string">&#x27;idx&#x27;</span>],</span><br><span class="line">        num_rows: <span class="number">1063</span></span><br><span class="line">    &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>随机选择数据集中的几个例子</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> datasets</span><br><span class="line"><span class="keyword">import</span> random</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">from</span> IPython.display <span class="keyword">import</span> display, HTML</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">show_random_elements</span>(<span class="params">dataset, num_examples=<span class="number">10</span></span>):</span></span><br><span class="line">    <span class="keyword">assert</span> num_examples &lt;= <span class="built_in">len</span>(dataset), <span class="string">&quot;Can&#x27;t pick more elements than there are in the dataset.&quot;</span></span><br><span class="line">    picks = []</span><br><span class="line">    <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(num_examples):</span><br><span class="line">        pick = random.randint(<span class="number">0</span>, <span class="built_in">len</span>(dataset)-<span class="number">1</span>)</span><br><span class="line">        <span class="keyword">while</span> pick <span class="keyword">in</span> picks:</span><br><span class="line">            pick = random.randint(<span class="number">0</span>, <span class="built_in">len</span>(dataset)-<span class="number">1</span>)</span><br><span class="line">        picks.append(pick)</span><br><span class="line">    </span><br><span class="line">    df = pd.DataFrame(dataset[picks])</span><br><span class="line">    <span class="keyword">for</span> column, typ <span class="keyword">in</span> dataset.features.items():</span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">isinstance</span>(typ, datasets.ClassLabel):</span><br><span class="line">            df[column] = df[column].transform(<span class="keyword">lambda</span> i: typ.names[i])</span><br><span class="line">    display(HTML(df.to_html()))</span><br><span class="line"><span class="comment"># 查看数据集具体信息</span></span><br><span class="line">show_random_elements(dataset[<span class="string">&quot;train&quot;</span>])</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2021/09/25/nlp-transformer-4/image-20210925113158435.png" alt="dataset"></p>
+<p>评估metric时datasets.Metric的一个实例</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">Metric(name: <span class="string">&quot;glue&quot;</span>, features: &#123;<span class="string">&#x27;predictions&#x27;</span>: Value(dtype=<span class="string">&#x27;int64&#x27;</span>, <span class="built_in">id</span>=<span class="literal">None</span>), <span class="string">&#x27;references&#x27;</span>: Value(dtype=<span class="string">&#x27;int64&#x27;</span>, <span class="built_in">id</span>=<span class="literal">None</span>)&#125;, usage: <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">Compute GLUE evaluation metric associated to each GLUE dataset.</span></span><br><span class="line"><span class="string">Args:</span></span><br><span class="line"><span class="string">    predictions: list of predictions to score.</span></span><br><span class="line"><span class="string">        Each translation should be tokenized into a list of tokens.</span></span><br><span class="line"><span class="string">    references: list of lists of references for each translation.</span></span><br><span class="line"><span class="string">        Each reference should be tokenized into a list of tokens.</span></span><br><span class="line"><span class="string">Returns: depending on the GLUE subset, one or several of:</span></span><br><span class="line"><span class="string">    &quot;accuracy&quot;: Accuracy</span></span><br><span class="line"><span class="string">    &quot;f1&quot;: F1 score</span></span><br><span class="line"><span class="string">    &quot;pearson&quot;: Pearson Correlation</span></span><br><span class="line"><span class="string">    &quot;spearmanr&quot;: Spearman Correlation</span></span><br><span class="line"><span class="string">    &quot;matthews_correlation&quot;: Matthew Correlation</span></span><br><span class="line"><span class="string">Examples:</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; glue_metric = datasets.load_metric(&#x27;glue&#x27;, &#x27;sst2&#x27;)  # &#x27;sst2&#x27; or any of [&quot;mnli&quot;, &quot;mnli_mismatched&quot;, &quot;mnli_matched&quot;, &quot;qnli&quot;, &quot;rte&quot;, &quot;wnli&quot;, &quot;hans&quot;]</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; references = [0, 1]</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; predictions = [0, 1]</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; results = glue_metric.compute(predictions=predictions, references=references)</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; print(results)</span></span><br><span class="line"><span class="string">    &#123;&#x27;accuracy&#x27;: 1.0&#125;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; glue_metric = datasets.load_metric(&#x27;glue&#x27;, &#x27;mrpc&#x27;)  # &#x27;mrpc&#x27; or &#x27;qqp&#x27;</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; references = [0, 1]</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; predictions = [0, 1]</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; results = glue_metric.compute(predictions=predictions, references=references)</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; print(results)</span></span><br><span class="line"><span class="string">    &#123;&#x27;accuracy&#x27;: 1.0, &#x27;f1&#x27;: 1.0&#125;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; glue_metric = datasets.load_metric(&#x27;glue&#x27;, &#x27;stsb&#x27;)</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; references = [0., 1., 2., 3., 4., 5.]</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; predictions = [0., 1., 2., 3., 4., 5.]</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; results = glue_metric.compute(predictions=predictions, references=references)</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; print(&#123;&quot;pearson&quot;: round(results[&quot;pearson&quot;], 2), &quot;spearmanr&quot;: round(results[&quot;spearmanr&quot;], 2)&#125;)</span></span><br><span class="line"><span class="string">    &#123;&#x27;pearson&#x27;: 1.0, &#x27;spearmanr&#x27;: 1.0&#125;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; glue_metric = datasets.load_metric(&#x27;glue&#x27;, &#x27;cola&#x27;)</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; references = [0, 1]</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; predictions = [0, 1]</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; results = glue_metric.compute(predictions=predictions, references=references)</span></span><br><span class="line"><span class="string">    &gt;&gt;&gt; print(results)</span></span><br><span class="line"><span class="string">    &#123;&#x27;matthews_correlation&#x27;: 1.0&#125;</span></span><br><span class="line"><span class="string">&quot;&quot;&quot;</span>, stored examples: <span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#  直接调用metric的compute方法，传入labels和predictions即可得到metric的值</span></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line">fake_preds = np.random.randint(<span class="number">0</span>, <span class="number">2</span>, size=(<span class="number">64</span>,))</span><br><span class="line">fake_labels = np.random.randint(<span class="number">0</span>, <span class="number">2</span>, size=(<span class="number">64</span>,))</span><br><span class="line">metric.compute(predictions=fake_preds, references=fake_labels)</span><br></pre></td></tr></table></figure>
+
+<p>每一个文本分类任务所对应的metic有所不同，具体如下:</p>
+<ul>
+<li>for CoLA: <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Matthews_correlation_coefficient">Matthews Correlation Coefficient</a></li>
+<li>for MNLI (matched or mismatched): Accuracy</li>
+<li>for MRPC: Accuracy and <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/F1_score">F1 score</a></li>
+<li>for QNLI: Accuracy</li>
+<li>for QQP: Accuracy and <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/F1_score">F1 score</a></li>
+<li>for RTE: Accuracy</li>
+<li>for SST-2: Accuracy</li>
+<li>for STS-B: <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Pearson_correlation_coefficient">Pearson Correlation Coefficient</a> and <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Spearman's_rank_correlation_coefficient">Spearman’s_Rank_Correlation_Coefficient</a></li>
+<li>for WNLI: Accuracy</li>
+</ul>
+<h3 id="数据预处理"><a href="#数据预处理" class="headerlink" title="数据预处理"></a>数据预处理</h3><p>预处理的工具叫<code>Tokenizer</code>。<code>Tokenizer</code>首先对输入进行tokenize，然后将tokens转化为预模型中需要对应的token ID，再转化为模型需要的输入格式。</p>
+<p>为了达到数据预处理的目的，我们使用<code>AutoTokenizer.from_pretrained</code>方法实例化我们的tokenizer，这样可以确保：</p>
+<ul>
+<li>我们得到一个与预训练模型一一对应的tokenizer。</li>
+<li>使用指定的模型checkpoint对应的tokenizer的时候，我们也下载了模型需要的词表库vocabulary，准确来说是tokens vocabulary。</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> transformers <span class="keyword">import</span> AutoTokenizer</span><br><span class="line">    </span><br><span class="line">tokenizer = AutoTokenizer.from_pretrained(model_checkpoint, use_fast=<span class="literal">True</span>)</span><br><span class="line"><span class="comment">#  use_fast=True要求tokenizer必须是transformers.PreTrainedTokenizerFast类型，因为我们在预处理的时候需要用到fast tokenizer的一些特殊特性（比如多线程快速tokenizer）。如果对应的模型没有fast tokenizer，去掉这个选项即可</span></span><br></pre></td></tr></table></figure>
+
+<p>tokenizer既可以对单个文本进行预处理，也可以对一对文本进行预处理，tokenizer预处理后得到的数据满足预训练模型输入格式</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tokenizer(<span class="string">&quot;Hello, this one sentence!&quot;</span>, <span class="string">&quot;And this sentence goes with it.&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>不同数据和对应的数据格式</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">task_to_keys = &#123;</span><br><span class="line">    <span class="string">&quot;cola&quot;</span>: (<span class="string">&quot;sentence&quot;</span>, <span class="literal">None</span>),</span><br><span class="line">    <span class="string">&quot;mnli&quot;</span>: (<span class="string">&quot;premise&quot;</span>, <span class="string">&quot;hypothesis&quot;</span>),</span><br><span class="line">    <span class="string">&quot;mnli-mm&quot;</span>: (<span class="string">&quot;premise&quot;</span>, <span class="string">&quot;hypothesis&quot;</span>),</span><br><span class="line">    <span class="string">&quot;mrpc&quot;</span>: (<span class="string">&quot;sentence1&quot;</span>, <span class="string">&quot;sentence2&quot;</span>),</span><br><span class="line">    <span class="string">&quot;qnli&quot;</span>: (<span class="string">&quot;question&quot;</span>, <span class="string">&quot;sentence&quot;</span>),</span><br><span class="line">    <span class="string">&quot;qqp&quot;</span>: (<span class="string">&quot;question1&quot;</span>, <span class="string">&quot;question2&quot;</span>),</span><br><span class="line">    <span class="string">&quot;rte&quot;</span>: (<span class="string">&quot;sentence1&quot;</span>, <span class="string">&quot;sentence2&quot;</span>),</span><br><span class="line">    <span class="string">&quot;sst2&quot;</span>: (<span class="string">&quot;sentence&quot;</span>, <span class="literal">None</span>),</span><br><span class="line">    <span class="string">&quot;stsb&quot;</span>: (<span class="string">&quot;sentence1&quot;</span>, <span class="string">&quot;sentence2&quot;</span>),</span><br><span class="line">    <span class="string">&quot;wnli&quot;</span>: (<span class="string">&quot;sentence1&quot;</span>, <span class="string">&quot;sentence2&quot;</span>),</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#  对数据格式进行检查</span></span><br><span class="line">sentence1_key, sentence2_key = task_to_keys[task]</span><br><span class="line"><span class="keyword">if</span> sentence2_key <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;Sentence: <span class="subst">&#123;dataset[<span class="string">&#x27;train&#x27;</span>][<span class="number">0</span>][sentence1_key]&#125;</span>&quot;</span>)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;Sentence 1: <span class="subst">&#123;dataset[<span class="string">&#x27;train&#x27;</span>][<span class="number">0</span>][sentence1_key]&#125;</span>&quot;</span>)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;Sentence 2: <span class="subst">&#123;dataset[<span class="string">&#x27;train&#x27;</span>][<span class="number">0</span>][sentence2_key]&#125;</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p><strong>预处理函数</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">preprocess_function</span>(<span class="params">examples</span>):</span></span><br><span class="line">    <span class="keyword">if</span> sentence2_key <span class="keyword">is</span> <span class="literal">None</span>:</span><br><span class="line">        <span class="keyword">return</span> tokenizer(examples[sentence1_key], truncation=<span class="literal">True</span>)</span><br><span class="line">    <span class="keyword">return</span> tokenizer(examples[sentence1_key], examples[sentence2_key], truncation=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+
+<p>接下来对数据集datasets里面的所有样本进行预处理，处理的方式是使用map函数，将预处理函数prepare_train_features应用到（map)所有样本上。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">encoded_dataset = dataset.<span class="built_in">map</span>(preprocess_function, batched=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+
+<p>返回的结果会自动被缓存，避免下次处理的时候重新计算（但是也要注意，如果输入有改动，可能会被缓存影响！）。datasets库函数会对输入的参数进行检测，判断是否有变化，如果没有变化就使用缓存数据，如果有变化就重新处理。但如果输入参数不变，想改变输入的时候，最好清理调这个缓存。清理的方式是使用<code>load_from_cache_file=False</code>参数。另外，上面使用到的<code>batched=True</code>这个参数是tokenizer的特点，因为这会使用多线程同时并行对输入进行处理。</p>
+<h3 id="微调预训练模型"><a href="#微调预训练模型" class="headerlink" title="微调预训练模型"></a>微调预训练模型</h3><p>既然我们是做seq2seq任务，那么我们需要一个能解决这个任务的模型类。我们使用<code>AutoModelForSequenceClassification</code> 这个类。和tokenizer相似，<code>from_pretrained</code>方法同样可以帮助我们下载并加载模型，同时也会对模型进行缓存，就不会重复下载模型啦。</p>
+<p>STS-B是一个回归问题，MNLI是一个3分类问题</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#  对sts，mnli问题进行处理</span></span><br><span class="line"><span class="keyword">from</span> transformers <span class="keyword">import</span> AutoModelForSequenceClassification, TrainingArguments, Trainer</span><br><span class="line"></span><br><span class="line">num_labels = <span class="number">3</span> <span class="keyword">if</span> task.startswith(<span class="string">&quot;mnli&quot;</span>) <span class="keyword">else</span> <span class="number">1</span> <span class="keyword">if</span> task==<span class="string">&quot;stsb&quot;</span> <span class="keyword">else</span> <span class="number">2</span></span><br><span class="line">model = AutoModelForSequenceClassification.from_pretrained(model_checkpoint, num_labels=num_labels)</span><br></pre></td></tr></table></figure>
+
+<p>为了能够得到一个<code>Trainer</code>训练工具，我们还需要3个要素，其中最重要的是训练的设定/参数 <a target="_blank" rel="noopener" href="https://huggingface.co/transformers/main_classes/trainer.html#transformers.TrainingArguments"><code>TrainingArguments</code></a>。这个训练设定包含了能够定义训练过程的所有属性。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">metric_name = <span class="string">&quot;pearson&quot;</span> <span class="keyword">if</span> task == <span class="string">&quot;stsb&quot;</span> <span class="keyword">else</span> <span class="string">&quot;matthews_correlation&quot;</span> <span class="keyword">if</span> task == <span class="string">&quot;cola&quot;</span> <span class="keyword">else</span> <span class="string">&quot;accuracy&quot;</span></span><br><span class="line"></span><br><span class="line">args = TrainingArguments(</span><br><span class="line">    <span class="string">&quot;test-glue&quot;</span>,</span><br><span class="line">    evaluation_strategy = <span class="string">&quot;epoch&quot;</span>,  <span class="comment"># 每个epcoh会做一次验证评估</span></span><br><span class="line">    save_strategy = <span class="string">&quot;epoch&quot;</span>,</span><br><span class="line">    learning_rate=<span class="number">2e-5</span>,</span><br><span class="line">    per_device_train_batch_size=batch_size,</span><br><span class="line">    per_device_eval_batch_size=batch_size,</span><br><span class="line">    num_train_epochs=<span class="number">5</span>,</span><br><span class="line">    weight_decay=<span class="number">0.01</span>,</span><br><span class="line">    load_best_model_at_end=<span class="literal">True</span>,</span><br><span class="line">    metric_for_best_model=metric_name,</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>由于不同的任务需要不同的评测指标，我们定一个函数来根据任务名字得到评价方法</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">compute_metrics</span>(<span class="params">eval_pred</span>):</span></span><br><span class="line">    predictions, labels = eval_pred</span><br><span class="line">    <span class="keyword">if</span> task != <span class="string">&quot;stsb&quot;</span>:</span><br><span class="line">        predictions = np.argmax(predictions, axis=<span class="number">1</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        predictions = predictions[:, <span class="number">0</span>]</span><br><span class="line">    <span class="keyword">return</span> metric.compute(predictions=predictions, references=labels)</span><br></pre></td></tr></table></figure>
+
+<p>全部传给 <code>Trainer</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">validation_key = &quot;validation_mismatched&quot; if task == &quot;mnli-mm&quot; else &quot;validation_matched&quot; if task == &quot;mnli&quot; else &quot;validation&quot;</span><br><span class="line">trainer = Trainer(</span><br><span class="line">    model,</span><br><span class="line">    args,</span><br><span class="line">    train_dataset=encoded_dataset[&quot;train&quot;],</span><br><span class="line">    eval_dataset=encoded_dataset[validation_key],</span><br><span class="line">    tokenizer=tokenizer,</span><br><span class="line">    compute_metrics=compute_metrics</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#  开始训练</span></span><br><span class="line">trainer.train()</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#  训练完成后进行评估</span></span><br><span class="line">trainer.evaluate()</span><br></pre></td></tr></table></figure>
+
+<h3 id="超参数搜索"><a href="#超参数搜索" class="headerlink" title="超参数搜索"></a>超参数搜索</h3><p><code>Trainer</code>同样支持超参搜索，使用<a target="_blank" rel="noopener" href="https://optuna.org/">optuna</a> or <a target="_blank" rel="noopener" href="https://docs.ray.io/en/latest/tune/">Ray Tune</a>代码库。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">  安装相关依赖</span></span><br><span class="line">! pip install optuna</span><br><span class="line">! pip install ray[tune]</span><br></pre></td></tr></table></figure>
+
+<p>超参搜索时，<code>Trainer</code>将会返回多个训练好的模型，所以需要传入一个定义好的模型从而让<code>Trainer</code>可以不断重新初始化该传入的模型</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">model_init</span>():</span></span><br><span class="line">    <span class="keyword">return</span> AutoModelForSequenceClassification.from_pretrained(model_checkpoint, num_labels=num_labels)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">trainer = Trainer(</span><br><span class="line">    model_init=model_init,</span><br><span class="line">    args=args,</span><br><span class="line">    train_dataset=encoded_dataset[&quot;train&quot;],</span><br><span class="line">    eval_dataset=encoded_dataset[validation_key],</span><br><span class="line">    tokenizer=tokenizer,</span><br><span class="line">    compute_metrics=compute_metrics</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#  调用方法hyperparameter_search,hyperparameter_search会返回效果最好的模型相关的参数,这个过程需要很久，我们可以先用部分数据集进行超参搜索，再进行全量训练。 这里使用1/10的数据进行搜索。</span></span><br><span class="line">best_run = trainer.hyperparameter_search(n_trials=<span class="number">10</span>, direction=<span class="string">&quot;maximize&quot;</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#  将Trainner设置为搜索到的最好的参数，进行训练</span></span><br><span class="line"><span class="keyword">for</span> n, v <span class="keyword">in</span> best_run.hyperparameters.items():</span><br><span class="line">    <span class="built_in">setattr</span>(trainer.args, n, v)</span><br><span class="line"></span><br><span class="line">trainer.train()</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Datawhale%E7%BB%84%E9%98%9F%E5%AD%A6%E4%B9%A0/" rel="tag"># Datawhale组队学习</a>
+              <a href="/tags/NLP%E5%85%A5%E9%97%A8/" rel="tag"># NLP入门</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/09/21/practical-machine-learning-1/" rel="prev" title="实用机器学习(一)">
+      <i class="fa fa-chevron-left"></i> 实用机器学习(一)
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8Transoformer%E8%A7%A3%E5%86%B3NLP%E9%97%AE%E9%A2%98"><span class="nav-number">1.</span> <span class="nav-text">使用Transoformer解决NLP问题</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E6%9C%AC%E5%88%86%E7%B1%BB"><span class="nav-number">1.1.</span> <span class="nav-text">文本分类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A0%E8%BD%BD%E6%95%B0%E6%8D%AE"><span class="nav-number">1.1.1.</span> <span class="nav-text">加载数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E9%A2%84%E5%A4%84%E7%90%86"><span class="nav-number">1.1.2.</span> <span class="nav-text">数据预处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BE%AE%E8%B0%83%E9%A2%84%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.1.3.</span> <span class="nav-text">微调预训练模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B6%85%E5%8F%82%E6%95%B0%E6%90%9C%E7%B4%A2"><span class="nav-number">1.1.4.</span> <span class="nav-text">超参数搜索</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Xavier ZXY"
+      src="/images/autor.jpg">
+  <p class="site-author-name" itemprop="name">Xavier ZXY</p>
+  <div class="site-description" itemprop="description">ZXY 想去看极光</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xavierzxy" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xavierzxy" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zxy_xavier@163.com" title="E-Mail → mailto:zxy_xavier@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Xavier ZXY</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

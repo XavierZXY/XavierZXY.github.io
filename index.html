@@ -158,7 +158,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/09/22/nlp-transformer-5/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/09/25/nlp-transformer-4/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/autor.jpg">
@@ -172,7 +172,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/09/22/nlp-transformer-5/" class="post-title-link" itemprop="url">基于Transformers的自然语言处理(NLP)入门(四)</a>
+            <a href="/2021/09/25/nlp-transformer-4/" class="post-title-link" itemprop="url">基于Transformers的自然语言处理(NLP)入门(四)</a>
         </h2>
 
         <div class="post-meta">
@@ -181,16 +181,10 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2021-09-22 14:35:03" itemprop="dateCreated datePublished" datetime="2021-09-22T14:35:03+08:00">2021-09-22</time>
+              <time title="创建时间：2021-09-25 09:55:35 / 修改时间：11:53:19" itemprop="dateCreated datePublished" datetime="2021-09-25T09:55:35+08:00">2021-09-25</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-09-23 15:09:43" itemprop="dateModified" datetime="2021-09-23T15:09:43+08:00">2021-09-23</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -216,17 +210,21 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>本文为参加Datawhale组队学习时所写，如若需了解细致内容，请去到Datawhale官方开源课程<a target="_blank" rel="noopener" href="https://datawhalechina.github.io/learn-nlp-with-transformers/#/">基于transformers的自然语言处理(NLP)入门 (datawhalechina.github.io)</a></p>
-<h1 id="应用一个BERT"><a href="#应用一个BERT" class="headerlink" title="应用一个BERT"></a>应用一个BERT</h1><h2 id="BERT-based-Models"><a href="#BERT-based-Models" class="headerlink" title="BERT-based Models"></a>BERT-based Models</h2><p>首先，以下所有的模型都是基于<code>BertPreTrainedModel</code>这一抽象基类的，而后者则基于一个更大的基类<code>PreTrainedModel</code>。这里我们关注<code>BertPreTrainedModel</code>的功能：</p>
-<p>用于初始化模型权重，同时维护继承自<code>PreTrainedModel</code>的一些标记身份或者加载模型时的类变量。 下面，首先从预训练模型开始分析。</p>
-<h2 id="Bert-For-PreTraining"><a href="#Bert-For-PreTraining" class="headerlink" title="Bert For PreTraining"></a>Bert For PreTraining</h2><p>BERT预训练任务包括两个：</p>
+          <h1 id="使用Transoformer解决NLP问题"><a href="#使用Transoformer解决NLP问题" class="headerlink" title="使用Transoformer解决NLP问题"></a>使用Transoformer解决NLP问题</h1><h2 id="文本分类"><a href="#文本分类" class="headerlink" title="文本分类"></a>文本分类</h2><p>GLUE榜单包含了9个句子级别的分类任务，分别是：</p>
 <ul>
-<li>Masked Language Model(MLM): 在句子中随机用[MASK]替换一部分单词，然后将句子传入BERT中编码每一个单词的意思，最终用[MASK]的编码信息预测该位置的正确单词，这一任务旨在根据上下文理解单词的意思；</li>
-<li>Next Sentence Prediction(NSP): 将句子对A和B输入BERT，使用[CLS]的编码信息进行预测B是否为A的下一句，这一任务旨在训练模型理解预测句子之间的关系。</li>
+<li><a target="_blank" rel="noopener" href="https://nyu-mll.github.io/CoLA/">CoLA</a> (Corpus of Linguistic Acceptability) 鉴别一个句子是否语法正确.</li>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1704.05426">MNLI</a> (Multi-Genre Natural Language Inference) 给定一个假设，判断另一个句子与该假设的关系：entails, contradicts 或者 unrelated。</li>
+<li><a target="_blank" rel="noopener" href="https://www.microsoft.com/en-us/download/details.aspx?id=52398">MRPC</a> (Microsoft Research Paraphrase Corpus) 判断两个句子是否互为paraphrases.</li>
+<li><a target="_blank" rel="noopener" href="https://rajpurkar.github.io/SQuAD-explorer/">QNLI</a> (Question-answering Natural Language Inference) 判断第2句是否包含第1句问题的答案。</li>
+<li><a target="_blank" rel="noopener" href="https://data.quora.com/First-Quora-Dataset-Release-Question-Pairs">QQP</a> (Quora Question Pairs2) 判断两个问句是否语义相同。</li>
+<li><a target="_blank" rel="noopener" href="https://aclweb.org/aclwiki/Recognizing_Textual_Entailment">RTE</a> (Recognizing Textual Entailment)判断一个句子是否与假设成entail关系。</li>
+<li><a target="_blank" rel="noopener" href="https://nlp.stanford.edu/sentiment/index.html">SST-2</a> (Stanford Sentiment Treebank) 判断一个句子的情感正负向.</li>
+<li><a target="_blank" rel="noopener" href="http://ixa2.si.ehu.es/stswiki/index.php/STSbenchmark">STS-B</a> (Semantic Textual Similarity Benchmark) 判断两个句子的相似性（分数为1-5分）。</li>
+<li><a target="_blank" rel="noopener" href="https://cs.nyu.edu/faculty/davise/papers/WinogradSchemas/WS.html">WNLI</a> (Winograd Natural Language Inference) Determine if a sentence with an anonymous pronoun and a sentence with this pronoun replaced are entailed or not.</li>
 </ul>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2021/09/22/nlp-transformer-5/#more" rel="contents">
+              <a class="btn" href="/2021/09/25/nlp-transformer-4/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -316,107 +314,6 @@
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2021/09/21/practical-machine-learning-1/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/09/20/nlp-transformer-4/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/autor.jpg">
-      <meta itemprop="name" content="Xavier ZXY">
-      <meta itemprop="description" content="ZXY 想去看极光">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Xavier ZXY">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/09/20/nlp-transformer-4/" class="post-title-link" itemprop="url">基于Transformers的自然语言处理(NLP)入门(四)</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-09-20 09:50:53" itemprop="dateCreated datePublished" datetime="2021-09-20T09:50:53+08:00">2021-09-20</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-09-23 15:08:02" itemprop="dateModified" datetime="2021-09-23T15:08:02+08:00">2021-09-23</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">深度学习</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%87%AA%E7%84%B6%E8%AF%AD%E8%A8%80%E5%A4%84%E7%90%86/" itemprop="url" rel="index"><span itemprop="name">自然语言处理</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>本文为参加Datawhale组队学习时所写，如若需了解细致内容，请去到Datawhale官方开源课程<a target="_blank" rel="noopener" href="https://datawhalechina.github.io/learn-nlp-with-transformers/#/">基于transformers的自然语言处理(NLP)入门 (datawhalechina.github.io)</a></p>
-<h1 id="实现一个BERT"><a href="#实现一个BERT" class="headerlink" title="实现一个BERT"></a>实现一个BERT</h1><p><img src="/2021/09/20/nlp-transformer-4/image-20210920095401141.png" alt="BERT结构"></p>
-<p>BERT Tokenization 分词模型（BertTokenizer）</p>
-<p>BERT Model 本体模型（BertModel）</p>
-<ul>
-<li>BertEmbeddings</li>
-<li>BertEncoder<ul>
-<li>BertLayer<ul>
-<li>BertAttention</li>
-<li>BertIntermediate</li>
-<li>BertOutput</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>BertPooler</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/09/20/nlp-transformer-4/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -879,7 +776,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-count">6</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
