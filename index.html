@@ -17,7 +17,7 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="ZXY 想去看极光">
@@ -154,6 +154,219 @@
 
           <div class="content index posts-expand">
             
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/10/10/ML-Algorithm-pratice-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/autor.jpg">
+      <meta itemprop="name" content="Xavier ZXY">
+      <meta itemprop="description" content="ZXY 想去看极光">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xavier ZXY">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/10/10/ML-Algorithm-pratice-1/" class="post-title-link" itemprop="url">机器学习算法竞赛实战-1</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-10-10 19:27:03 / 修改时间：20:52:58" itemprop="dateCreated datePublished" datetime="2021-10-10T19:27:03+08:00">2021-10-10</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>本文为学习《机器学习算法竞赛实战》时所做的笔记，仅供复习总结参考，不做任何商业用途，如有侵权，请联系删除。</p>
+<h1 id="初见竞赛"><a href="#初见竞赛" class="headerlink" title="初见竞赛"></a>初见竞赛</h1><h2 id="竞赛平台"><a href="#竞赛平台" class="headerlink" title="竞赛平台"></a>竞赛平台</h2><ul>
+<li>Kaggle</li>
+<li>天池</li>
+<li>DataFountain</li>
+<li>DataCastle</li>
+<li>Kesci</li>
+<li>JDATA</li>
+</ul>
+<h2 id="竞赛流程"><a href="#竞赛流程" class="headerlink" title="竞赛流程"></a>竞赛流程</h2><p>吴恩达老师曾经说过，机器学习算法在大多数时候就只是数学统计而已，数据相关的特征工程直接决定了模型的上限，而算法只是不断逼近这个上限而已。</p>
+<ul>
+<li>问题建模</li>
+<li>数据探索EDA(Exploratory Data Analysis)</li>
+<li>特征工程</li>
+<li>模型训练</li>
+<li>模型融合</li>
+</ul>
+<h1 id="问题建模"><a href="#问题建模" class="headerlink" title="问题建模"></a>问题建模</h1><p>当竞赛者拿到题目的时候，首先考虑的事情就是问题建模，同时完成基线(baseline)模型的管道(pipeline)搭建，从而能够第一时间获得结果上的反馈，帮助后续工作的进行。</p>
+<h2 id="赛题理解"><a href="#赛题理解" class="headerlink" title="赛题理解"></a>赛题理解</h2><h3 id="业务背景"><a href="#业务背景" class="headerlink" title="业务背景"></a>业务背景</h3><ul>
+<li>深入业务</li>
+<li>明确目标</li>
+</ul>
+<h3 id="数据理解"><a href="#数据理解" class="headerlink" title="数据理解"></a>数据理解</h3><ul>
+<li><p>数据基础层</p>
+<p>数据基础层重点关注的是每个数据字段的来源，生产过程，取数逻辑，计算逻辑等。</p>
+</li>
+<li><p>数据描述层</p>
+<p>数据描述层主要是在处理好的数据基础层上进行统计分析和概括描述，这个层面的重点在于尽可能地通过一些简单统计量来概括整体状况，也使得参赛者能够清晰地知晓数据的基本情况。</p>
+</li>
+</ul>
+<h3 id="评价指标"><a href="#评价指标" class="headerlink" title="评价指标"></a>评价指标</h3><h4 id="分类指标"><a href="#分类指标" class="headerlink" title="分类指标"></a>分类指标</h4><p>分类问题不仅是竞赛中常出现的一种核心问题，也是实际应用中常见的一种机器学习问题。</p>
+<ul>
+<li><p>错误率与精度</p>
+</li>
+<li><p>准确率与召回率</p>
+<table>
+    <tr>
+        <th rowspan="2" colspan="2"> </th>
+        <th rowspan="1" colspan="2">真实类别</th> 
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>0</td>
+    </tr>
+    <tr>
+        <td rowspan="2">预测类别</td>
+        <td>1</td>
+        <td>True Positive(TP)</td>
+        <td>False Positive(FP)</td>
+    </tr>
+    <tr>
+        <td>0</td>
+        <td>False Negative(FN)</td>
+        <td>Ture Negative(TN)</td>
+    </tr>
+<table>
+
+<ul>
+<li>准确率P   $\frac{TP}{TP+FP}$</li>
+<li>召回率R  $\frac{TP}{TP+FN}$</li>
+</ul>
+</table></table></li>
+<li><p>F1-score</p>
+<p>$\text{F1-score}=2<em>\frac{P</em>R}{P+R}$</p>
+</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/10/03/algorithm-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/autor.jpg">
+      <meta itemprop="name" content="Xavier ZXY">
+      <meta itemprop="description" content="ZXY 想去看极光">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xavier ZXY">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/10/03/algorithm-1/" class="post-title-link" itemprop="url">手把手刷链表</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-10-03 16:19:44 / 修改时间：17:06:22" itemprop="dateCreated datePublished" datetime="2021-10-03T16:19:44+08:00">2021-10-03</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">算法</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>本文为学习[labuladong的算法小抄](<a target="_blank" rel="noopener" href="https://labuladong.gitbook.io/algo/">开篇词 - labuladong 的算法小抄 (gitbook.io)</a>)时所做的笔记，仅供复习总结参考，不做任何商业用途，如有侵权，请联系删除。</p>
+<h1 id="递归反转链表的一部分"><a href="#递归反转链表的一部分" class="headerlink" title="递归反转链表的一部分"></a>递归反转链表的一部分</h1><p>该小节主题为解决<a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/reverse-linked-list-ii/">92. 反转链表 II - 力扣（LeetCode）</a></p>
+<p><strong>用递归解决问题，不要跳进递归之中，我们不是计算机，脑袋中压不了那么多的栈，我们需要弄清楚的是递归的base case，以及整个递归会产生的结果。</strong></p>
+<h2 id="递归反转整个链表"><a href="#递归反转整个链表" class="headerlink" title="递归反转整个链表"></a>递归反转整个链表</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">ListNode <span class="title">reverse</span><span class="params">(ListNode head)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(head-&gt;next == nullptrptr) <span class="keyword">return</span> head;  <span class="comment">//base case</span></span><br><span class="line">    ListNode last = <span class="built_in">reverse</span>(head-&gt;next);</span><br><span class="line">    head-&gt;next-&gt;next = head;</span><br><span class="line">    head-&gt;next = nullptrptr;</span><br><span class="line">    <span class="keyword">return</span> last;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2021/10/03/algorithm-1/image-20211003164412438.png" alt="image1"></p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/10/03/algorithm-1/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
       
   
   
@@ -950,20 +1163,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-count">10</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-count">6</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">7</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
