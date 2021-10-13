@@ -181,10 +181,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2021-10-11 16:56:13 / 修改时间：17:09:43" itemprop="dateCreated datePublished" datetime="2021-10-11T16:56:13+08:00">2021-10-11</time>
+              <time title="创建时间：2021-10-11 16:56:13" itemprop="dateCreated datePublished" datetime="2021-10-11T16:56:13+08:00">2021-10-11</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-10-13 14:00:31" itemprop="dateModified" datetime="2021-10-13T14:00:31+08:00">2021-10-13</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -207,7 +213,11 @@
 
       
           <p>本文为参加Datawhale组队学习时所写，如若需了解细致内容，请去到Datawhale官方开源课程<a target="_blank" rel="noopener" href="https://datawhalechina.github.io/machine-learning-toy-code/">机器学习：从原理到实现 — Datawhale (datawhalechina.github.io)</a></p>
-<h1 id="决策树"><a href="#决策树" class="headerlink" title="决策树"></a>决策树</h1><h2 id="信息论基础"><a href="#信息论基础" class="headerlink" title="信息论基础"></a>信息论基础</h2><p>对于分类问题而言，决策树的思想是用节点代表样本集合，通过某些判定条件来对节点内地样本进行分配，将它们划分到该节点下的子节点，并且要求各个子结点中类别的纯度之和要高于该节点中地类别纯度。</p>
+<h1 id="决策树"><a href="#决策树" class="headerlink" title="决策树"></a>决策树</h1><h2 id="信息论基础"><a href="#信息论基础" class="headerlink" title="信息论基础"></a>信息论基础</h2><p>对于分类问题而言，决策树的思想是用节点代表样本集合，通过某些判定条件来对节点内地样本进行分配，将它们划分到该节点下的子节点，并且要求各个子结点中类别的纯度之和要高于该节点中地类别纯度，从而起到分类效果。</p>
+<p><strong>节点纯度</strong> 节点样本标签的不确定性。当一个节点的<strong>纯度较低</strong>时，说明每种类别都倾向于以比较均匀的频率出现，从而我们较难在这个节点上得到关于样本标签的具体信息，其<strong>不确定性较高</strong>。当一个节点的<strong>纯度很高</strong>时，说明有些类别倾向于以比较高的频率出现，从而我们能够更有信心地把握这个节点样本标签的具体信息，即<strong>确定性较高</strong>。<br>$$<br>\begin{split}<br>&amp;若度量不确定性的函数H满足三个信息熵条件，则H的形式\<br>&amp;H(p_1,\dots,p_n)=-C\sum_{i=0}^n{p_i\log p_i}\<br>&amp;其中，信息熵的条件如下:\<br>&amp;1.H是关于p_i的连续函数\<br>&amp;2.若p_1=\dots=p_n,则H关于n单调递增\<br>&amp;3.若将某一个p_i拆分p_{i1}和p_{i2},即p_{i1}+p_{i2}=p_i,则\<br>&amp;H(p_1,\dots,p_{i-1},p_{i+1},\dots,p_n,p_{i1},p_{i2})=H(p_1, \dots,p_n)+p_iH(\frac{p_{i1}}{p_i}, \frac{p_{i2}}{p_i})<br>\end{split}<br>$$<br>从构造的角度而言，条件一是容易满足的。</p>
+<p>对于条件二而言，假设原来箱子里分别有10个球和100个球，假设每次摸到的球都是等概率抽出的，那么100个球的箱子产生的不确定性必然是要大于10个球的箱子产生的不确定性，即HH在等概率条件下关于n递增。</p>
+<p>条件三，即n个事件拆分为n+1个事件时的不确定性增加了，并且增加的<strong>不确定性</strong>与拆分时的<strong>比例</strong>和拆分事件的<strong>概率</strong>有关。举例来说：将p=[0.9,0.1]分别拆分为p1=[0.45,0.45,0.1]和p2=[0.9,0.05,0.05]，那么显然p1增加的不确定性远超过p2；同时，将p=[0.9,0.1]分别拆分为p3=[0.8,0.1,0.1]，那么显然p1增加的不确定性也远超过p3。</p>
+<p>H(p)中的自变量p是对于某个随机变量Y分布的描述，因此不妨将其记为信息熵H(Y)来反应Y的不确定性。对于定义在有限状态集合${y_1,\dots,y_k}$上的离散变量而言，对应信息熵的最大值在离散均匀分布时取到，最小值在单点分布时取到。此时，离散信息熵为<br>$$<br>H(Y)=-\sum_{k=1}^{K}{p(y_k)\log_{2}{p(y_k)}}<br>$$</p>
 
       
     </div>
@@ -250,10 +260,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2021-10-10 19:27:03 / 修改时间：20:52:58" itemprop="dateCreated datePublished" datetime="2021-10-10T19:27:03+08:00">2021-10-10</time>
+              <time title="创建时间：2021-10-10 19:27:03" itemprop="dateCreated datePublished" datetime="2021-10-10T19:27:03+08:00">2021-10-10</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-10-13 21:03:08" itemprop="dateModified" datetime="2021-10-13T21:03:08+08:00">2021-10-13</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -292,56 +308,14 @@
 <li>模型训练</li>
 <li>模型融合</li>
 </ul>
-<h1 id="问题建模"><a href="#问题建模" class="headerlink" title="问题建模"></a>问题建模</h1><p>当竞赛者拿到题目的时候，首先考虑的事情就是问题建模，同时完成基线(baseline)模型的管道(pipeline)搭建，从而能够第一时间获得结果上的反馈，帮助后续工作的进行。</p>
-<h2 id="赛题理解"><a href="#赛题理解" class="headerlink" title="赛题理解"></a>赛题理解</h2><h3 id="业务背景"><a href="#业务背景" class="headerlink" title="业务背景"></a>业务背景</h3><ul>
-<li>深入业务</li>
-<li>明确目标</li>
-</ul>
-<h3 id="数据理解"><a href="#数据理解" class="headerlink" title="数据理解"></a>数据理解</h3><ul>
-<li><p>数据基础层</p>
-<p>数据基础层重点关注的是每个数据字段的来源，生产过程，取数逻辑，计算逻辑等。</p>
-</li>
-<li><p>数据描述层</p>
-<p>数据描述层主要是在处理好的数据基础层上进行统计分析和概括描述，这个层面的重点在于尽可能地通过一些简单统计量来概括整体状况，也使得参赛者能够清晰地知晓数据的基本情况。</p>
-</li>
-</ul>
-<h3 id="评价指标"><a href="#评价指标" class="headerlink" title="评价指标"></a>评价指标</h3><h4 id="分类指标"><a href="#分类指标" class="headerlink" title="分类指标"></a>分类指标</h4><p>分类问题不仅是竞赛中常出现的一种核心问题，也是实际应用中常见的一种机器学习问题。</p>
-<ul>
-<li><p>错误率与精度</p>
-</li>
-<li><p>准确率与召回率</p>
-<table>
-    <tr>
-        <th rowspan="2" colspan="2"> </th>
-        <th rowspan="1" colspan="2">真实类别</th> 
-    </tr>
-    <tr>
-        <td>1</td>
-        <td>0</td>
-    </tr>
-    <tr>
-        <td rowspan="2">预测类别</td>
-        <td>1</td>
-        <td>True Positive(TP)</td>
-        <td>False Positive(FP)</td>
-    </tr>
-    <tr>
-        <td>0</td>
-        <td>False Negative(FN)</td>
-        <td>Ture Negative(TN)</td>
-    </tr>
-<table>
-
-<ul>
-<li>准确率P   $\frac{TP}{TP+FP}$</li>
-<li>召回率R  $\frac{TP}{TP+FN}$</li>
-</ul>
-</table></table></li>
-<li><p>F1-score</p>
-<p>$\text{F1-score}=2<em>\frac{P</em>R}{P+R}$</p>
-</li>
-</ul>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/10/10/ML-Algorithm-pratice-1/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 

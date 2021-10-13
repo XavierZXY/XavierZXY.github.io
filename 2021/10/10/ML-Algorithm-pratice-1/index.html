@@ -27,11 +27,21 @@
 <meta property="og:site_name" content="Xavier ZXY">
 <meta property="og:description" content="本文为学习《机器学习算法竞赛实战》时所做的笔记，仅供复习总结参考，不做任何商业用途，如有侵权，请联系删除。 初见竞赛竞赛平台 Kaggle 天池 DataFountain DataCastle Kesci JDATA  竞赛流程吴恩达老师曾经说过，机器学习算法在大多数时候就只是数学统计而已，数据相关的特征工程直接决定了模型的上限，而算法只是不断逼近这个上限而已。  问题建模 数据探索EDA(Exp">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/2021/10/10/ML-Algorithm-pratice-1/image-20211013155753941.png">
+<meta property="og:image" content="http://example.com/2021/10/10/ML-Algorithm-pratice-1/image-20211013162626138.png">
+<meta property="og:image" content="http://example.com/2021/10/10/ML-Algorithm-pratice-1/image-20211013203532159.png">
+<meta property="og:image" content="https://i.loli.net/2021/10/13/O51Pn73D8duSbp2.png">
+<meta property="og:image" content="http://example.com/2021/10/10/ML-Algorithm-pratice-1/image-20211013204032355.png">
+<meta property="og:image" content="http://example.com/2021/10/10/ML-Algorithm-pratice-1/image-20211013204311003.png">
+<meta property="og:image" content="http://example.com/2021/10/10/ML-Algorithm-pratice-1/image-20211013204456599.png">
+<meta property="og:image" content="http://example.com/2021/10/10/ML-Algorithm-pratice-1/image-20211013205338503.png">
+<meta property="og:image" content="http://example.com/2021/10/10/ML-Algorithm-pratice-1/image-20211013205454251.png">
 <meta property="article:published_time" content="2021-10-10T11:27:03.000Z">
-<meta property="article:modified_time" content="2021-10-10T12:52:58.341Z">
+<meta property="article:modified_time" content="2021-10-13T13:03:08.099Z">
 <meta property="article:author" content="Xavier ZXY">
 <meta property="article:tag" content="竞赛实战">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/10/10/ML-Algorithm-pratice-1/image-20211013155753941.png">
 
 <link rel="canonical" href="http://example.com/2021/10/10/ML-Algorithm-pratice-1/">
 
@@ -184,10 +194,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2021-10-10 19:27:03 / 修改时间：20:52:58" itemprop="dateCreated datePublished" datetime="2021-10-10T19:27:03+08:00">2021-10-10</time>
+              <time title="创建时间：2021-10-10 19:27:03" itemprop="dateCreated datePublished" datetime="2021-10-10T19:27:03+08:00">2021-10-10</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-10-13 21:03:08" itemprop="dateModified" datetime="2021-10-13T21:03:08+08:00">2021-10-13</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -226,6 +242,8 @@
 <li>模型训练</li>
 <li>模型融合</li>
 </ul>
+<span id="more"></span>
+
 <h1 id="问题建模"><a href="#问题建模" class="headerlink" title="问题建模"></a>问题建模</h1><p>当竞赛者拿到题目的时候，首先考虑的事情就是问题建模，同时完成基线(baseline)模型的管道(pipeline)搭建，从而能够第一时间获得结果上的反馈，帮助后续工作的进行。</p>
 <h2 id="赛题理解"><a href="#赛题理解" class="headerlink" title="赛题理解"></a>赛题理解</h2><h3 id="业务背景"><a href="#业务背景" class="headerlink" title="业务背景"></a>业务背景</h3><ul>
 <li>深入业务</li>
@@ -239,7 +257,7 @@
 <p>数据描述层主要是在处理好的数据基础层上进行统计分析和概括描述，这个层面的重点在于尽可能地通过一些简单统计量来概括整体状况，也使得参赛者能够清晰地知晓数据的基本情况。</p>
 </li>
 </ul>
-<h3 id="评价指标"><a href="#评价指标" class="headerlink" title="评价指标"></a>评价指标</h3><h4 id="分类指标"><a href="#分类指标" class="headerlink" title="分类指标"></a>分类指标</h4><p>分类问题不仅是竞赛中常出现的一种核心问题，也是实际应用中常见的一种机器学习问题。</p>
+<h2 id="评价指标"><a href="#评价指标" class="headerlink" title="评价指标"></a>评价指标</h2><h4 id="分类指标"><a href="#分类指标" class="headerlink" title="分类指标"></a>分类指标</h4><p>分类问题不仅是竞赛中常出现的一种核心问题，也是实际应用中常见的一种机器学习问题。</p>
 <ul>
 <li><p>错误率与精度</p>
 </li>
@@ -274,7 +292,92 @@
 <li><p>F1-score</p>
 <p>$\text{F1-score}=2<em>\frac{P</em>R}{P+R}$</p>
 </li>
+<li><p>ROC曲线</p>
+<p><img src="/2021/10/10/ML-Algorithm-pratice-1/image-20211013155753941.png" alt="roc"><br>$$<br>FPR = \frac{FP}{FP+TN}\ 负样本中的错判率(假报警率)\<br>TPR = \frac{TP}{TP+FN}\ 判对样本中的正样本率(命中率)\<br>ACC = \frac{TP+TN}{P+N}\ 判对准确率<br>$$</p>
+<p>在ROC曲线图中，横坐标为FPR，纵坐标为TPR</p>
+</li>
+<li><p>AUC</p>
+<p>AUC表示ROC曲线下的面积，主要用于衡量模型的泛化性能，即分类效果的好坏。AUC是衡量二分类模型优劣的一种评价指标，表示正例排在负例前面的概率。</p>
+<p><img src="/2021/10/10/ML-Algorithm-pratice-1/image-20211013162626138.png" alt="auc"></p>
+</li>
+<li><p>对数损失<br>$$<br>\log{loss}=-\log{P(Y|X)}\<br>\log{loss}=-\frac{1}{N}\sum_{i=1}{(y_i\log{p_i}+(11-y_i)\log{(1-p_i)}}<br>$$<br>对数损失主要是评价模型预测的概率是否准确，它更加关注和观察数据的<strong>吻合程度</strong>，而AUC评价的则是模型把<strong>正样本排到前面</strong>的能力。</p>
+</li>
 </ul>
+<h4 id="回归指标"><a href="#回归指标" class="headerlink" title="回归指标"></a>回归指标</h4><ul>
+<li><p>平均绝对误差<br>$$<br>MAE(y,y_i’)=\frac{1}{m}|y_i-y_i’|<br>$$<br>在XGBoost里面，可以使用平均绝对误差作为损失函数进行模型训练，但是经常会使用Huber损失进行替换，因为平均绝对误差自0处不可导。</p>
+</li>
+<li><p>均方误差<br>$$<br>MSE(y, y’)=\frac{1}{m}\sum_{i=1}^{n}{(y_i-y_i’)}<br>$$<br>使用均方误差的模型会赋予异常点更大的权重</p>
+</li>
+<li><p>均方根误差<br>$$<br>RMSE(y, y’)=\sqrt{\frac{1}{m}\sum_{i=1}^{n}{(y_i-y_i’)^2}}<br>$$</p>
+</li>
+<li><p>平均绝对百分比误差<br>$$<br>MAPR(y, y’)=\frac{1}{m}\sum_{i=1}^n{\frac{|y_i-y_i’|}{y_i’}}<br>$$<br>它是比均方根误差更加健壮的评价指标，相当于把每一个点得到误差进行了归一化，降低了个别离群点对绝对误差带来的影响。</p>
+</li>
+</ul>
+<h2 id="样本选择"><a href="#样本选择" class="headerlink" title="样本选择"></a>样本选择</h2><ul>
+<li>数据集过大</li>
+<li>数据噪声</li>
+<li>数据冗余</li>
+<li>正负样本分布不均衡</li>
+</ul>
+<h3 id="准确方法"><a href="#准确方法" class="headerlink" title="准确方法"></a>准确方法</h3><ul>
+<li>简单随机抽样</li>
+<li>分层采样</li>
+<li>评分加权处理</li>
+<li>欠采样</li>
+<li>过采样</li>
+</ul>
+<h2 id="线下评估策略"><a href="#线下评估策略" class="headerlink" title="线下评估策略"></a>线下评估策略</h2><h3 id="强时序性问题"><a href="#强时序性问题" class="headerlink" title="强时序性问题"></a>强时序性问题</h3><p>对于含有明显时间序列因素的赛题，可以将其看作是强时序性问题，即线上数据的时间都在离散数据集之后，这种情况下就可以采用时间上最接近测试集的数据做验证集，且验证集的时间分布在训练集之后。</p>
+<h3 id="弱时序性问题"><a href="#弱时序性问题" class="headerlink" title="弱时序性问题"></a>弱时序性问题</h3><p>这类问题的验证方式主要为K折交叉验证(K-fold Cross Validation),我们一般取K=5或10</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> KFold</span><br><span class="line">NFOLDS = <span class="number">5</span></span><br><span class="line">folds = KFlod(n_splits = NFOLDS, shuffle=TRUE, random_state = <span class="number">2021</span>)</span><br><span class="line"><span class="keyword">for</span> trn_idx, val_idx <span class="keyword">in</span> folds.split(X_train, y_train):</span><br><span class="line">    train_df, train_label = X_train.iloc[trn_idx, :], y_train[trn_idx]</span><br><span class="line">    valid_df, valid_label = X_train.iloc[val_idx, :], y_train[val_idx]</span><br></pre></td></tr></table></figure>
+
+<h2 id="实战案例"><a href="#实战案例" class="headerlink" title="实战案例"></a>实战案例</h2><p><a target="_blank" rel="noopener" href="https://www.kaggle.com/c/house-prices-advanced-regression-techniques">House Prices - Advanced Regression Techniques | Kaggle</a></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> KFold</span><br><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> mean_squared_error</span><br><span class="line"><span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> OneHotEncoder</span><br><span class="line"><span class="keyword">import</span> lightgbm <span class="keyword">as</span> lgb</span><br><span class="line"></span><br><span class="line">train = pd.read_csv(<span class="string">&#x27;../input/house-prices-advanced-regression-techniques/train.csv&#x27;</span>)</span><br><span class="line">test = pd.read_csv(<span class="string">&#x27;../input/house-prices-advanced-regression-techniques/test.csv&#x27;</span>)</span><br><span class="line"></span><br><span class="line">train.describe()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 对数据进行基本处理</span></span><br><span class="line">all_data = pd.concat((train, test))</span><br><span class="line"><span class="comment"># one-hot编码</span></span><br><span class="line">all_data = pd.get_dummies(all_data)</span><br><span class="line"><span class="comment"># 填充缺失值</span></span><br><span class="line">all_data = all_data.fillna(all_data.mean())</span><br><span class="line"><span class="comment"># 数据切分</span></span><br><span class="line">X_train = all_data[:train.shape[<span class="number">0</span>]]</span><br><span class="line">X_test = all_data[train.shape[<span class="number">0</span>]:]</span><br><span class="line">y = train.SalePrice</span><br><span class="line"></span><br><span class="line"><span class="comment"># K折交叉验证</span></span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> KFold</span><br><span class="line">folds = KFold(n_splits=<span class="number">5</span>, shuffle=<span class="literal">True</span>, random_state=<span class="number">2021</span>)</span><br><span class="line"><span class="comment"># 模型参数</span></span><br><span class="line">params = &#123;<span class="string">&#x27;num_leaves&#x27;</span>: <span class="number">63</span>, <span class="string">&#x27;min_child_samples&#x27;</span>: <span class="number">50</span>, <span class="string">&#x27;objective&#x27;</span>: <span class="string">&#x27;regression&#x27;</span>, <span class="string">&#x27;learning_rate&#x27;</span>: <span class="number">0.01</span>,</span><br><span class="line">         <span class="string">&#x27;boosting_type&#x27;</span>: <span class="string">&#x27;gbdt&#x27;</span>, <span class="string">&#x27;metric&#x27;</span>: <span class="string">&#x27;rmse&#x27;</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> trn_idx, val_idx <span class="keyword">in</span> folds.split(X_train, y):</span><br><span class="line">    trn_df, trn_label = X_train.iloc[trn_idx, :], y[trn_idx]</span><br><span class="line">    val_df, val_label = X_train.iloc[val_idx, :], y[val_idx]</span><br><span class="line">    dtrn = lgb.Dataset(trn_df, label=trn_label)</span><br><span class="line">    dval = lgb.Dataset(val_df, label=val_label)</span><br><span class="line">    bst = lgb.train(params, dtrn, num_boost_round=<span class="number">1000</span>, valid_sets=[dtrn, dval], </span><br><span class="line">                   early_stopping_rounds=<span class="number">100</span>, verbose_eval=<span class="number">100</span>)</span><br></pre></td></tr></table></figure>
+
+<h1 id="数据探索"><a href="#数据探索" class="headerlink" title="数据探索"></a>数据探索</h1><h2 id="数据初探"><a href="#数据初探" class="headerlink" title="数据初探"></a>数据初探</h2><h3 id="分析方法"><a href="#分析方法" class="headerlink" title="分析方法"></a>分析方法</h3><ul>
+<li>单变量可视化分析</li>
+<li>多变量可视化分析</li>
+<li>降维分析</li>
+</ul>
+<h3 id="明确目的"><a href="#明确目的" class="headerlink" title="明确目的"></a>明确目的</h3><ul>
+<li>数据集的基本情况</li>
+<li>重复值，缺失值和异常值</li>
+<li>特征之间是否冗余</li>
+<li>是否存在时间信息</li>
+<li>标签分布</li>
+<li>训练集与测试集的分布</li>
+<li>单变量/多变量分布</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">stats = []</span><br><span class="line"><span class="keyword">for</span> col <span class="keyword">in</span> train.columns:</span><br><span class="line">    stats.append((col, train[col].nunique(), train[col].isnull().<span class="built_in">sum</span>() * <span class="number">100</span> / train.shape[<span class="number">0</span>], train[col].value_counts(normalize=<span class="literal">True</span>, dropna=<span class="literal">False</span>).values[<span class="number">0</span>] * <span class="number">100</span>, train[col].dtype))</span><br><span class="line">stats_df = pd.DataFrame(stats, columns=[<span class="string">&#x27;Feature&#x27;</span>, <span class="string">&#x27;Unique_values&#x27;</span>, <span class="string">&#x27;Percentage of missing values&#x27;</span>, <span class="string">&#x27;Percentage of values in the biggest category&#x27;</span>, <span class="string">&#x27;type&#x27;</span>])</span><br><span class="line">stats_df.sort_values(<span class="string">&#x27;Percentage of missing values&#x27;</span>, ascending=<span class="literal">False</span>)[:<span class="number">10</span>]</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2021/10/10/ML-Algorithm-pratice-1/image-20211013203532159.png" alt="data-explore"></p>
+<p>变量缺失值可视化</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">missing = train.isnull().<span class="built_in">sum</span>()</span><br><span class="line">missing = missing[missing &gt; <span class="number">0</span>]</span><br><span class="line">missing.sort_values(inplace=<span class="literal">True</span>)</span><br><span class="line">missing.plot.bar()</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.loli.net/2021/10/13/O51Pn73D8duSbp2.png" alt="image-20211013203717886"></p>
+<h2 id="变量分析"><a href="#变量分析" class="headerlink" title="变量分析"></a>变量分析</h2><h3 id="单变量分析"><a href="#单变量分析" class="headerlink" title="单变量分析"></a>单变量分析</h3><h4 id="标签"><a href="#标签" class="headerlink" title="标签"></a>标签</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">train[<span class="string">&#x27;SalePrice&#x27;</span>].describe()</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> scipy.stats <span class="keyword">as</span> st</span><br><span class="line">plt.figure(figsize=(<span class="number">9</span>, <span class="number">8</span>))</span><br><span class="line">sns.distplot(np.log(train[<span class="string">&#x27;SalePrice&#x27;</span>]), color=<span class="string">&#x27;b&#x27;</span>, bins=<span class="number">100</span>, hist_kws=&#123;<span class="string">&#x27;alpha&#x27;</span>: <span class="number">0.4</span>&#125;)</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2021/10/10/ML-Algorithm-pratice-1/image-20211013204032355.png" alt="image-20211013204032355"></p>
+<h4 id="连续型"><a href="#连续型" class="headerlink" title="连续型"></a>连续型</h4><p>相似性矩阵</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">corrmat = train.corr()</span><br><span class="line">f, ax = plt.subplots(figsize=(<span class="number">20</span>, <span class="number">9</span>))</span><br><span class="line">sns.heatmap(corrmat, vmax=<span class="number">0.8</span>, square=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2021/10/10/ML-Algorithm-pratice-1/image-20211013204311003.png" alt="image-20211013204311003"></p>
+<h3 id="多变量分析"><a href="#多变量分析" class="headerlink" title="多变量分析"></a>多变量分析</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 房屋位置和评价的关系</span></span><br><span class="line">plt.style.use(<span class="string">&#x27;seaborn-white&#x27;</span>)</span><br><span class="line">type_cluster = train.groupby([<span class="string">&#x27;Neighborhood&#x27;</span>,<span class="string">&#x27;OverallQual&#x27;</span>]).size()</span><br><span class="line">type_cluster.unstack().plot(kind=<span class="string">&#x27;bar&#x27;</span>,stacked=<span class="literal">True</span>, colormap= <span class="string">&#x27;PuBu&#x27;</span>, figsize=(<span class="number">13</span>,<span class="number">11</span>),  grid=<span class="literal">False</span>)</span><br><span class="line">plt.xlabel(<span class="string">&#x27;OverallQual&#x27;</span>, fontsize=<span class="number">16</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2021/10/10/ML-Algorithm-pratice-1/image-20211013204456599.png" alt="image-20211013204456599"></p>
+<h2 id="模型分析"><a href="#模型分析" class="headerlink" title="模型分析"></a>模型分析</h2><h3 id="学习曲线"><a href="#学习曲线" class="headerlink" title="学习曲线"></a>学习曲线</h3><ul>
+<li>欠拟合学习曲线</li>
+<li>过拟合学习曲线</li>
+</ul>
+<h3 id="特征重要性分析"><a href="#特征重要性分析" class="headerlink" title="特征重要性分析"></a>特征重要性分析</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.linear_model <span class="keyword">import</span> Ridge, RidgeCV, ElasticNet, LassoCV, LassoLarsCV</span><br><span class="line"><span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> cross_val_score</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">rmse_cv</span>(<span class="params">model</span>):</span></span><br><span class="line">    rmse= np.sqrt(-cross_val_score(model, X_train, y, scoring=<span class="string">&quot;neg_mean_squared_error&quot;</span>, cv = <span class="number">5</span>))</span><br><span class="line">    <span class="keyword">return</span>(rmse)</span><br><span class="line"></span><br><span class="line">model_ridge = Ridge()</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">alphas = [<span class="number">0.05</span>, <span class="number">0.1</span>, <span class="number">0.3</span>, <span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>, <span class="number">10</span>, <span class="number">15</span>, <span class="number">30</span>, <span class="number">50</span>, <span class="number">75</span>]</span><br><span class="line">cv_ridge = [rmse_cv(Ridge(alpha = alpha)).mean() </span><br><span class="line">            <span class="keyword">for</span> alpha <span class="keyword">in</span> alphas]</span><br><span class="line">            </span><br><span class="line">cv_ridge = pd.Series(cv_ridge, index = alphas)</span><br><span class="line">cv_ridge.plot(title = <span class="string">&quot;Validation&quot;</span>)</span><br><span class="line">plt.xlabel(<span class="string">&quot;alpha&quot;</span>)</span><br><span class="line">plt.ylabel(<span class="string">&quot;rmse&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2021/10/10/ML-Algorithm-pratice-1/image-20211013205338503.png" alt="image-20211013205338503"></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">model_lasso = LassoCV(alphas = [<span class="number">1</span>, <span class="number">0.1</span>, <span class="number">0.001</span>, <span class="number">0.0005</span>]).fit(X_train, y)</span><br><span class="line"></span><br><span class="line">coef = pd.Series(model_lasso.coef_, index = X_train.columns)</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> matplotlib</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line">imp_coef = pd.concat([coef.sort_values().head(<span class="number">10</span>),</span><br><span class="line">                     coef.sort_values().tail(<span class="number">10</span>)])</span><br><span class="line">matplotlib.rcParams[<span class="string">&#x27;figure.figsize&#x27;</span>] = (<span class="number">8.0</span>, <span class="number">10.0</span>)</span><br><span class="line">imp_coef.plot(kind = <span class="string">&quot;barh&quot;</span>)</span><br><span class="line">plt.title(<span class="string">&quot;Coefficients in the Lasso Model&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2021/10/10/ML-Algorithm-pratice-1/image-20211013205454251.png" alt="image-20211013205454251"></p>
 
     </div>
 
@@ -358,7 +461,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%9D%E8%A7%81%E7%AB%9E%E8%B5%9B"><span class="nav-number">1.</span> <span class="nav-text">初见竞赛</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AB%9E%E8%B5%9B%E5%B9%B3%E5%8F%B0"><span class="nav-number">1.1.</span> <span class="nav-text">竞赛平台</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AB%9E%E8%B5%9B%E6%B5%81%E7%A8%8B"><span class="nav-number">1.2.</span> <span class="nav-text">竞赛流程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E5%BB%BA%E6%A8%A1"><span class="nav-number">2.</span> <span class="nav-text">问题建模</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B5%9B%E9%A2%98%E7%90%86%E8%A7%A3"><span class="nav-number">2.1.</span> <span class="nav-text">赛题理解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%9A%E5%8A%A1%E8%83%8C%E6%99%AF"><span class="nav-number">2.1.1.</span> <span class="nav-text">业务背景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E7%90%86%E8%A7%A3"><span class="nav-number">2.1.2.</span> <span class="nav-text">数据理解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%84%E4%BB%B7%E6%8C%87%E6%A0%87"><span class="nav-number">2.1.3.</span> <span class="nav-text">评价指标</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E7%B1%BB%E6%8C%87%E6%A0%87"><span class="nav-number">2.1.3.1.</span> <span class="nav-text">分类指标</span></a></li></ol></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%9D%E8%A7%81%E7%AB%9E%E8%B5%9B"><span class="nav-number">1.</span> <span class="nav-text">初见竞赛</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AB%9E%E8%B5%9B%E5%B9%B3%E5%8F%B0"><span class="nav-number">1.1.</span> <span class="nav-text">竞赛平台</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AB%9E%E8%B5%9B%E6%B5%81%E7%A8%8B"><span class="nav-number">1.2.</span> <span class="nav-text">竞赛流程</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E5%BB%BA%E6%A8%A1"><span class="nav-number">2.</span> <span class="nav-text">问题建模</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B5%9B%E9%A2%98%E7%90%86%E8%A7%A3"><span class="nav-number">2.1.</span> <span class="nav-text">赛题理解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%9A%E5%8A%A1%E8%83%8C%E6%99%AF"><span class="nav-number">2.1.1.</span> <span class="nav-text">业务背景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E7%90%86%E8%A7%A3"><span class="nav-number">2.1.2.</span> <span class="nav-text">数据理解</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%84%E4%BB%B7%E6%8C%87%E6%A0%87"><span class="nav-number">2.2.</span> <span class="nav-text">评价指标</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E7%B1%BB%E6%8C%87%E6%A0%87"><span class="nav-number">2.2.0.1.</span> <span class="nav-text">分类指标</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9B%9E%E5%BD%92%E6%8C%87%E6%A0%87"><span class="nav-number">2.2.0.2.</span> <span class="nav-text">回归指标</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%B7%E6%9C%AC%E9%80%89%E6%8B%A9"><span class="nav-number">2.3.</span> <span class="nav-text">样本选择</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%86%E7%A1%AE%E6%96%B9%E6%B3%95"><span class="nav-number">2.3.1.</span> <span class="nav-text">准确方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E4%B8%8B%E8%AF%84%E4%BC%B0%E7%AD%96%E7%95%A5"><span class="nav-number">2.4.</span> <span class="nav-text">线下评估策略</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%BA%E6%97%B6%E5%BA%8F%E6%80%A7%E9%97%AE%E9%A2%98"><span class="nav-number">2.4.1.</span> <span class="nav-text">强时序性问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%B1%E6%97%B6%E5%BA%8F%E6%80%A7%E9%97%AE%E9%A2%98"><span class="nav-number">2.4.2.</span> <span class="nav-text">弱时序性问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E6%88%98%E6%A1%88%E4%BE%8B"><span class="nav-number">2.5.</span> <span class="nav-text">实战案例</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E6%8E%A2%E7%B4%A2"><span class="nav-number">3.</span> <span class="nav-text">数据探索</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%88%9D%E6%8E%A2"><span class="nav-number">3.1.</span> <span class="nav-text">数据初探</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90%E6%96%B9%E6%B3%95"><span class="nav-number">3.1.1.</span> <span class="nav-text">分析方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%98%8E%E7%A1%AE%E7%9B%AE%E7%9A%84"><span class="nav-number">3.1.2.</span> <span class="nav-text">明确目的</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%98%E9%87%8F%E5%88%86%E6%9E%90"><span class="nav-number">3.2.</span> <span class="nav-text">变量分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%95%E5%8F%98%E9%87%8F%E5%88%86%E6%9E%90"><span class="nav-number">3.2.1.</span> <span class="nav-text">单变量分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%A0%87%E7%AD%BE"><span class="nav-number">3.2.1.1.</span> <span class="nav-text">标签</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%9E%E7%BB%AD%E5%9E%8B"><span class="nav-number">3.2.1.2.</span> <span class="nav-text">连续型</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E5%8F%98%E9%87%8F%E5%88%86%E6%9E%90"><span class="nav-number">3.2.2.</span> <span class="nav-text">多变量分析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E5%88%86%E6%9E%90"><span class="nav-number">3.3.</span> <span class="nav-text">模型分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%A6%E4%B9%A0%E6%9B%B2%E7%BA%BF"><span class="nav-number">3.3.1.</span> <span class="nav-text">学习曲线</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%B9%E5%BE%81%E9%87%8D%E8%A6%81%E6%80%A7%E5%88%86%E6%9E%90"><span class="nav-number">3.3.2.</span> <span class="nav-text">特征重要性分析</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
