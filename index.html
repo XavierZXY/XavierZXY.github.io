@@ -158,6 +158,268 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/10/25/algorithm-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/autor.jpg">
+      <meta itemprop="name" content="Xavier ZXY">
+      <meta itemprop="description" content="ZXY 想去看极光">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xavier ZXY">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/10/25/algorithm-2/" class="post-title-link" itemprop="url">手把手刷二叉树</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-10-25 21:32:55 / 修改时间：22:35:17" itemprop="dateCreated datePublished" datetime="2021-10-25T21:32:55+08:00">2021-10-25</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">算法</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="手把手刷二叉树-一"><a href="#手把手刷二叉树-一" class="headerlink" title="手把手刷二叉树(一)"></a>手把手刷二叉树(一)</h1><p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/invert-binary-tree/">226. 翻转二叉树 - 力扣（LeetCode） (leetcode-cn.com)</a></p>
+<p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/flatten-binary-tree-to-linked-list/">114. 二叉树展开为链表 - 力扣（LeetCode） (leetcode-cn.com)</a></p>
+<p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/populating-next-right-pointers-in-each-node/">116. 填充每个节点的下一个右侧节点指针 - 力扣（LeetCode） (leetcode-cn.com)</a></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 二叉树遍历框架 */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">traverse</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 前序遍历</span></span><br><span class="line">    traverse(root.left)</span><br><span class="line">    <span class="comment">// 中序遍历</span></span><br><span class="line">    traverse(root.right)</span><br><span class="line">    <span class="comment">// 后序遍历</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="二叉树的重要性"><a href="#二叉树的重要性" class="headerlink" title="二叉树的重要性"></a>二叉树的重要性</h2><p>快速排序就是个二叉树的前序遍历，归并排序就是二叉树的后序遍历。</p>
+<p>快速排序的代码框架</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">sort</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> lo, <span class="keyword">int</span> hi)</span> </span>&#123;</span><br><span class="line">	<span class="comment">/****** 前序遍历位置 ******/</span></span><br><span class="line">    <span class="comment">// 通过交换元素构建分界点p</span></span><br><span class="line">    <span class="keyword">int</span> p = partiotion(nums, lo, hi);</span><br><span class="line">    <span class="comment">/**************************/</span></span><br><span class="line">    sort(nums, lo, p-<span class="number">1</span>);</span><br><span class="line">    sort(nums, p+<span class="number">1</span>, hi);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>归并排序的代码框架</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">sort</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> lo, <span class="keyword">int</span> hi)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> mid = (lo + hi) / <span class="number">2</span>;</span><br><span class="line">    sort(nums, lo, mid);</span><br><span class="line">    sort(nums, mid+<span class="number">1</span>, hi);</span><br><span class="line">    <span class="comment">/****** 后序遍历位置 ******/</span></span><br><span class="line">    <span class="comment">// 合并两个排好序的子数组</span></span><br><span class="line">    merge(nums, lo, mid, hi);</span><br><span class="line">    <span class="comment">/*************************/</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="写递归算法的秘诀"><a href="#写递归算法的秘诀" class="headerlink" title="写递归算法的秘诀"></a>写递归算法的秘诀</h2><p><strong>写递归算法的关键是要明确函数的定义是什么，然后相信这个定义，利用这个定义推导最终的结果，绝对不要跳入到递归的细节</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 定义：count(root) 返回以 root 为根的树有多少节点</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">count</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// base case</span></span><br><span class="line">    <span class="keyword">if</span> (root == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="comment">// 自己加上子树的节点数就是整棵树的节点数</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span> + count(root.left) + count(root.right);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="算法实践"><a href="#算法实践" class="headerlink" title="算法实践"></a>算法实践</h2><p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/invert-binary-tree/">226. 翻转二叉树 - 力扣（LeetCode） (leetcode-cn.com)</a></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 将整棵树的节点翻转</span></span><br><span class="line"><span class="function">TreeNode <span class="title">invertTree</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// base case</span></span><br><span class="line">    <span class="keyword">if</span> (root == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**** 前序遍历位置 ****/</span></span><br><span class="line">    <span class="comment">// root 节点需要交换它的左右子节点</span></span><br><span class="line">    TreeNode tmp = root.left;</span><br><span class="line">    root.left = root.right;</span><br><span class="line">    root.right = tmp;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 让左右子节点继续翻转它们的子节点</span></span><br><span class="line">    invertTree(root.left);</span><br><span class="line">    invertTree(root.right);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/populating-next-right-pointers-in-each-node/">116. 填充每个节点的下一个右侧节点指针 - 力扣（LeetCode） (leetcode-cn.com)</a></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 主函数</span></span><br><span class="line"><span class="function">Node <span class="title">connect</span><span class="params">(Node root)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (root == <span class="keyword">null</span>) <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    connectTwoNode(root.left, root.right);</span><br><span class="line">    <span class="keyword">return</span> root;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 辅助函数</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">connectTwoNode</span><span class="params">(Node node1, Node node2)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (node1 == <span class="keyword">null</span> || node2 == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/**** 前序遍历位置 ****/</span></span><br><span class="line">    <span class="comment">// 将传入的两个节点连接</span></span><br><span class="line">    node1.next = node2;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 连接相同父节点的两个子节点</span></span><br><span class="line">    connectTwoNode(node1.left, node1.right);</span><br><span class="line">    connectTwoNode(node2.left, node2.right);</span><br><span class="line">    <span class="comment">// 连接跨越父节点的两个子节点</span></span><br><span class="line">    connectTwoNode(node1.right, node2.left);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/flatten-binary-tree-to-linked-list/">114. 二叉树展开为链表 - 力扣（LeetCode） (leetcode-cn.com)</a></p>
+<ul>
+<li>将root的左子树和右子树拉平</li>
+<li>将root的右子树接到左子树下方，然后将整个左子树作为右子树</li>
+</ul>
+<p><img src="/2021/10/25/algorithm-2/image-20211025222746266.png" alt="二叉树展开为链表"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//定义：将以root为根的树拉平为链表</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">flatten</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//base case</span></span><br><span class="line">    <span class="keyword">if</span> (root == <span class="keyword">null</span>) <span class="keyword">return</span>;</span><br><span class="line">    flatten(root.left);</span><br><span class="line">    flatten(root.right);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/****** 后序遍历位置 ******/</span></span><br><span class="line">    TreeNode left = root.left;</span><br><span class="line">    TreeNode right = root.right;</span><br><span class="line">    <span class="comment">//将左子树作为右子树</span></span><br><span class="line">    root.left = <span class="keyword">null</span>;</span><br><span class="line">    root.right = left;</span><br><span class="line">    <span class="comment">//将原先的右子树接到当前右子树的末端</span></span><br><span class="line">    TreeNode p = root;</span><br><span class="line">    <span class="keyword">while</span> (p.right != <span class="keyword">null</span>) &#123;</span><br><span class="line">        p = p.right;</span><br><span class="line">    &#125;</span><br><span class="line">    p.right = right;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/10/23/ML-Algorithm-pratice-4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/autor.jpg">
+      <meta itemprop="name" content="Xavier ZXY">
+      <meta itemprop="description" content="ZXY 想去看极光">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xavier ZXY">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/10/23/ML-Algorithm-pratice-4/" class="post-title-link" itemprop="url">机器学习算法竞赛实战(四)</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-10-23 11:26:24 / 修改时间：16:49:00" itemprop="dateCreated datePublished" datetime="2021-10-23T11:26:24+08:00">2021-10-23</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="用户画像"><a href="#用户画像" class="headerlink" title="用户画像"></a>用户画像</h1><h2 id="什么是用户画像"><a href="#什么是用户画像" class="headerlink" title="什么是用户画像"></a>什么是用户画像</h2><p>在机器学习中提到的用户画像通常是基于给定的数据对用户属性以及行为进行描述，然后提取用户的个性化指标，再以此分析可能存在的群体共性，并落地应用到各种业务场景中。</p>
+<h2 id="标签系统"><a href="#标签系统" class="headerlink" title="标签系统"></a>标签系统</h2><h3 id="标签分类方式"><a href="#标签分类方式" class="headerlink" title="标签分类方式"></a>标签分类方式</h3><ul>
+<li>用户属性</li>
+<li>用户标签</li>
+<li>标签属性</li>
+<li>类目标签</li>
+</ul>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/10/23/ML-Algorithm-pratice-4/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/10/22/ML-Algorithm-pratice-3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/autor.jpg">
+      <meta itemprop="name" content="Xavier ZXY">
+      <meta itemprop="description" content="ZXY 想去看极光">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xavier ZXY">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/10/22/ML-Algorithm-pratice-3/" class="post-title-link" itemprop="url">机器学习算法竞赛实战(三)</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-10-22 15:05:25" itemprop="dateCreated datePublished" datetime="2021-10-22T15:05:25+08:00">2021-10-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-10-23 16:48:44" itemprop="dateModified" datetime="2021-10-23T16:48:44+08:00">2021-10-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="模型训练"><a href="#模型训练" class="headerlink" title="模型训练"></a>模型训练</h1><h2 id="线性模型"><a href="#线性模型" class="headerlink" title="线性模型"></a>线性模型</h2><h3 id="Lasso回归"><a href="#Lasso回归" class="headerlink" title="Lasso回归"></a>Lasso回归</h3><p>Least absolute shrinkage and selection operator，是对普通的线性回归使用L1正则进行优化。<br>$$<br>\min{||Y-X\theta||_2^2 + \lambda||\theta||_1}<br>$$</p>
+<p>其中，\lambda是正则项(惩罚项)的系数，通过改变\lambda的值，基本上可以控制惩罚项。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.linear_model import Lasso</span><br><span class="line">lasso_model = Lasso(alpha=0.1, normalize=True)</span><br></pre></td></tr></table></figure>
+
+<h3 id="Ridge回归"><a href="#Ridge回归" class="headerlink" title="Ridge回归"></a>Ridge回归</h3><p>Ridge回归是对普通的线性回归使用L2正则进行优化，对特征的权重系数设置了惩罚项。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/10/22/ML-Algorithm-pratice-3/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/10/14/ML-Algorithm-pratice-2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -172,7 +434,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/10/14/ML-Algorithm-pratice-2/" class="post-title-link" itemprop="url">机器学习算法竞赛实战(一)</a>
+            <a href="/2021/10/14/ML-Algorithm-pratice-2/" class="post-title-link" itemprop="url">机器学习算法竞赛实战(二)</a>
         </h2>
 
         <div class="post-meta">
@@ -189,7 +451,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-10-16 11:12:50" itemprop="dateModified" datetime="2021-10-16T11:12:50+08:00">2021-10-16</time>
+                <time title="修改时间：2021-10-23 16:48:14" itemprop="dateModified" datetime="2021-10-23T16:48:14+08:00">2021-10-23</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -227,83 +489,14 @@
 </ul>
 </li>
 </ul>
-<h3 id="异常值处理"><a href="#异常值处理" class="headerlink" title="异常值处理"></a>异常值处理</h3><ul>
-<li><h4 id="寻找异常值"><a href="#寻找异常值" class="headerlink" title="寻找异常值"></a>寻找异常值</h4><ul>
-<li>可视化分析来寻找异常值</li>
-<li>通过简单的统计分析来发现异常值</li>
-</ul>
-</li>
-<li><p>处理异常值</p>
-<ul>
-<li>删除含有异常值的记录</li>
-<li>视为缺失值</li>
-<li>平均值(中位数修正)</li>
-<li>不处理</li>
-</ul>
-</li>
-</ul>
-<h3 id="优化内存"><a href="#优化内存" class="headerlink" title="优化内存"></a>优化内存</h3><ul>
-<li><p>内存回收机制，在我们删除一些变量时，使用gc.collect()来释放内存</p>
-</li>
-<li><p>数值类型优化</p>
-<p>我们可以用<em><strong>np.iinfo</strong></em>来确认每一个int型子类型的最小值和最大值</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line">np.iinfo(np.int8).<span class="built_in">min</span></span><br><span class="line">np.iinfo(np.int8).<span class="built_in">max</span></span><br></pre></td></tr></table></figure>
-
-<p>此外，在不影响模型泛化能力的情况下，对于类别型的变量，若其编码ID的数字较大，极不连续而且种类较少，则可以重新从0开始编码，这样也能减少变量的内存占用，而对于数值型的变量，常常由于存在浮点数使得内存占用过多，可以考虑详见最小值和最大值归一化，然后乘以100，1000等，之后取整，这样不仅可以保留同一变量之间的大小关系，还极大地减少了内存占用。</p>
-</li>
-</ul>
-<h2 id="特征变换"><a href="#特征变换" class="headerlink" title="特征变换"></a>特征变换</h2><h3 id="连续变量无量纲化"><a href="#连续变量无量纲化" class="headerlink" title="连续变量无量纲化"></a>连续变量无量纲化</h3><ul>
-<li>标准化$x’=\frac{x-\mu}{\sigma}$</li>
-<li>区间缩放，常见的一种是利用两个最值进行缩放。</li>
-</ul>
-<h3 id="连续变量数据变换"><a href="#连续变量数据变换" class="headerlink" title="连续变量数据变换"></a>连续变量数据变换</h3><ul>
-<li><p>log变换</p>
-<p>进行log变换可以将倾斜数据变得接近正态分布，这是因为大多数机器学习模型不能很好地处理非正态分布的数据。</p>
-<p>cbox-cox变换，自动寻找最佳正态分布变换函数地方法。</p>
-</li>
-<li><p>连续变量离散化</p>
-<p>离散化后地特征对异常数据有很强地健壮性，更便于探索数据的相关性。</p>
-<ul>
-<li>无监督的离散化。分桶操作可以将连续变量离散化，同时使数据平滑，即降低噪声的影响，一般分为等频和等距两种分桶方式。<ul>
-<li><strong>等频</strong>。区间的边界值要经过选择，使得每个区间包含数量大致相等的变量实例。</li>
-<li><strong>等距</strong>。将实例从最小值到最大值，均分为N等份，每份的距离是相等的。</li>
-</ul>
-</li>
-<li>有监督的离散化。这类方法对目标有很好的区分能力，常用的是使用树模型返回叶子节点来进行离散化。</li>
-</ul>
-</li>
-</ul>
-<h3 id="类别特征转换"><a href="#类别特征转换" class="headerlink" title="类别特征转换"></a>类别特征转换</h3><ul>
-<li><p>自然数编码。一列有意义的类别特征(即有顺序关系)可以用自然数进行编码，利用自然数的大小关系可以保留其顺序关系。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 调用sklearn中的函数</span></span><br><span class="line"><span class="keyword">from</span> sklearn <span class="keyword">import</span> preprocessing</span><br><span class="line"><span class="keyword">for</span> f <span class="keyword">in</span> columns:</span><br><span class="line">	le = preprocessing.LabelEncoder()</span><br><span class="line">	le.fit(data[f])</span><br><span class="line">    </span><br><span class="line"></span><br><span class="line"><span class="comment"># 自定义实现</span></span><br><span class="line"><span class="keyword">for</span> f <span class="keyword">in</span> columns:</span><br><span class="line">    data[f] = data[f].fillna(-<span class="number">999</span>)</span><br><span class="line">    data[f] = data[f].<span class="built_in">map</span>(<span class="built_in">dict</span>(<span class="built_in">zip</span>(data[f].unique(), <span class="built_in">range</span>(<span class="number">0</span>, data[f].nunique()))))</span><br></pre></td></tr></table></figure></li>
-<li><p>独热编码。当前类别特征没有意义(即没有顺序关系)时，需要使用独热编码。</p>
-</li>
-</ul>
-<h2 id="特征提取"><a href="#特征提取" class="headerlink" title="特征提取"></a>特征提取</h2><h3 id="类别相关的统计特征"><a href="#类别相关的统计特征" class="headerlink" title="类别相关的统计特征"></a>类别相关的统计特征</h3><ul>
-<li><p>目标编码</p>
-<p>目标编码可以理解为用目标变量(标签)的统计量来对类别特征进行编码，即根据目标变量进行有监督的特征构造。目标编码可能对于基数较低的类别特征通常很有效，但对于基数较高的类别特征，可能会有过拟合的风险。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">folds = KFold(n_split=<span class="number">5</span>, shuffle=<span class="literal">True</span>,random_state=<span class="number">2020</span>)</span><br><span class="line"><span class="keyword">for</span> col <span class="keyword">in</span> columns:</span><br><span class="line">	colname = col + <span class="string">&#x27;_kfold&#x27;</span></span><br><span class="line">    <span class="keyword">for</span> fold_, (trn_idx, val_idx) <span class="keyword">in</span> <span class="built_in">enumerate</span>(folds.split(train, train)):</span><br><span class="line">        tmp = train.iloc[trn.idx]</span><br><span class="line">        order_label = tmp.groupby([col])[<span class="string">&#x27;label&#x27;</span>].mean()</span><br><span class="line">        train[colname] = train[col].<span class="built_in">map</span>(order_label)</span><br><span class="line">	order_label = train.groupby([col])[<span class="string">&#x27;label&#x27;</span>].mean()</span><br><span class="line">    test[colname] = test[col].<span class="built_in">map</span>(order_label)</span><br></pre></td></tr></table></figure></li>
-<li><p>count, nunique, ratio</p>
-</li>
-<li><p>类别特征之间交叉组合</p>
-<p>交叉组合能够描述更细粒度的内容。对类别特征进行交叉组合在竞赛中是一项非常重要的工作，这样可以进行很好的非线性特征拟合。</p>
-</li>
-</ul>
-<h3 id="数值相关的统计特征"><a href="#数值相关的统计特征" class="headerlink" title="数值相关的统计特征"></a>数值相关的统计特征</h3><ul>
-<li>数值特征之间的交叉组合</li>
-<li>类别特征和数值特征之间的交叉组合</li>
-<li>按行统计相关特征</li>
-</ul>
-<h2 id="特征选择"><a href="#特征选择" class="headerlink" title="特征选择"></a>特征选择</h2><h3 id="特征关联性分析"><a href="#特征关联性分析" class="headerlink" title="特征关联性分析"></a>特征关联性分析</h3><p>特征关联性分析时使用统计量来为特征之间的相关性进行评分，特征按照分数进行排序，要么保留，要么从数据中删除。</p>
-<ul>
-<li><p>皮尔逊相关系数。这种方法不仅可以衡量变量之间的线性相关性，解决共线变量问题，还可以衡量特征与标签的相关性。<strong>共享变量</strong>是指变量之间存在高度相关关系，这会降低模型的学习可用性，可解释性以及测试集的泛化性能。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 根据皮尔逊相关系数的计算提取top300的相似特征</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">feature_select_person</span>(<span class="params">train, features</span>):</span></span><br><span class="line">	featureSelect = features[:]</span><br><span class="line">    <span class="comment"># 进行皮尔逊相关性计算</span></span><br><span class="line">    corr = []</span><br><span class="line">    <span class="keyword">for</span> feat <span class="keyword">in</span> featureSelect:</span><br><span class="line">        corr.append(<span class="built_in">abs</span>(train[[feat, <span class="string">&#x27;target&#x27;</span>]].fillna(<span class="number">0</span>).corr().values[<span class="number">0</span>][<span class="number">1</span>]))</span><br><span class="line">        </span><br><span class="line">	se = pd.Series(corr, index=featuresSelect).sort_values(ascending=<span class="literal">False</span>)</span><br><span class="line">    feature_select = se[:<span class="number">300</span>].index.toilst()</span><br><span class="line">    <span class="keyword">return</span> train[feature_select]</span><br></pre></td></tr></table></figure></li>
-<li><p>卡方检验。它用于检验特征变量与因变量之间的相关性。$\chi^2=\sum{\frac{(A-E)^2}{E}}$</p>
-</li>
-<li><p>互信息法。互信息是一个联合分布中两个变量之间相互影响关系的度量，也可以用来评价两个变量之间的相关性。</p>
-</li>
-</ul>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/10/14/ML-Algorithm-pratice-2/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -450,7 +643,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-10-19 22:50:55" itemprop="dateModified" datetime="2021-10-19T22:50:55+08:00">2021-10-19</time>
+                <time title="修改时间：2021-10-25 21:32:07" itemprop="dateModified" datetime="2021-10-25T21:32:07+08:00">2021-10-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -854,294 +1047,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/09/18/nlp-transformer-3/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/autor.jpg">
-      <meta itemprop="name" content="Xavier ZXY">
-      <meta itemprop="description" content="ZXY 想去看极光">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Xavier ZXY">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/09/18/nlp-transformer-3/" class="post-title-link" itemprop="url">基于Transformers的自然语言处理(NLP)入门(三)</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-09-18 19:49:59" itemprop="dateCreated datePublished" datetime="2021-09-18T19:49:59+08:00">2021-09-18</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-09-19 16:03:14" itemprop="dateModified" datetime="2021-09-19T16:03:14+08:00">2021-09-19</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">深度学习</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%87%AA%E7%84%B6%E8%AF%AD%E8%A8%80%E5%A4%84%E7%90%86/" itemprop="url" rel="index"><span itemprop="name">自然语言处理</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>本文为参加Datawhale组队学习时所写，如若需了解细致内容，请去到Datawhale官方开源课程<a target="_blank" rel="noopener" href="https://datawhalechina.github.io/learn-nlp-with-transformers/#/">基于transformers的自然语言处理(NLP)入门 (datawhalechina.github.io)</a></p>
-<h1 id="图解GPT"><a href="#图解GPT" class="headerlink" title="图解GPT"></a>图解GPT</h1><h2 id="什么是语言模型"><a href="#什么是语言模型" class="headerlink" title="什么是语言模型"></a>什么是语言模型</h2><p>本文主要描述和对比两种语言模型</p>
-<ul>
-<li>自编码(auto-encoder)语言模型</li>
-<li>自回归(auto-regressive)语言模型</li>
-</ul>
-<p><strong>自编码语言模型</strong>代表就是BERT。自编码语言模型通过随机mask输入的部分单词，然后预训练的目标是预测被mask的单词，不仅可以融入上文信息，还可以自然地融入下文信息。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/09/18/nlp-transformer-3/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/09/16/nlp-transformer-2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/autor.jpg">
-      <meta itemprop="name" content="Xavier ZXY">
-      <meta itemprop="description" content="ZXY 想去看极光">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Xavier ZXY">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/09/16/nlp-transformer-2/" class="post-title-link" itemprop="url">基于Transformers的自然语言处理(NLP)入门(二)</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-09-16 19:26:59" itemprop="dateCreated datePublished" datetime="2021-09-16T19:26:59+08:00">2021-09-16</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-09-17 15:10:21" itemprop="dateModified" datetime="2021-09-17T15:10:21+08:00">2021-09-17</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">深度学习</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%87%AA%E7%84%B6%E8%AF%AD%E8%A8%80%E5%A4%84%E7%90%86/" itemprop="url" rel="index"><span itemprop="name">自然语言处理</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>本文为参加Datawhale组队学习时所写，如若需了解细致内容，请去到Datawhale官方开源课程<a target="_blank" rel="noopener" href="https://datawhalechina.github.io/learn-nlp-with-transformers/#/">基于transformers的自然语言处理(NLP)入门 (datawhalechina.github.io)</a></p>
-<h1 id="图解BERT"><a href="#图解BERT" class="headerlink" title="图解BERT"></a>图解BERT</h1><p>BERT首先在大规模无监督语料上进行预训练，然后在预训练好的参数基础上增加一个与任务相关的神经网络层，并在该任务的数据上进行微调训，最终取得很好的效果。BERT的这个训练过程可以简述为：预训练+微调（finetune），已经成为最近几年最流行的NLP解决方案的范式。</p>
-<h2 id="BERT句子分类"><a href="#BERT句子分类" class="headerlink" title="BERT句子分类"></a>BERT句子分类</h2><ul>
-<li><p>下载在无监督语料上与训练好的Bert模型，一般对应了3个文件：BERT模型配置文件(用来确定Transformer的层数，隐藏层的大小)，BERT模型参数，BERT词表(BERT所能处理的所有token)</p>
-</li>
-<li><p>针对特定任务需要，在BERT模型上增加一个任务相关的神经网络，比如一个简单的分类器，然后在特定监督数据上进行微调训练。(微调的一种理解：学习率较小，训练epoch数量较少，对模型整体参数进行轻微调整)</p>
-</li>
-</ul>
-<p>BERT进行句子分类，判断一个邮件是”垃圾邮件”或者”非垃圾邮件”</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/09/16/nlp-transformer-2/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/09/13/nlp-transformers/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/autor.jpg">
-      <meta itemprop="name" content="Xavier ZXY">
-      <meta itemprop="description" content="ZXY 想去看极光">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Xavier ZXY">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/09/13/nlp-transformers/" class="post-title-link" itemprop="url">基于Transformers的自然语言处理(NLP)入门(一)</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-09-13 18:32:07" itemprop="dateCreated datePublished" datetime="2021-09-13T18:32:07+08:00">2021-09-13</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-09-16 19:28:58" itemprop="dateModified" datetime="2021-09-16T19:28:58+08:00">2021-09-16</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">深度学习</span></a>
-                </span>
-                  ，
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%87%AA%E7%84%B6%E8%AF%AD%E8%A8%80%E5%A4%84%E7%90%86/" itemprop="url" rel="index"><span itemprop="name">自然语言处理</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>本文为参加Datawhale组队学习时所写，如若需了解细致内容，请去到Datawhale官方开源课程<a target="_blank" rel="noopener" href="https://datawhalechina.github.io/learn-nlp-with-transformers/#/">基于transformers的自然语言处理(NLP)入门 (datawhalechina.github.io)</a></p>
-<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><h2 id="常见的NLP任务"><a href="#常见的NLP任务" class="headerlink" title="常见的NLP任务"></a>常见的NLP任务</h2><ul>
-<li><p><strong>文本分类</strong>  对单个，两个或者多段文本进行分类</p>
-</li>
-<li><p><strong>序列标注</strong>  对文本序列中的token，字或者词进行分类</p>
-</li>
-<li><p><strong>问答任务</strong></p>
-<ul>
-<li><strong>抽取式问答</strong>  从一段给定的文本之中找到答案</li>
-<li><strong>多选式回答</strong>  从多个选项中选出一个正确答案</li>
-</ul>
-</li>
-<li><p><strong>生成任务</strong></p>
-<ul>
-<li><strong>语言模型</strong>  根据已有的一段文字生成一个字</li>
-<li><strong>摘要生成</strong>  根据一大段文字生成一小段总结性文字</li>
-<li><strong>机器翻译</strong>  将源语言翻译成为目标语言</li>
-</ul>
-</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/09/13/nlp-transformers/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1213,7 +1118,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-count">14</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1226,7 +1131,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">8</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
