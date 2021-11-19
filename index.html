@@ -217,7 +217,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-11-05 14:41:10" itemprop="dateModified" datetime="2021-11-05T14:41:10+08:00">2021-11-05</time>
+                <time title="修改时间：2021-11-19 22:39:44" itemprop="dateModified" datetime="2021-11-19T22:39:44+08:00">2021-11-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -243,34 +243,14 @@
           <h1 id="时间序列"><a href="#时间序列" class="headerlink" title="时间序列"></a>时间序列</h1><h2 id="什么是时间按序列"><a href="#什么是时间按序列" class="headerlink" title="什么是时间按序列"></a>什么是时间按序列</h2><p>时间序列是按时间按顺序索引的一系列数据点，因此，组成时间序列的数据由相对确定的时间戳组成，与随机样本数据相比，从时间序列数据中能够提取更多的附加信息。</p>
 <p>从变量角度可以将这些变量归纳为<strong>单变量时间序列</strong>和多变量时间序列，其次可以从预测目标角度将这些问题归纳为<strong>单步预测</strong>和<strong>多步预测</strong>。</p>
 <h3 id="交叉验证"><a href="#交叉验证" class="headerlink" title="交叉验证"></a>交叉验证</h3><p>由于时间序列中包含时间结构，因此一般在保留这种结构的同时要注意不能在折叠中出现数据穿越的情况。如果进行随机化的交叉验证，那么标签值之间的所有的时间相关性都将丢失，并且会导致数据穿越。</p>
-<p>我们首先用初始时间到t时刻的数据来训练模型，然后从t到t+n的时刻进行线下验证，并计算评价指标的分数；接下来，将训练样本扩展到t+n时刻，用t+n到t+2n时刻的数据进行验证，不断重复这个过程，直到达最后一个可用的标签值。验证次数可以自由控制，最后对多次验证结果计算平均值得到最终的线下验证结果。</p>
-<h3 id="基本规则方法"><a href="#基本规则方法" class="headerlink" title="基本规则方法"></a>基本规则方法</h3><ul>
-<li><p>加权平均</p>
-<script type="math/tex; mode=display">
-y_t=\frac{1}{N}{(w_1*y_{t-1}+w_2*y_{t-2}+\dots+w_N*y_{t-N}}</script></li>
-<li><p>指数平滑</p>
-<script type="math/tex; mode=display">
-y_i=a\sum_{n=0}^{t}{1-a}y_{t-n}</script></li>
-</ul>
-<h2 id="时间序列模式"><a href="#时间序列模式" class="headerlink" title="时间序列模式"></a>时间序列模式</h2><ul>
-<li>趋势性</li>
-<li>周期性</li>
-<li>相关性</li>
-<li>随机性</li>
-</ul>
-<h2 id="特征提取方式"><a href="#特征提取方式" class="headerlink" title="特征提取方式"></a>特征提取方式</h2><h3 id="历史平移"><a href="#历史平移" class="headerlink" title="历史平移"></a>历史平移</h3><p>时间序列数据存在者前后关系，时间序列中越是相近的标签，其相关性越高。我们可以借助这个特性构造历史平移特征，即直接将历史记录作为特征。具体的，如果当前时刻为t，那么可以将t-1,t-2,…,t-n时刻的值作为特征，这个值可以是标签值，也可以是与标签值存在关联性的值。</p>
-<h3 id="窗口统计"><a href="#窗口统计" class="headerlink" title="窗口统计"></a>窗口统计</h3><p>不同于历史平移从单个序列单位中提取特征，窗口统计是从多个序列单位中提取特征。窗口统计可以反应区间内序列数据的状况。</p>
-<h3 id="序列熵特征"><a href="#序列熵特征" class="headerlink" title="序列熵特征"></a>序列熵特征</h3><p>在时间序列中，熵可以用来描述序列的确定性与不确定性。</p>
-<h1 id="实战案例：全球城市计算AI挑战赛"><a href="#实战案例：全球城市计算AI挑战赛" class="headerlink" title="实战案例：全球城市计算AI挑战赛"></a>实战案例：全球城市计算AI挑战赛</h1><p><a target="_blank" rel="noopener" href="https://tianchi.aliyun.com/competition/entrance/231708/introduction">全球城市计算AI挑战赛-天池大赛-阿里云天池 (aliyun.com)</a></p>
-<h1 id="赛题理解"><a href="#赛题理解" class="headerlink" title="赛题理解"></a>赛题理解</h1><h2 id="赛题FAQ"><a href="#赛题FAQ" class="headerlink" title="赛题FAQ"></a>赛题FAQ</h2><p><strong>Q:</strong> 本次竞赛的标签需要自己构建，如何建模能使我们在给定的数据集上达到尽可能大的预测性？</p>
-<p><strong>A:</strong> 构建地铁站的流量标签是本次竞赛的首要任务。在初次观察数据后，会发现存在或多或少的问题，比如出现了凌晨进出地铁站流量不为0的记录，不同地铁站的数据存在一定的差异性。为了保证结果的稳定性，获取可以尝试对进出地铁站的流量按地铁站进行处理(归一化，标准化等)</p>
-<p><strong>Q:</strong> 地铁站的流量存在太多影响因素，应该如何处理异常值，保证模型稳定？</p>
-<p><strong>A:</strong> 特殊因素带来的影响非常多，针对这类问题，常见的方法有异常去除，异常标记和异常平滑。</p>
-<h3 id="Baseline方案"><a href="#Baseline方案" class="headerlink" title="Baseline方案"></a>Baseline方案</h3><ul>
-<li>数据准备</li>
-</ul>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">from</span> tqdm <span class="keyword">import</span> tqdm</span><br><span class="line"><span class="keyword">import</span> lightgbm <span class="keyword">as</span> lgb</span><br><span class="line"></span><br><span class="line"><span class="comment">#读取数据</span></span><br><span class="line">path = <span class="string">&#x27;./input/&#x27;</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> tqdm(<span class="built_in">range</span>(<span class="number">1</span>, <span class="number">26</span>)):</span><br><span class="line">    <span class="keyword">if</span> i &lt; <span class="number">10</span>:</span><br><span class="line">        train_tmp = pd.read_csv(path + <span class="string">&#x27;Metro_train/record_2019-01-0&#x27;</span> + <span class="built_in">str</span>(i) + <span class="string">&#x27;.csv&#x27;</span>)</span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">        train_tmp = pd.read_csv(path + <span class="string">&#x27;Metro_train/record_2019-01-&#x27;</span> + <span class="built_in">str</span>(i) + <span class="string">&#x27;.csv&#x27;</span>)</span><br><span class="line">	<span class="keyword">if</span> i == <span class="number">1</span>:</span><br><span class="line">        </span><br></pre></td></tr></table></figure>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/11/04/ML-Algorithm-pratice-5/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -1189,6 +1169,8 @@ y_i=a\sum_{n=0}^{t}{1-a}y_{t-n}</script></li>
         
 
         
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">湘ICP备  2021018889 </a>
+  </div>
 
 <div class="copyright">
   
