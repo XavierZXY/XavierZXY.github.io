@@ -480,6 +480,46 @@
       </tags>
   </entry>
   <entry>
+    <title>机器学习算法竞赛实战五</title>
+    <url>/2021/11/04/ML-Algorithm-pratice-5/</url>
+    <content><![CDATA[<h1 id="时间序列"><a href="#时间序列" class="headerlink" title="时间序列"></a>时间序列</h1><h2 id="什么是时间按序列"><a href="#什么是时间按序列" class="headerlink" title="什么是时间按序列"></a>什么是时间按序列</h2><p>时间序列是按时间按顺序索引的一系列数据点，因此，组成时间序列的数据由相对确定的时间戳组成，与随机样本数据相比，从时间序列数据中能够提取更多的附加信息。</p>
+<p>从变量角度可以将这些变量归纳为<strong>单变量时间序列</strong>和多变量时间序列，其次可以从预测目标角度将这些问题归纳为<strong>单步预测</strong>和<strong>多步预测</strong>。</p>
+<h3 id="交叉验证"><a href="#交叉验证" class="headerlink" title="交叉验证"></a>交叉验证</h3><p>由于时间序列中包含时间结构，因此一般在保留这种结构的同时要注意不能在折叠中出现数据穿越的情况。如果进行随机化的交叉验证，那么标签值之间的所有的时间相关性都将丢失，并且会导致数据穿越。</p>
+<span id="more"></span>
+
+<p>我们首先用初始时间到t时刻的数据来训练模型，然后从t到t+n的时刻进行线下验证，并计算评价指标的分数；接下来，将训练样本扩展到t+n时刻，用t+n到t+2n时刻的数据进行验证，不断重复这个过程，直到达最后一个可用的标签值。验证次数可以自由控制，最后对多次验证结果计算平均值得到最终的线下验证结果。</p>
+<h3 id="基本规则方法"><a href="#基本规则方法" class="headerlink" title="基本规则方法"></a>基本规则方法</h3><ul>
+<li>加权平均<br>$$<br>y_t=\frac{1}{N}{(w_1<em>y_{t-1}+w_2</em>y_{t-2}+\dots+w_N*y_{t-N}}<br>$$</li>
+<li>指数平滑<br>$$<br>y_i=a\sum_{n=0}^{t}{1-a}y_{t-n}<br>$$</li>
+</ul>
+<h2 id="时间序列模式"><a href="#时间序列模式" class="headerlink" title="时间序列模式"></a>时间序列模式</h2><ul>
+<li>趋势性</li>
+<li>周期性</li>
+<li>相关性</li>
+<li>随机性</li>
+</ul>
+<h2 id="特征提取方式"><a href="#特征提取方式" class="headerlink" title="特征提取方式"></a>特征提取方式</h2><h3 id="历史平移"><a href="#历史平移" class="headerlink" title="历史平移"></a>历史平移</h3><p>时间序列数据存在者前后关系，时间序列中越是相近的标签，其相关性越高。我们可以借助这个特性构造历史平移特征，即直接将历史记录作为特征。具体的，如果当前时刻为t，那么可以将t-1,t-2,…,t-n时刻的值作为特征，这个值可以是标签值，也可以是与标签值存在关联性的值。</p>
+<h3 id="窗口统计"><a href="#窗口统计" class="headerlink" title="窗口统计"></a>窗口统计</h3><p>不同于历史平移从单个序列单位中提取特征，窗口统计是从多个序列单位中提取特征。窗口统计可以反应区间内序列数据的状况。</p>
+<h3 id="序列熵特征"><a href="#序列熵特征" class="headerlink" title="序列熵特征"></a>序列熵特征</h3><p>在时间序列中，熵可以用来描述序列的确定性与不确定性。</p>
+<h1 id="实战案例：全球城市计算AI挑战赛"><a href="#实战案例：全球城市计算AI挑战赛" class="headerlink" title="实战案例：全球城市计算AI挑战赛"></a>实战案例：全球城市计算AI挑战赛</h1><p><a href="https://tianchi.aliyun.com/competition/entrance/231708/introduction">全球城市计算AI挑战赛-天池大赛-阿里云天池 (aliyun.com)</a></p>
+<h1 id="赛题理解"><a href="#赛题理解" class="headerlink" title="赛题理解"></a>赛题理解</h1><h2 id="赛题FAQ"><a href="#赛题FAQ" class="headerlink" title="赛题FAQ"></a>赛题FAQ</h2><p><strong>Q:</strong> 本次竞赛的标签需要自己构建，如何建模能使我们在给定的数据集上达到尽可能大的预测性？</p>
+<p><strong>A:</strong> 构建地铁站的流量标签是本次竞赛的首要任务。在初次观察数据后，会发现存在或多或少的问题，比如出现了凌晨进出地铁站流量不为0的记录，不同地铁站的数据存在一定的差异性。为了保证结果的稳定性，获取可以尝试对进出地铁站的流量按地铁站进行处理(归一化，标准化等)</p>
+<p><strong>Q:</strong> 地铁站的流量存在太多影响因素，应该如何处理异常值，保证模型稳定？</p>
+<p><strong>A:</strong> 特殊因素带来的影响非常多，针对这类问题，常见的方法有异常去除，异常标记和异常平滑。</p>
+<h3 id="Baseline方案"><a href="#Baseline方案" class="headerlink" title="Baseline方案"></a>Baseline方案</h3><ul>
+<li>数据准备</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">from</span> tqdm <span class="keyword">import</span> tqdm</span><br><span class="line"><span class="keyword">import</span> lightgbm <span class="keyword">as</span> lgb</span><br><span class="line"></span><br><span class="line"><span class="comment">#读取数据</span></span><br><span class="line">path = <span class="string">&#x27;./input/&#x27;</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> tqdm(<span class="built_in">range</span>(<span class="number">1</span>, <span class="number">26</span>)):</span><br><span class="line">    <span class="keyword">if</span> i &lt; <span class="number">10</span>:</span><br><span class="line">        train_tmp = pd.read_csv(path + <span class="string">&#x27;Metro_train/record_2019-01-0&#x27;</span> + <span class="built_in">str</span>(i) + <span class="string">&#x27;.csv&#x27;</span>)</span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">        train_tmp = pd.read_csv(path + <span class="string">&#x27;Metro_train/record_2019-01-&#x27;</span> + <span class="built_in">str</span>(i) + <span class="string">&#x27;.csv&#x27;</span>)</span><br><span class="line">	<span class="keyword">if</span> i == <span class="number">1</span>:</span><br><span class="line">        </span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>机器学习</category>
+      </categories>
+      <tags>
+        <tag>竞赛实战</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Yolo</title>
     <url>/2021/09/01/Yolo/</url>
     <content><![CDATA[<h1 id="Yolo-V1"><a href="#Yolo-V1" class="headerlink" title="Yolo  V1"></a>Yolo  V1</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>  在Yolo v1提出之前，R-CNN算法在目标领域独占鳌头，但由于R-CNN的网络结构是双阶段(two stage)的特点，使得它的检测速度不能满足实时性。2016年，Joseph Redmon、Santosh Divvala、Ross Girshick等人提出了一种单阶段（one-stage）的目标检测网络。它的检测速度非常快，每秒可以处理45帧图片，能够轻松地实时运行。由于其速度之快和其使用的特殊方法，作者将其取名为：You Only Look Once</p>
@@ -568,46 +608,6 @@
       </categories>
       <tags>
         <tag>Yolo</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>机器学习算法竞赛实战五</title>
-    <url>/2021/11/04/ML-Algorithm-pratice-5/</url>
-    <content><![CDATA[<h1 id="时间序列"><a href="#时间序列" class="headerlink" title="时间序列"></a>时间序列</h1><h2 id="什么是时间按序列"><a href="#什么是时间按序列" class="headerlink" title="什么是时间按序列"></a>什么是时间按序列</h2><p>时间序列是按时间按顺序索引的一系列数据点，因此，组成时间序列的数据由相对确定的时间戳组成，与随机样本数据相比，从时间序列数据中能够提取更多的附加信息。</p>
-<p>从变量角度可以将这些变量归纳为<strong>单变量时间序列</strong>和多变量时间序列，其次可以从预测目标角度将这些问题归纳为<strong>单步预测</strong>和<strong>多步预测</strong>。</p>
-<h3 id="交叉验证"><a href="#交叉验证" class="headerlink" title="交叉验证"></a>交叉验证</h3><p>由于时间序列中包含时间结构，因此一般在保留这种结构的同时要注意不能在折叠中出现数据穿越的情况。如果进行随机化的交叉验证，那么标签值之间的所有的时间相关性都将丢失，并且会导致数据穿越。</p>
-<span id="more"></span>
-
-<p>我们首先用初始时间到t时刻的数据来训练模型，然后从t到t+n的时刻进行线下验证，并计算评价指标的分数；接下来，将训练样本扩展到t+n时刻，用t+n到t+2n时刻的数据进行验证，不断重复这个过程，直到达最后一个可用的标签值。验证次数可以自由控制，最后对多次验证结果计算平均值得到最终的线下验证结果。</p>
-<h3 id="基本规则方法"><a href="#基本规则方法" class="headerlink" title="基本规则方法"></a>基本规则方法</h3><ul>
-<li>加权平均<br>$$<br>y_t=\frac{1}{N}{(w_1<em>y_{t-1}+w_2</em>y_{t-2}+\dots+w_N*y_{t-N}}<br>$$</li>
-<li>指数平滑<br>$$<br>y_i=a\sum_{n=0}^{t}{1-a}y_{t-n}<br>$$</li>
-</ul>
-<h2 id="时间序列模式"><a href="#时间序列模式" class="headerlink" title="时间序列模式"></a>时间序列模式</h2><ul>
-<li>趋势性</li>
-<li>周期性</li>
-<li>相关性</li>
-<li>随机性</li>
-</ul>
-<h2 id="特征提取方式"><a href="#特征提取方式" class="headerlink" title="特征提取方式"></a>特征提取方式</h2><h3 id="历史平移"><a href="#历史平移" class="headerlink" title="历史平移"></a>历史平移</h3><p>时间序列数据存在者前后关系，时间序列中越是相近的标签，其相关性越高。我们可以借助这个特性构造历史平移特征，即直接将历史记录作为特征。具体的，如果当前时刻为t，那么可以将t-1,t-2,…,t-n时刻的值作为特征，这个值可以是标签值，也可以是与标签值存在关联性的值。</p>
-<h3 id="窗口统计"><a href="#窗口统计" class="headerlink" title="窗口统计"></a>窗口统计</h3><p>不同于历史平移从单个序列单位中提取特征，窗口统计是从多个序列单位中提取特征。窗口统计可以反应区间内序列数据的状况。</p>
-<h3 id="序列熵特征"><a href="#序列熵特征" class="headerlink" title="序列熵特征"></a>序列熵特征</h3><p>在时间序列中，熵可以用来描述序列的确定性与不确定性。</p>
-<h1 id="实战案例：全球城市计算AI挑战赛"><a href="#实战案例：全球城市计算AI挑战赛" class="headerlink" title="实战案例：全球城市计算AI挑战赛"></a>实战案例：全球城市计算AI挑战赛</h1><p><a href="https://tianchi.aliyun.com/competition/entrance/231708/introduction">全球城市计算AI挑战赛-天池大赛-阿里云天池 (aliyun.com)</a></p>
-<h1 id="赛题理解"><a href="#赛题理解" class="headerlink" title="赛题理解"></a>赛题理解</h1><h2 id="赛题FAQ"><a href="#赛题FAQ" class="headerlink" title="赛题FAQ"></a>赛题FAQ</h2><p><strong>Q:</strong> 本次竞赛的标签需要自己构建，如何建模能使我们在给定的数据集上达到尽可能大的预测性？</p>
-<p><strong>A:</strong> 构建地铁站的流量标签是本次竞赛的首要任务。在初次观察数据后，会发现存在或多或少的问题，比如出现了凌晨进出地铁站流量不为0的记录，不同地铁站的数据存在一定的差异性。为了保证结果的稳定性，获取可以尝试对进出地铁站的流量按地铁站进行处理(归一化，标准化等)</p>
-<p><strong>Q:</strong> 地铁站的流量存在太多影响因素，应该如何处理异常值，保证模型稳定？</p>
-<p><strong>A:</strong> 特殊因素带来的影响非常多，针对这类问题，常见的方法有异常去除，异常标记和异常平滑。</p>
-<h3 id="Baseline方案"><a href="#Baseline方案" class="headerlink" title="Baseline方案"></a>Baseline方案</h3><ul>
-<li>数据准备</li>
-</ul>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">from</span> tqdm <span class="keyword">import</span> tqdm</span><br><span class="line"><span class="keyword">import</span> lightgbm <span class="keyword">as</span> lgb</span><br><span class="line"></span><br><span class="line"><span class="comment">#读取数据</span></span><br><span class="line">path = <span class="string">&#x27;./input/&#x27;</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> tqdm(<span class="built_in">range</span>(<span class="number">1</span>, <span class="number">26</span>)):</span><br><span class="line">    <span class="keyword">if</span> i &lt; <span class="number">10</span>:</span><br><span class="line">        train_tmp = pd.read_csv(path + <span class="string">&#x27;Metro_train/record_2019-01-0&#x27;</span> + <span class="built_in">str</span>(i) + <span class="string">&#x27;.csv&#x27;</span>)</span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">        train_tmp = pd.read_csv(path + <span class="string">&#x27;Metro_train/record_2019-01-&#x27;</span> + <span class="built_in">str</span>(i) + <span class="string">&#x27;.csv&#x27;</span>)</span><br><span class="line">	<span class="keyword">if</span> i == <span class="number">1</span>:</span><br><span class="line">        </span><br></pre></td></tr></table></figure>
-
-]]></content>
-      <categories>
-        <category>机器学习</category>
-      </categories>
-      <tags>
-        <tag>竞赛实战</tag>
       </tags>
   </entry>
   <entry>
@@ -997,198 +997,6 @@
       </tags>
   </entry>
   <entry>
-    <title>基于Transformers的自然语言处理(NLP)入门(三)</title>
-    <url>/2021/09/18/nlp-transformer-3/</url>
-    <content><![CDATA[<p>本文为参加Datawhale组队学习时所写，如若需了解细致内容，请去到Datawhale官方开源课程<a href="https://datawhalechina.github.io/learn-nlp-with-transformers/#/">基于transformers的自然语言处理(NLP)入门 (datawhalechina.github.io)</a></p>
-<h1 id="图解GPT"><a href="#图解GPT" class="headerlink" title="图解GPT"></a>图解GPT</h1><h2 id="什么是语言模型"><a href="#什么是语言模型" class="headerlink" title="什么是语言模型"></a>什么是语言模型</h2><p>本文主要描述和对比两种语言模型</p>
-<ul>
-<li>自编码(auto-encoder)语言模型</li>
-<li>自回归(auto-regressive)语言模型</li>
-</ul>
-<p><strong>自编码语言模型</strong>代表就是BERT。自编码语言模型通过随机mask输入的部分单词，然后预训练的目标是预测被mask的单词，不仅可以融入上文信息，还可以自然地融入下文信息。</p>
-<span id="more"></span>
-
-<p><img src="/2021/09/18/nlp-transformer-3/image-20210918200729037.png" alt="Bert mask"></p>
-<p>自编码语言模型的优缺点</p>
-<ul>
-<li>优点：自然地融入双向语言模型，同时看到被预测的单词的上下文</li>
-<li>缺点：训练和预测不一致。训练的时候引入了[mask]标记，但是在预测阶段往往没有mask标记，导致预训练阶段和Fine-tuning阶段不一致。</li>
-</ul>
-<p><strong>自回归语言模型：</strong>语言模型根据输入句子的一部分文本来预测下一个词。日常生活中最常见的就是输入法提示，它可以根据输入的内容，给出提示。</p>
-<p>自回归语言模型的优点和缺点：</p>
-<ul>
-<li>优点：对于生成类地NLP任务，比如文本摘要，机器翻译等从左向右的生成内容，天然和自回归语言模型契合。</li>
-<li>缺点：由于一般是从左到右(当然也可能从左到右)，所以只能利用上文或者下文地信息，不能同时利用上下文。 </li>
-</ul>
-<p>GPT-2属于自回归语言模型，相比于手机app上的输入提示，GPT-2更加复杂，功能也更加强大。</p>
-<p><img src="/2021/09/18/nlp-transformer-3/image-20210918203321168.png" alt="多种GPT模型"></p>
-<h2 id="基于Transformer的语言模型"><a href="#基于Transformer的语言模型" class="headerlink" title="基于Transformer的语言模型"></a>基于Transformer的语言模型</h2><p>原始的Transformer模型是由 Encoder部分和Decoder部分组成的，它们都是由多层transformer堆叠而成的。原始Transformer的seq2seq结构很适合机器翻译，因为机器翻译正是将一个文本序列翻译为另一种语言的文本序列。</p>
-<p><img src="/2021/09/18/nlp-transformer-3/image-20210918203439661.png" alt="原始Transformer结构"></p>
-<p>但如果要使用Transformer来解决语言模型任务，并不需要完整的Encoder部分和Decoder部分，于是在原始Transformer之后的许多研究工作中，人们尝试只使用Transformer Encoder或者Decoder，并且将它们堆得层数尽可能高，然后使用大量的训练语料和大量的计算资源（数十万美元用于训练这些模型）进行预训练。比如BERT只使用了Encoder部分进行masked language model（自编码）训练，GPT-2便是只使用了Decoder部分进行自回归（auto regressive）语言模型训练。</p>
-<p><img src="/2021/09/18/nlp-transformer-3/image-20210918203607920.png" alt="GPT,BERT,Transformer-XL"></p>
-<h2 id="Transformer进化"><a href="#Transformer进化" class="headerlink" title="Transformer进化"></a>Transformer进化</h2><p>Transformer的Encoder进化成了BERT，Decoder进化成了GPT2。</p>
-<p>首先是Encoder部分。</p>
-<p><img src="/2021/09/18/nlp-transformer-3/image-20210918203756070.png" alt="encoder"></p>
-<p>原始的Transformer论文中的Encoder部分接受特定长度的输入（如 512 个 token）。如果一个输入序列比这个限制短，我们可以使用pad填充序列的其余部分。</p>
-<p>再回顾下Decoder部分 与Encoder相比，Decoder部分多了一个Encoder-Decoder self-attention层，使Decoder可以attention到Encoder编码的特定的信息。</p>
-<p><img src="/2021/09/18/nlp-transformer-3/image-20210918203859377.png" alt="decoder"></p>
-<p>Decoder中的的 Masked Self-Attention会屏蔽未来的token。具体来说，它不像 BERT那样直接将输入的单词随机改为mask，而是通过改变Self-Attention的计算，来屏蔽未来的单词信息。</p>
-<p>例如，我们想要计算位置4的attention，我们只允许看到位置4以前和位置4的token。</p>
-<p><img src="/2021/09/18/nlp-transformer-3/image-20210918204007767.png" alt="attention"></p>
-<p>由于BERT是基于Encoder构建的，BERT使用是Self Attention层，而GPT2基于Decoder构建，GPT-2 使用masked Self Attention。一个正常的 Self Attention允许一个位置关注到它两边的信息，而masked Self Attention只让模型看到左边的信息：</p>
-<p><img src="/2021/09/18/nlp-transformer-3/image-20210918204045901.png" alt="self attention and mask self attention"></p>
-<p>OpenAI的GPT2中Transformer-Decoder结构。基于Transformer-Decoder部分进行语言模型训练。由于去掉了Encoder部分，于是Encoder-Decoder self attention也不再需要。</p>
-<p><img src="/2021/09/18/nlp-transformer-3/image-20210918204214467.png" alt="transformer-decoder"></p>
-<h2 id="GPT2概述"><a href="#GPT2概述" class="headerlink" title="GPT2概述"></a>GPT2概述</h2><p><img src="/2021/09/18/nlp-transformer-3/image-20210918204327430.png" alt="GPT2"></p>
-<p>GPT-2能够处理1024 个token。每个token沿着自己的路径经过所有的Decoder层。试用一个训练好的GPT-2模型的最简单方法是让它自己生成文本（这在技术上称为：生成无条件文本）。或者，我们可以给它一个提示，让它谈论某个主题（即生成交互式条件样本）。</p>
-<p>在漫无目的情况下，我们可以简单地给它输入一个特殊的s初始token，让它开始生成单词。</p>
-<p><img src="/2021/09/18/nlp-transformer-3/image-20210918204752948.png" alt="GPT2初始token"></p>
-<p>由于模型只有一个输入，因此只有一条活跃路径。s token在所有Decoder层中依次被处理，然后沿着该路径生成一个向量。根据这个向量和模型的词汇表给所有可能的词计算出一个分数。在下图的例子中，我们选择了概率最高的 the。下一步，我们把第一步的输出添加到我们的输入序列，然后让模型做下一个预测。</p>
-<p>第二条路径是此计算中唯一活动的路径。GPT-2 的每一层都保留了它对第一个 token所编码的信息，而且会在处理第二个 token 时直接使用它：GPT-2 不会根据第2个 token 重新计算第一个 token。</p>
-<h2 id="GPT2详解"><a href="#GPT2详解" class="headerlink" title="GPT2详解"></a>GPT2详解</h2><p>与之前我们讨论的其他 NLP 模型一样，GPT-2 在嵌入矩阵中查找输入的单词的对应的 embedding 向量。如下图所示：每一行都是词的 embedding：这是一个数值向量，可以表示一个词并捕获一些含义。这个向量的大小在不同的 GPT-2 模型中是不同的。最小的模型使用的 embedding 大小是 768。</p>
-<p><img src="/2021/09/18/nlp-transformer-3/image-20210918205045809.png" alt="token embedding"></p>
-<p>于是在开始时，我们会在嵌入矩阵查找第一个 token s 的 embedding。在把这个 embedding 传给模型的第一个模块之前，我们还需要融入位置编码，这个位置编码能够指示单词在序列中的顺序。</p>
-<p><img src="/2021/09/18/nlp-transformer-3/image-20210918205349065.png" alt="位置编码"></p>
-<p><img src="/2021/09/18/nlp-transformer-3/image-20210918205418308.png" alt="token+position"></p>
-<p>输入的处理：得到词向量+位置编码</p>
-<h3 id="多层Decoder"><a href="#多层Decoder" class="headerlink" title="多层Decoder"></a>多层Decoder</h3><p>第一层Decoder现在可以处理 s token所对应的向量了：首先通过 Self Attention 层，然后通过全连接神经网络。一旦Transformer 的第1个Decoder处理了s token，依旧可以得到一个向量，这个结果向量会再次被发送到下一层Decoder。</p>
-<p><img src="/2021/09/18/nlp-transformer-3/image-20210918205515342.png" alt="多层编码"></p>
-<h3 id="Decoder中的self-attention"><a href="#Decoder中的self-attention" class="headerlink" title="Decoder中的self-attention"></a>Decoder中的self-attention</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">机器人第2定律：机器人必须服从人给予 它 的命令，当 该命令 与 第一定律 冲突时例外。</span><br></pre></td></tr></table></figure>
-
-<p>例句中包含了多个代词。如果不结合它们所指的上下文，就无法理解或者处理这些词。当一个模型处理这个句子，它必须能够知道：</p>
-<ul>
-<li>它 指的是机器人</li>
-<li>该命令 指的是这个定律的前面部分，也就是 人给予 它 的命令</li>
-<li>第一定律 指的是机器人第一定律</li>
-</ul>
-<p>self-attention所做的事情是：它通过对句子片段中每个词的相关性打分，并将这些词的表示向量根据相关性加权求和，从而让模型能够将词和其他相关词向量的信息融合起来。</p>
-<h4 id="self-attention过程"><a href="#self-attention过程" class="headerlink" title="self-attention过程"></a>self-attention过程</h4><p>Self-Attention 沿着句子中每个 token 进行处理，主要组成部分包括 3 个向量。</p>
-<ul>
-<li>Query：Query 向量是由当前词的向量表示获得，用于对其他所有单词（使用这些单词的 key 向量）进行评分。</li>
-<li>Key：Key 向量由句子中的所有单词的向量表示获得，可以看作一个标识向量。</li>
-<li>Value：Value 向量在self-attention中与Key向量其实是相同的。</li>
-</ul>
-<p><img src="/2021/09/18/nlp-transformer-3/image-20210919144732335.png" alt="query"></p>
-<p>一个粗略的类比是把它看作是在一个文件柜里面搜索，Query 向量是一个便签，上面写着你正在研究的主题，而 Key 向量就像是柜子里的文件夹的标签。当你将便签与标签匹配时，我们取出匹配的那些文件夹的内容，这些内容就是 Value 向量。但是你不仅仅是寻找一个 Value 向量，而是找到一系列Value 向量。</p>
-<p>将 Query 向量与每个文件夹的 Key 向量相乘，会为每个文件夹产生一个分数（从技术上来讲：点积后面跟着 softmax）。</p>
-<p><img src="/2021/09/18/nlp-transformer-3/image-20210919144829495.png" alt="score"></p>
-<p>我们将每个 Value 向量乘以对应的分数，然后求和，就得到了 Self Attention 的输出。</p>
-<p><img src="/2021/09/18/nlp-transformer-3/image-20210919144912368.png" alt="self-attention的输出"></p>
-<p>这些加权的 Value 向量会得到一个向量，比如上图，它将 50% 的注意力放到单词 robot 上，将 30% 的注意力放到单词 a，将 19% 的注意力放到单词 it。</p>
-<p>而所谓的Masked self attention指的的是：将mask位置对应的的attention score变成一个非常小的数字或者0，让其他单词再self attention的时候（加权求和的时候）不考虑这些单词。</p>
-<h4 id="模型输出"><a href="#模型输出" class="headerlink" title="模型输出"></a>模型输出</h4><p>当模型顶部的Decoder层产生输出向量时（这个向量是经过 Self Attention 层和神经网络层得到的），模型会将这个向量乘以一个巨大的嵌入矩阵（vocab size x embedding size）来计算该向量和所有单词embedding向量的相关得分。</p>
-<p><img src="/2021/09/18/nlp-transformer-3/image-20210919145019792.png" alt="顶部的模块产生输出"></p>
-<p>嵌入矩阵中的每一行都对应于模型词汇表中的一个词。这个相乘的结果，被解释为模型词汇表中每个词的分数，经过softmax之后被转换成概率。</p>
-<p><img src="/2021/09/18/nlp-transformer-3/image-20210919145122628.png" alt="token概率"></p>
-<p>我们可以选择最高分数的 token（top_k=1），也可以同时考虑其他词（top k）。假设每个位置输出k个token，假设总共输出n个token，那么基于n个单词的联合概率选择的输出序列会更好。</p>
-<p><img src="/2021/09/18/nlp-transformer-3/image-20210919145319228.png" alt="选择输出"></p>
-<p>这样，模型就完成了一次迭代，输出一个单词。模型会继续迭代，直到所有的单词都已经生成，或者直到输出了表示句子末尾的 token。</p>
-<h2 id="详解Self-Attention"><a href="#详解Self-Attention" class="headerlink" title="详解Self-Attention"></a>详解Self-Attention</h2><p>在这里指出文中一些过于简化的说法：</p>
-<ul>
-<li>在文中交替使用token和词。但实际上，GPT-2使用Byte Pair Encoding在词汇表中创建token，这意味着token通常是词的一部分</li>
-<li>展示的例子实在推理模式下运行，这就是它为什么一次只处理一个token。在训练时，模型将会针对更长的文本序列进行训练，并且会同时处理多个token，同样，在训练时，模型会处理更大的batch size，而不是使用推理时使用的大小为1的batch size。</li>
-<li>本文图中一般使用行向量，但是有些实际上是列向量。</li>
-</ul>
-<h3 id="可视化Self-Attention"><a href="#可视化Self-Attention" class="headerlink" title="可视化Self-Attention"></a>可视化Self-Attention</h3><p>一个简单的Transformer，假设它一次只能处理 4 个 token。</p>
-<p>Self-Attention 主要通过 3 个步骤来实现：</p>
-<ul>
-<li>为每个路径创建 Query、Key、Value 矩阵。</li>
-<li>对于每个输入的 token，使用它的 Query 向量为所有其他的 Key 向量进行打分。</li>
-<li>将 Value 向量乘以它们对应的分数后求和。</li>
-</ul>
-<p><img src="/2021/09/18/nlp-transformer-3/image-20210919150025822.png" alt="self-attention的三个步骤"></p>
-<p>（1）创建Query，Key，Value向量</p>
-<p>让我们关注第一条路径。我们会使用它的 Query 向量，并比较所有的 Key 向量。这会为每个 Key 向量产生一个分数。Self Attention 的第一步是为每个 token 的路径计算 3 个向量。</p>
-<p><img src="/2021/09/18/nlp-transformer-3/image-20210919150217882.png" alt="第一步"></p>
-<p>（2）计算分数</p>
-<p>现在我们有了这些向量，我们只对步骤 2 使用 Query 向量和 Value 向量。因为我们关注的是第一个 token 的向量，我们将第一个 token 的 Query 向量和其他所有的 token 的 Key 向量相乘，得到 4 个 token 的分数。</p>
-<p><img src="/2021/09/18/nlp-transformer-3/image-20210919150304519.png" alt="第二步"></p>
-<p>（3）计算和</p>
-<p>我们现在可以将这些分数和 Value 向量相乘。在我们将它们相加后，一个具有高分数的 Value 向量会占据结果向量的很大一部分。</p>
-<p><img src="/2021/09/18/nlp-transformer-3/image-20210919150404684.png" alt="第三步"></p>
-<p>分数越低，Value 向量就越透明。这是为了说明，乘以一个小的数值会稀释 Value 向量。</p>
-<p>如果我们对每个路径都执行相同的操作，我们会得到一个向量，可以表示每个 token，其中包含每个 token 合适的上下文信息。这些向量会输入到 Transformer 模块的下一个子层（前馈神经网络）。</p>
-<p><img src="/2021/09/18/nlp-transformer-3/image-20210919150520109.png" alt="汇总"></p>
-<h3 id="图解Masked-Self-attention"><a href="#图解Masked-Self-attention" class="headerlink" title="图解Masked Self-attention"></a>图解Masked Self-attention</h3><p>Masked Self Attention 和 Self Attention 是相同的，除了第 2 个步骤。</p>
-<p>现在假设模型有2个 token 作为输入，我们正在观察（处理）第二个 token。在这种情况下，最后 2 个 token 是被屏蔽（masked）的。所以模型会干扰评分的步骤。它总是把未来的 token 评分设置为0，因此模型不能看到未来的词，如下图所示：</p>
-<p><img src="/2021/09/18/nlp-transformer-3/image-20210919150900082.png" alt="maksed self-attention"></p>
-<p>这个屏蔽（masking）经常用一个矩阵来实现，称为 attention mask矩阵。依旧以4个单词的序列为例（例如：robot must obay orders）。在一个语言建模场景中，这个序列会分为 4 个步骤处理：每个步骤处理一个词（假设现在每个词就是是一个token）。另外，由于模型是以 batch size 的形式工作的，我们可以假设这个简单模型的 batch size 为4，它会将4个序列生成任务作为一个 batch 处理，如下图所示，左边是输入，右边是label。</p>
-<p><img src="/2021/09/18/nlp-transformer-3/image-20210919151034459.png" alt="batch形式的输入和输出"></p>
-<p>在矩阵的形式中，我们使用Query 矩阵和 Key 矩阵相乘来计算分数。将其可视化如下。但注意，单词无法直接进行矩阵运算，所以下图的单词还需要对应成一个向量。</p>
-<p><img src="/2021/09/18/nlp-transformer-3/image-20210919151448489.png" alt="Quert和Keys的相关矩阵"></p>
-<p>在做完乘法之后，我们加上三角形的 attention mask。它将我们想要屏蔽的单元格设置为负无穷大或者一个非常大的负数（例如 GPT-2 中的 负十亿）：</p>
-<p><img src="/2021/09/18/nlp-transformer-3/image-20210919151532858.png" alt="mask-attention"></p>
-<p>然后对每一行应用 softmax，会产生实际的分数，我们会将这些分数用于 Self Attention。</p>
-<p><img src="/2021/09/18/nlp-transformer-3/image-20210919151620605.png" alt="softmax"></p>
-<ul>
-<li>当模型处理数据集中的第 1 个数据（第 1 行），其中只包含着一个单词 （robot），它将 100% 的注意力集中在这个单词上。</li>
-<li>当模型处理数据集中的第 2 个数据（第 2 行），其中包含着单词（robot must）。当模型处理单词 must，它将 48% 的注意力集中在 robot，将 52% 的注意力集中在 must。</li>
-<li>诸如此类，继续处理后面的单词。</li>
-</ul>
-<h3 id="GPT2中的Self-Attention"><a href="#GPT2中的Self-Attention" class="headerlink" title="GPT2中的Self-Attention"></a>GPT2中的Self-Attention</h3><p>模型预测的时候：每次处理一个 token</p>
-<p>先处理第一个token a。</p>
-<p><img src="/2021/09/18/nlp-transformer-3/image-20210919151823316.png" alt="gpt2的第一个token"></p>
-<p>GPT-2 保存 token <code>a</code> 的 Key 向量和 Value 向量。每个 Self Attention 层都持有这个 token 对应的 Key 向量和 Value 向量：</p>
-<p><img src="/2021/09/18/nlp-transformer-3/image-20210919151859377.png" alt="gpt2中的词a"></p>
-<p>现在在下一个迭代，当模型处理单词 robot，它不需要生成 token a 的 Query、Value 以及 Key 向量。它只需要重新使用第一次迭代中保存的对应向量：</p>
-<p><img src="/2021/09/18/nlp-transformer-3/image-20210919151953906.png" alt="词robot"></p>
-<ol>
-<li><p>创建Query，Key，Value矩阵</p>
-<p>让我们假设模型正在处理单词 <code>it</code>。进入Decoder之前，这个 token 对应的输入就是 <code>it</code> 的 embedding 加上第 9 个位置的位置编码：</p>
-<p><img src="/2021/09/18/nlp-transformer-3/image-20210919153337472.png" alt="处理it"></p>
-<p>Transformer 中每个层都有它自己的参数矩阵。embedding向量我们首先遇到的权重矩阵是用于创建 Query、Key、和 Value 向量的。</p>
-<p><img src="/2021/09/18/nlp-transformer-3/image-20210919153412973.png" alt="处理it"></p>
-<p>Self-Attention 将它的输入乘以权重矩阵（并添加一个 bias 向量，此处没有画出)</p>
-<p>这个相乘会得到一个向量，这个向量是 Query、Key 和 Value 向量的拼接。</p>
-<p><img src="/2021/09/18/nlp-transformer-3/image-20210919153441073.png" alt="query，key，value"></p>
-<p>得到Query、Key和Value向量之后，我们将其拆分multi-head，如下图所示。其实本质上就是将一个大向量拆分为多个小向量。</p>
-<p><img src="/2021/09/18/nlp-transformer-3/image-20210919153531362.png" alt="multi head"></p>
-<p><img src="/2021/09/18/nlp-transformer-3/image-20210919153601375.png" alt="multi head"></p>
-</li>
-<li><p>评分</p>
-<p>我们现在可以继续进行评分，假设我们只关注一个 attention head（其他的 attention head 也是在进行类似的操作）。</p>
-<p><img src="/2021/09/18/nlp-transformer-3/image-20210919153746482.png" alt="打分"></p>
-<p>现在，这个 token 可以根据其他所有 token 的 Key 向量进行评分（这些 Key 向量是在前面一个迭代中的第一个 attention head 计算得到的）：</p>
-<p><img src="/2021/09/18/nlp-transformer-3/image-20210919153827272.png" alt="加权和"></p>
-</li>
-<li><p>求和</p>
-<p>正如我们之前所看的那样，我们现在将每个 Value 向量乘以对应的分数，然后加起来求和，得到第一个 attention head 的 Self Attention 结果：</p>
-<p><img src="/2021/09/18/nlp-transformer-3/image-20210919153923491.png" alt="合并attentions heads"></p>
-<p>multi head对应得到多个加权和向量，我们将他们都再次拼接起来：</p>
-<p><img src="/2021/09/18/nlp-transformer-3/image-20210919154053712.png" alt="拼接"></p>
-<p>再将得到的向量经过一个线性映射得到想要的维度，随后输入全连接网络。</p>
-</li>
-<li><p>映射</p>
-<p>我们将让模型学习如何将拼接好的 Self Attention 结果转换为前馈神经网络能够处理的输入。在这里，我们使用第二个巨大的权重矩阵，将 attention heads 的结果映射到 Self Attention 子层的输出向量：</p>
-<p><img src="/2021/09/18/nlp-transformer-3/image-20210919154239317.png" alt="映射"></p>
-</li>
-</ol>
-<p>通过以上步骤，我们产生了一个向量，我们可以把这个向量传给下一层。</p>
-<h3 id="GPT2全连接神经网络"><a href="#GPT2全连接神经网络" class="headerlink" title="GPT2全连接神经网络"></a>GPT2全连接神经网络</h3><p><em><strong>第一层</strong></em></p>
-<p>全连接神经网络是用于处理 Self Attention 层的输出，这个输出的表示包含了合适的上下文。全连接神经网络由两层组成。第一层是模型大小的 4 倍（由于 GPT-2 small 是 768，因此这个网络会有3072个神经元）。</p>
-<p><img src="/2021/09/18/nlp-transformer-3/image-20210919154503863.png" alt="全连接层"></p>
-<p><em><strong>第二层，把向量映射到模型的维度</strong></em></p>
-<p>第 2 层把第一层得到的结果映射回模型的维度（在 GPT-2 small 中是 768）。这个相乘的结果是 Transformer 对这个 token 的输出。</p>
-<p><img src="/2021/09/18/nlp-transformer-3/image-20210919154605387.png" alt="全连接层"></p>
-<h2 id="语言模型应用"><a href="#语言模型应用" class="headerlink" title="语言模型应用"></a>语言模型应用</h2><h3 id="机器翻译"><a href="#机器翻译" class="headerlink" title="机器翻译"></a>机器翻译</h3><p>进行机器翻译时，Encoder 不是必须的。我们可以用只有 Decoder 的 Transformer 来解决同样的任务：</p>
-<p><img src="/2021/09/18/nlp-transformer-3/image-20210919154759298.png" alt="翻译"></p>
-<h3 id="生成摘要"><a href="#生成摘要" class="headerlink" title="生成摘要"></a>生成摘要</h3><p>这是第一个只使用 Decoder 的 Transformer 来训练的任务。它被训练用于阅读一篇维基百科的文章（目录前面去掉了开头部分），然后生成摘要。文章的实际开头部分用作训练数据的标签：</p>
-<p><img src="/2021/09/18/nlp-transformer-3/image-20210919154829762.png" alt="生成摘要"></p>
-<h3 id="迁移学习"><a href="#迁移学习" class="headerlink" title="迁移学习"></a>迁移学习</h3><p>在 Sample Efficient Text Summarization Using a Single Pre-Trained Transformer(<a href="https://arxiv.org/abs/1905.08836">https://arxiv.org/abs/1905.08836</a>) 中，一个只有 Decoder 的 Transformer 首先在语言模型上进行预训练，然后微调进行生成摘要。结果表明，在数据量有限制时，它比预训练的 Encoder-Decoder Transformer 能够获得更好的结果。</p>
-<h3 id="音乐生成"><a href="#音乐生成" class="headerlink" title="音乐生成"></a>音乐生成</h3><p>Music Transformer(<a href="https://magenta.tensorflow.org/music-transformer">https://magenta.tensorflow.org/music-transformer</a>) 论文使用了只有 Decoder 的 Transformer 来生成具有表现力的时序和动态性的音乐。音乐建模 就像语言建模一样，只需要让模型以无监督的方式学习音乐，然后让它采样输出（前面我们称这个为 漫步）。</p>
-<p>你可能会好奇在这个场景中，音乐是如何表现的。请记住，语言建模可以把字符、单词、或者单词的一部分（token），表示为向量。在音乐表演中（让我们考虑一下钢琴），我们不仅要表示音符，还要表示速度–衡量钢琴键被按下的力度。</p>
-<p><img src="/2021/09/18/nlp-transformer-3/image-20210919154944710.png" alt="音乐生成"></p>
-]]></content>
-      <categories>
-        <category>深度学习</category>
-        <category>自然语言处理</category>
-      </categories>
-      <tags>
-        <tag>Datawhale组队学习</tag>
-        <tag>NLP入门</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>基于Transformers的自然语言处理(NLP)入门(四)</title>
     <url>/2021/09/25/nlp-transformer-4/</url>
     <content><![CDATA[<p>本文为参加Datawhale组队学习时所写，如若需了解细致内容，请去到Datawhale官方开源课程<a href="https://datawhalechina.github.io/learn-nlp-with-transformers/#/">基于transformers的自然语言处理(NLP)入门 (datawhalechina.github.io)</a></p>
@@ -1396,6 +1204,198 @@
 <p>我们可以再次使用<code>evaluate</code>方法评估，可以评估其他数据集。</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">trainer.evaluate()</span><br></pre></td></tr></table></figure>
 
+]]></content>
+      <categories>
+        <category>深度学习</category>
+        <category>自然语言处理</category>
+      </categories>
+      <tags>
+        <tag>Datawhale组队学习</tag>
+        <tag>NLP入门</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>基于Transformers的自然语言处理(NLP)入门(三)</title>
+    <url>/2021/09/18/nlp-transformer-3/</url>
+    <content><![CDATA[<p>本文为参加Datawhale组队学习时所写，如若需了解细致内容，请去到Datawhale官方开源课程<a href="https://datawhalechina.github.io/learn-nlp-with-transformers/#/">基于transformers的自然语言处理(NLP)入门 (datawhalechina.github.io)</a></p>
+<h1 id="图解GPT"><a href="#图解GPT" class="headerlink" title="图解GPT"></a>图解GPT</h1><h2 id="什么是语言模型"><a href="#什么是语言模型" class="headerlink" title="什么是语言模型"></a>什么是语言模型</h2><p>本文主要描述和对比两种语言模型</p>
+<ul>
+<li>自编码(auto-encoder)语言模型</li>
+<li>自回归(auto-regressive)语言模型</li>
+</ul>
+<p><strong>自编码语言模型</strong>代表就是BERT。自编码语言模型通过随机mask输入的部分单词，然后预训练的目标是预测被mask的单词，不仅可以融入上文信息，还可以自然地融入下文信息。</p>
+<span id="more"></span>
+
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210918200729037.png" alt="Bert mask"></p>
+<p>自编码语言模型的优缺点</p>
+<ul>
+<li>优点：自然地融入双向语言模型，同时看到被预测的单词的上下文</li>
+<li>缺点：训练和预测不一致。训练的时候引入了[mask]标记，但是在预测阶段往往没有mask标记，导致预训练阶段和Fine-tuning阶段不一致。</li>
+</ul>
+<p><strong>自回归语言模型：</strong>语言模型根据输入句子的一部分文本来预测下一个词。日常生活中最常见的就是输入法提示，它可以根据输入的内容，给出提示。</p>
+<p>自回归语言模型的优点和缺点：</p>
+<ul>
+<li>优点：对于生成类地NLP任务，比如文本摘要，机器翻译等从左向右的生成内容，天然和自回归语言模型契合。</li>
+<li>缺点：由于一般是从左到右(当然也可能从左到右)，所以只能利用上文或者下文地信息，不能同时利用上下文。 </li>
+</ul>
+<p>GPT-2属于自回归语言模型，相比于手机app上的输入提示，GPT-2更加复杂，功能也更加强大。</p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210918203321168.png" alt="多种GPT模型"></p>
+<h2 id="基于Transformer的语言模型"><a href="#基于Transformer的语言模型" class="headerlink" title="基于Transformer的语言模型"></a>基于Transformer的语言模型</h2><p>原始的Transformer模型是由 Encoder部分和Decoder部分组成的，它们都是由多层transformer堆叠而成的。原始Transformer的seq2seq结构很适合机器翻译，因为机器翻译正是将一个文本序列翻译为另一种语言的文本序列。</p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210918203439661.png" alt="原始Transformer结构"></p>
+<p>但如果要使用Transformer来解决语言模型任务，并不需要完整的Encoder部分和Decoder部分，于是在原始Transformer之后的许多研究工作中，人们尝试只使用Transformer Encoder或者Decoder，并且将它们堆得层数尽可能高，然后使用大量的训练语料和大量的计算资源（数十万美元用于训练这些模型）进行预训练。比如BERT只使用了Encoder部分进行masked language model（自编码）训练，GPT-2便是只使用了Decoder部分进行自回归（auto regressive）语言模型训练。</p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210918203607920.png" alt="GPT,BERT,Transformer-XL"></p>
+<h2 id="Transformer进化"><a href="#Transformer进化" class="headerlink" title="Transformer进化"></a>Transformer进化</h2><p>Transformer的Encoder进化成了BERT，Decoder进化成了GPT2。</p>
+<p>首先是Encoder部分。</p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210918203756070.png" alt="encoder"></p>
+<p>原始的Transformer论文中的Encoder部分接受特定长度的输入（如 512 个 token）。如果一个输入序列比这个限制短，我们可以使用pad填充序列的其余部分。</p>
+<p>再回顾下Decoder部分 与Encoder相比，Decoder部分多了一个Encoder-Decoder self-attention层，使Decoder可以attention到Encoder编码的特定的信息。</p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210918203859377.png" alt="decoder"></p>
+<p>Decoder中的的 Masked Self-Attention会屏蔽未来的token。具体来说，它不像 BERT那样直接将输入的单词随机改为mask，而是通过改变Self-Attention的计算，来屏蔽未来的单词信息。</p>
+<p>例如，我们想要计算位置4的attention，我们只允许看到位置4以前和位置4的token。</p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210918204007767.png" alt="attention"></p>
+<p>由于BERT是基于Encoder构建的，BERT使用是Self Attention层，而GPT2基于Decoder构建，GPT-2 使用masked Self Attention。一个正常的 Self Attention允许一个位置关注到它两边的信息，而masked Self Attention只让模型看到左边的信息：</p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210918204045901.png" alt="self attention and mask self attention"></p>
+<p>OpenAI的GPT2中Transformer-Decoder结构。基于Transformer-Decoder部分进行语言模型训练。由于去掉了Encoder部分，于是Encoder-Decoder self attention也不再需要。</p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210918204214467.png" alt="transformer-decoder"></p>
+<h2 id="GPT2概述"><a href="#GPT2概述" class="headerlink" title="GPT2概述"></a>GPT2概述</h2><p><img src="/2021/09/18/nlp-transformer-3/image-20210918204327430.png" alt="GPT2"></p>
+<p>GPT-2能够处理1024 个token。每个token沿着自己的路径经过所有的Decoder层。试用一个训练好的GPT-2模型的最简单方法是让它自己生成文本（这在技术上称为：生成无条件文本）。或者，我们可以给它一个提示，让它谈论某个主题（即生成交互式条件样本）。</p>
+<p>在漫无目的情况下，我们可以简单地给它输入一个特殊的s初始token，让它开始生成单词。</p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210918204752948.png" alt="GPT2初始token"></p>
+<p>由于模型只有一个输入，因此只有一条活跃路径。s token在所有Decoder层中依次被处理，然后沿着该路径生成一个向量。根据这个向量和模型的词汇表给所有可能的词计算出一个分数。在下图的例子中，我们选择了概率最高的 the。下一步，我们把第一步的输出添加到我们的输入序列，然后让模型做下一个预测。</p>
+<p>第二条路径是此计算中唯一活动的路径。GPT-2 的每一层都保留了它对第一个 token所编码的信息，而且会在处理第二个 token 时直接使用它：GPT-2 不会根据第2个 token 重新计算第一个 token。</p>
+<h2 id="GPT2详解"><a href="#GPT2详解" class="headerlink" title="GPT2详解"></a>GPT2详解</h2><p>与之前我们讨论的其他 NLP 模型一样，GPT-2 在嵌入矩阵中查找输入的单词的对应的 embedding 向量。如下图所示：每一行都是词的 embedding：这是一个数值向量，可以表示一个词并捕获一些含义。这个向量的大小在不同的 GPT-2 模型中是不同的。最小的模型使用的 embedding 大小是 768。</p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210918205045809.png" alt="token embedding"></p>
+<p>于是在开始时，我们会在嵌入矩阵查找第一个 token s 的 embedding。在把这个 embedding 传给模型的第一个模块之前，我们还需要融入位置编码，这个位置编码能够指示单词在序列中的顺序。</p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210918205349065.png" alt="位置编码"></p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210918205418308.png" alt="token+position"></p>
+<p>输入的处理：得到词向量+位置编码</p>
+<h3 id="多层Decoder"><a href="#多层Decoder" class="headerlink" title="多层Decoder"></a>多层Decoder</h3><p>第一层Decoder现在可以处理 s token所对应的向量了：首先通过 Self Attention 层，然后通过全连接神经网络。一旦Transformer 的第1个Decoder处理了s token，依旧可以得到一个向量，这个结果向量会再次被发送到下一层Decoder。</p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210918205515342.png" alt="多层编码"></p>
+<h3 id="Decoder中的self-attention"><a href="#Decoder中的self-attention" class="headerlink" title="Decoder中的self-attention"></a>Decoder中的self-attention</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">机器人第2定律：机器人必须服从人给予 它 的命令，当 该命令 与 第一定律 冲突时例外。</span><br></pre></td></tr></table></figure>
+
+<p>例句中包含了多个代词。如果不结合它们所指的上下文，就无法理解或者处理这些词。当一个模型处理这个句子，它必须能够知道：</p>
+<ul>
+<li>它 指的是机器人</li>
+<li>该命令 指的是这个定律的前面部分，也就是 人给予 它 的命令</li>
+<li>第一定律 指的是机器人第一定律</li>
+</ul>
+<p>self-attention所做的事情是：它通过对句子片段中每个词的相关性打分，并将这些词的表示向量根据相关性加权求和，从而让模型能够将词和其他相关词向量的信息融合起来。</p>
+<h4 id="self-attention过程"><a href="#self-attention过程" class="headerlink" title="self-attention过程"></a>self-attention过程</h4><p>Self-Attention 沿着句子中每个 token 进行处理，主要组成部分包括 3 个向量。</p>
+<ul>
+<li>Query：Query 向量是由当前词的向量表示获得，用于对其他所有单词（使用这些单词的 key 向量）进行评分。</li>
+<li>Key：Key 向量由句子中的所有单词的向量表示获得，可以看作一个标识向量。</li>
+<li>Value：Value 向量在self-attention中与Key向量其实是相同的。</li>
+</ul>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210919144732335.png" alt="query"></p>
+<p>一个粗略的类比是把它看作是在一个文件柜里面搜索，Query 向量是一个便签，上面写着你正在研究的主题，而 Key 向量就像是柜子里的文件夹的标签。当你将便签与标签匹配时，我们取出匹配的那些文件夹的内容，这些内容就是 Value 向量。但是你不仅仅是寻找一个 Value 向量，而是找到一系列Value 向量。</p>
+<p>将 Query 向量与每个文件夹的 Key 向量相乘，会为每个文件夹产生一个分数（从技术上来讲：点积后面跟着 softmax）。</p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210919144829495.png" alt="score"></p>
+<p>我们将每个 Value 向量乘以对应的分数，然后求和，就得到了 Self Attention 的输出。</p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210919144912368.png" alt="self-attention的输出"></p>
+<p>这些加权的 Value 向量会得到一个向量，比如上图，它将 50% 的注意力放到单词 robot 上，将 30% 的注意力放到单词 a，将 19% 的注意力放到单词 it。</p>
+<p>而所谓的Masked self attention指的的是：将mask位置对应的的attention score变成一个非常小的数字或者0，让其他单词再self attention的时候（加权求和的时候）不考虑这些单词。</p>
+<h4 id="模型输出"><a href="#模型输出" class="headerlink" title="模型输出"></a>模型输出</h4><p>当模型顶部的Decoder层产生输出向量时（这个向量是经过 Self Attention 层和神经网络层得到的），模型会将这个向量乘以一个巨大的嵌入矩阵（vocab size x embedding size）来计算该向量和所有单词embedding向量的相关得分。</p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210919145019792.png" alt="顶部的模块产生输出"></p>
+<p>嵌入矩阵中的每一行都对应于模型词汇表中的一个词。这个相乘的结果，被解释为模型词汇表中每个词的分数，经过softmax之后被转换成概率。</p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210919145122628.png" alt="token概率"></p>
+<p>我们可以选择最高分数的 token（top_k=1），也可以同时考虑其他词（top k）。假设每个位置输出k个token，假设总共输出n个token，那么基于n个单词的联合概率选择的输出序列会更好。</p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210919145319228.png" alt="选择输出"></p>
+<p>这样，模型就完成了一次迭代，输出一个单词。模型会继续迭代，直到所有的单词都已经生成，或者直到输出了表示句子末尾的 token。</p>
+<h2 id="详解Self-Attention"><a href="#详解Self-Attention" class="headerlink" title="详解Self-Attention"></a>详解Self-Attention</h2><p>在这里指出文中一些过于简化的说法：</p>
+<ul>
+<li>在文中交替使用token和词。但实际上，GPT-2使用Byte Pair Encoding在词汇表中创建token，这意味着token通常是词的一部分</li>
+<li>展示的例子实在推理模式下运行，这就是它为什么一次只处理一个token。在训练时，模型将会针对更长的文本序列进行训练，并且会同时处理多个token，同样，在训练时，模型会处理更大的batch size，而不是使用推理时使用的大小为1的batch size。</li>
+<li>本文图中一般使用行向量，但是有些实际上是列向量。</li>
+</ul>
+<h3 id="可视化Self-Attention"><a href="#可视化Self-Attention" class="headerlink" title="可视化Self-Attention"></a>可视化Self-Attention</h3><p>一个简单的Transformer，假设它一次只能处理 4 个 token。</p>
+<p>Self-Attention 主要通过 3 个步骤来实现：</p>
+<ul>
+<li>为每个路径创建 Query、Key、Value 矩阵。</li>
+<li>对于每个输入的 token，使用它的 Query 向量为所有其他的 Key 向量进行打分。</li>
+<li>将 Value 向量乘以它们对应的分数后求和。</li>
+</ul>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210919150025822.png" alt="self-attention的三个步骤"></p>
+<p>（1）创建Query，Key，Value向量</p>
+<p>让我们关注第一条路径。我们会使用它的 Query 向量，并比较所有的 Key 向量。这会为每个 Key 向量产生一个分数。Self Attention 的第一步是为每个 token 的路径计算 3 个向量。</p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210919150217882.png" alt="第一步"></p>
+<p>（2）计算分数</p>
+<p>现在我们有了这些向量，我们只对步骤 2 使用 Query 向量和 Value 向量。因为我们关注的是第一个 token 的向量，我们将第一个 token 的 Query 向量和其他所有的 token 的 Key 向量相乘，得到 4 个 token 的分数。</p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210919150304519.png" alt="第二步"></p>
+<p>（3）计算和</p>
+<p>我们现在可以将这些分数和 Value 向量相乘。在我们将它们相加后，一个具有高分数的 Value 向量会占据结果向量的很大一部分。</p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210919150404684.png" alt="第三步"></p>
+<p>分数越低，Value 向量就越透明。这是为了说明，乘以一个小的数值会稀释 Value 向量。</p>
+<p>如果我们对每个路径都执行相同的操作，我们会得到一个向量，可以表示每个 token，其中包含每个 token 合适的上下文信息。这些向量会输入到 Transformer 模块的下一个子层（前馈神经网络）。</p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210919150520109.png" alt="汇总"></p>
+<h3 id="图解Masked-Self-attention"><a href="#图解Masked-Self-attention" class="headerlink" title="图解Masked Self-attention"></a>图解Masked Self-attention</h3><p>Masked Self Attention 和 Self Attention 是相同的，除了第 2 个步骤。</p>
+<p>现在假设模型有2个 token 作为输入，我们正在观察（处理）第二个 token。在这种情况下，最后 2 个 token 是被屏蔽（masked）的。所以模型会干扰评分的步骤。它总是把未来的 token 评分设置为0，因此模型不能看到未来的词，如下图所示：</p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210919150900082.png" alt="maksed self-attention"></p>
+<p>这个屏蔽（masking）经常用一个矩阵来实现，称为 attention mask矩阵。依旧以4个单词的序列为例（例如：robot must obay orders）。在一个语言建模场景中，这个序列会分为 4 个步骤处理：每个步骤处理一个词（假设现在每个词就是是一个token）。另外，由于模型是以 batch size 的形式工作的，我们可以假设这个简单模型的 batch size 为4，它会将4个序列生成任务作为一个 batch 处理，如下图所示，左边是输入，右边是label。</p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210919151034459.png" alt="batch形式的输入和输出"></p>
+<p>在矩阵的形式中，我们使用Query 矩阵和 Key 矩阵相乘来计算分数。将其可视化如下。但注意，单词无法直接进行矩阵运算，所以下图的单词还需要对应成一个向量。</p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210919151448489.png" alt="Quert和Keys的相关矩阵"></p>
+<p>在做完乘法之后，我们加上三角形的 attention mask。它将我们想要屏蔽的单元格设置为负无穷大或者一个非常大的负数（例如 GPT-2 中的 负十亿）：</p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210919151532858.png" alt="mask-attention"></p>
+<p>然后对每一行应用 softmax，会产生实际的分数，我们会将这些分数用于 Self Attention。</p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210919151620605.png" alt="softmax"></p>
+<ul>
+<li>当模型处理数据集中的第 1 个数据（第 1 行），其中只包含着一个单词 （robot），它将 100% 的注意力集中在这个单词上。</li>
+<li>当模型处理数据集中的第 2 个数据（第 2 行），其中包含着单词（robot must）。当模型处理单词 must，它将 48% 的注意力集中在 robot，将 52% 的注意力集中在 must。</li>
+<li>诸如此类，继续处理后面的单词。</li>
+</ul>
+<h3 id="GPT2中的Self-Attention"><a href="#GPT2中的Self-Attention" class="headerlink" title="GPT2中的Self-Attention"></a>GPT2中的Self-Attention</h3><p>模型预测的时候：每次处理一个 token</p>
+<p>先处理第一个token a。</p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210919151823316.png" alt="gpt2的第一个token"></p>
+<p>GPT-2 保存 token <code>a</code> 的 Key 向量和 Value 向量。每个 Self Attention 层都持有这个 token 对应的 Key 向量和 Value 向量：</p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210919151859377.png" alt="gpt2中的词a"></p>
+<p>现在在下一个迭代，当模型处理单词 robot，它不需要生成 token a 的 Query、Value 以及 Key 向量。它只需要重新使用第一次迭代中保存的对应向量：</p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210919151953906.png" alt="词robot"></p>
+<ol>
+<li><p>创建Query，Key，Value矩阵</p>
+<p>让我们假设模型正在处理单词 <code>it</code>。进入Decoder之前，这个 token 对应的输入就是 <code>it</code> 的 embedding 加上第 9 个位置的位置编码：</p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210919153337472.png" alt="处理it"></p>
+<p>Transformer 中每个层都有它自己的参数矩阵。embedding向量我们首先遇到的权重矩阵是用于创建 Query、Key、和 Value 向量的。</p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210919153412973.png" alt="处理it"></p>
+<p>Self-Attention 将它的输入乘以权重矩阵（并添加一个 bias 向量，此处没有画出)</p>
+<p>这个相乘会得到一个向量，这个向量是 Query、Key 和 Value 向量的拼接。</p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210919153441073.png" alt="query，key，value"></p>
+<p>得到Query、Key和Value向量之后，我们将其拆分multi-head，如下图所示。其实本质上就是将一个大向量拆分为多个小向量。</p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210919153531362.png" alt="multi head"></p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210919153601375.png" alt="multi head"></p>
+</li>
+<li><p>评分</p>
+<p>我们现在可以继续进行评分，假设我们只关注一个 attention head（其他的 attention head 也是在进行类似的操作）。</p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210919153746482.png" alt="打分"></p>
+<p>现在，这个 token 可以根据其他所有 token 的 Key 向量进行评分（这些 Key 向量是在前面一个迭代中的第一个 attention head 计算得到的）：</p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210919153827272.png" alt="加权和"></p>
+</li>
+<li><p>求和</p>
+<p>正如我们之前所看的那样，我们现在将每个 Value 向量乘以对应的分数，然后加起来求和，得到第一个 attention head 的 Self Attention 结果：</p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210919153923491.png" alt="合并attentions heads"></p>
+<p>multi head对应得到多个加权和向量，我们将他们都再次拼接起来：</p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210919154053712.png" alt="拼接"></p>
+<p>再将得到的向量经过一个线性映射得到想要的维度，随后输入全连接网络。</p>
+</li>
+<li><p>映射</p>
+<p>我们将让模型学习如何将拼接好的 Self Attention 结果转换为前馈神经网络能够处理的输入。在这里，我们使用第二个巨大的权重矩阵，将 attention heads 的结果映射到 Self Attention 子层的输出向量：</p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210919154239317.png" alt="映射"></p>
+</li>
+</ol>
+<p>通过以上步骤，我们产生了一个向量，我们可以把这个向量传给下一层。</p>
+<h3 id="GPT2全连接神经网络"><a href="#GPT2全连接神经网络" class="headerlink" title="GPT2全连接神经网络"></a>GPT2全连接神经网络</h3><p><em><strong>第一层</strong></em></p>
+<p>全连接神经网络是用于处理 Self Attention 层的输出，这个输出的表示包含了合适的上下文。全连接神经网络由两层组成。第一层是模型大小的 4 倍（由于 GPT-2 small 是 768，因此这个网络会有3072个神经元）。</p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210919154503863.png" alt="全连接层"></p>
+<p><em><strong>第二层，把向量映射到模型的维度</strong></em></p>
+<p>第 2 层把第一层得到的结果映射回模型的维度（在 GPT-2 small 中是 768）。这个相乘的结果是 Transformer 对这个 token 的输出。</p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210919154605387.png" alt="全连接层"></p>
+<h2 id="语言模型应用"><a href="#语言模型应用" class="headerlink" title="语言模型应用"></a>语言模型应用</h2><h3 id="机器翻译"><a href="#机器翻译" class="headerlink" title="机器翻译"></a>机器翻译</h3><p>进行机器翻译时，Encoder 不是必须的。我们可以用只有 Decoder 的 Transformer 来解决同样的任务：</p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210919154759298.png" alt="翻译"></p>
+<h3 id="生成摘要"><a href="#生成摘要" class="headerlink" title="生成摘要"></a>生成摘要</h3><p>这是第一个只使用 Decoder 的 Transformer 来训练的任务。它被训练用于阅读一篇维基百科的文章（目录前面去掉了开头部分），然后生成摘要。文章的实际开头部分用作训练数据的标签：</p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210919154829762.png" alt="生成摘要"></p>
+<h3 id="迁移学习"><a href="#迁移学习" class="headerlink" title="迁移学习"></a>迁移学习</h3><p>在 Sample Efficient Text Summarization Using a Single Pre-Trained Transformer(<a href="https://arxiv.org/abs/1905.08836">https://arxiv.org/abs/1905.08836</a>) 中，一个只有 Decoder 的 Transformer 首先在语言模型上进行预训练，然后微调进行生成摘要。结果表明，在数据量有限制时，它比预训练的 Encoder-Decoder Transformer 能够获得更好的结果。</p>
+<h3 id="音乐生成"><a href="#音乐生成" class="headerlink" title="音乐生成"></a>音乐生成</h3><p>Music Transformer(<a href="https://magenta.tensorflow.org/music-transformer">https://magenta.tensorflow.org/music-transformer</a>) 论文使用了只有 Decoder 的 Transformer 来生成具有表现力的时序和动态性的音乐。音乐建模 就像语言建模一样，只需要让模型以无监督的方式学习音乐，然后让它采样输出（前面我们称这个为 漫步）。</p>
+<p>你可能会好奇在这个场景中，音乐是如何表现的。请记住，语言建模可以把字符、单词、或者单词的一部分（token），表示为向量。在音乐表演中（让我们考虑一下钢琴），我们不仅要表示音符，还要表示速度–衡量钢琴键被按下的力度。</p>
+<p><img src="/2021/09/18/nlp-transformer-3/image-20210919154944710.png" alt="音乐生成"></p>
 ]]></content>
       <categories>
         <category>深度学习</category>
