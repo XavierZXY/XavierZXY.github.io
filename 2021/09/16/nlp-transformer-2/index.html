@@ -18,43 +18,43 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"www.spacezxy.top","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="本文为参加Datawhale组队学习时所写，如若需了解细致内容，请去到Datawhale官方开源课程基于transformers的自然语言处理(NLP)入门 (datawhalechina.github.io) 图解BERTBERT首先在大规模无监督语料上进行预训练，然后在预训练好的参数基础上增加一个与任务相关的神经网络层，并在该任务的数据上进行微调训，最终取得很好的效果。BERT的这个训练过程可">
 <meta property="og:type" content="article">
 <meta property="og:title" content="基于Transformers的自然语言处理(NLP)入门(二)">
-<meta property="og:url" content="http://example.com/2021/09/16/nlp-transformer-2/index.html">
+<meta property="og:url" content="https://www.spacezxy.top/2021/09/16/nlp-transformer-2/index.html">
 <meta property="og:site_name" content="Xavier ZXY">
 <meta property="og:description" content="本文为参加Datawhale组队学习时所写，如若需了解细致内容，请去到Datawhale官方开源课程基于transformers的自然语言处理(NLP)入门 (datawhalechina.github.io) 图解BERTBERT首先在大规模无监督语料上进行预训练，然后在预训练好的参数基础上增加一个与任务相关的神经网络层，并在该任务的数据上进行微调训，最终取得很好的效果。BERT的这个训练过程可">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://example.com/2021/09/16/nlp-transformer-2/image-20210916201227474.png">
-<meta property="og:image" content="http://example.com/2021/09/16/nlp-transformer-2/image-20210916201315406.png">
-<meta property="og:image" content="http://example.com/2021/09/16/nlp-transformer-2/image-20210916201401391.png">
-<meta property="og:image" content="http://example.com/2021/09/16/nlp-transformer-2/image-20210916201508262.png">
-<meta property="og:image" content="http://example.com/2021/09/16/nlp-transformer-2/image-20210916201653599.png">
-<meta property="og:image" content="http://example.com/2021/09/16/nlp-transformer-2/image-20210916202452414.png">
-<meta property="og:image" content="http://example.com/2021/09/16/nlp-transformer-2/image-20210916203051304.png">
-<meta property="og:image" content="http://example.com/2021/09/16/nlp-transformer-2/image-20210916203432692.png">
-<meta property="og:image" content="http://example.com/2021/09/16/nlp-transformer-2/image-20210916203706328.png">
-<meta property="og:image" content="http://example.com/2021/09/16/nlp-transformer-2/image-20210916205038216.png">
-<meta property="og:image" content="http://example.com/2021/09/16/nlp-transformer-2/image-20210917144435739.png">
-<meta property="og:image" content="http://example.com/2021/09/16/nlp-transformer-2/image-20210917145224008.png">
-<meta property="og:image" content="http://example.com/2021/09/16/nlp-transformer-2/image-20210917145634135.png">
-<meta property="og:image" content="http://example.com/2021/09/16/nlp-transformer-2/image-20210917145809419.png">
-<meta property="og:image" content="http://example.com/2021/09/16/nlp-transformer-2/image-20210917145951135.png">
-<meta property="og:image" content="http://example.com/2021/09/16/nlp-transformer-2/image-20210917150037463.png">
-<meta property="og:image" content="http://example.com/2021/09/16/nlp-transformer-2/image-20210917150130266.png">
-<meta property="og:image" content="http://example.com/2021/09/16/nlp-transformer-2/image-20210917150942879.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/16/nlp-transformer-2/image-20210916201227474.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/16/nlp-transformer-2/image-20210916201315406.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/16/nlp-transformer-2/image-20210916201401391.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/16/nlp-transformer-2/image-20210916201508262.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/16/nlp-transformer-2/image-20210916201653599.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/16/nlp-transformer-2/image-20210916202452414.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/16/nlp-transformer-2/image-20210916203051304.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/16/nlp-transformer-2/image-20210916203432692.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/16/nlp-transformer-2/image-20210916203706328.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/16/nlp-transformer-2/image-20210916205038216.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/16/nlp-transformer-2/image-20210917144435739.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/16/nlp-transformer-2/image-20210917145224008.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/16/nlp-transformer-2/image-20210917145634135.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/16/nlp-transformer-2/image-20210917145809419.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/16/nlp-transformer-2/image-20210917145951135.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/16/nlp-transformer-2/image-20210917150037463.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/16/nlp-transformer-2/image-20210917150130266.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/16/nlp-transformer-2/image-20210917150942879.png">
 <meta property="article:published_time" content="2021-09-16T11:26:59.000Z">
 <meta property="article:modified_time" content="2021-09-17T07:10:21.548Z">
 <meta property="article:author" content="Xavier ZXY">
 <meta property="article:tag" content="Datawhale组队学习">
 <meta property="article:tag" content="NLP入门">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2021/09/16/nlp-transformer-2/image-20210916201227474.png">
+<meta name="twitter:image" content="https://www.spacezxy.top/2021/09/16/nlp-transformer-2/image-20210916201227474.png">
 
-<link rel="canonical" href="http://example.com/2021/09/16/nlp-transformer-2/">
+<link rel="canonical" href="https://www.spacezxy.top/2021/09/16/nlp-transformer-2/">
 
 
 <script id="page-configurations">
@@ -211,7 +211,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/09/16/nlp-transformer-2/">
+    <link itemprop="mainEntityOfPage" href="https://www.spacezxy.top/2021/09/16/nlp-transformer-2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/autor.jpg">
