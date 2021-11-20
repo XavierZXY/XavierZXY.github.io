@@ -9,6 +9,7 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/images/learn32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/learn16x16.png">
   <link rel="mask-icon" href="/images/learn.svg" color="#222">
+  <meta name="baidu-site-verification" content="<meta name="baidu-site-verification" content="code-a86h7x1bd3" />">
 
 <link rel="stylesheet" href="/css/main.css">
 
@@ -264,6 +265,7 @@
 <p>  YOLO 的核心思想就是把目标检测转变成一个<strong>回归问题</strong>，利用整张图作为网络的输入，仅仅经过一个神经网络，得到bounding box（边界框） 的位置及其所属的类别。</p>
 <p><img src="/2021/09/01/Yolo/image-20210901165626159.png" alt="image-20210901165626159"></p>
 <span id="more"></span>
+
 <h2 id="实现细节"><a href="#实现细节" class="headerlink" title="实现细节"></a>实现细节</h2><h3 id="检测策略"><a href="#检测策略" class="headerlink" title="检测策略"></a>检测策略</h3><ul>
 <li>将一幅图像分成 S×S个网格（grid cell），若某个 object 的中心落在这个网格中，则这个网格就负责预测这个object。</li>
 <li>每个网格要预测 B 个bounding box，每个 bounding box 要预测 (x, y, w, h) 和 confidence 共5个值。</li>

@@ -9,6 +9,7 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/images/learn32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/learn16x16.png">
   <link rel="mask-icon" href="/images/learn.svg" color="#222">
+  <meta name="baidu-site-verification" content="<meta name="baidu-site-verification" content="code-a86h7x1bd3" />">
 
 <link rel="stylesheet" href="/css/main.css">
 
@@ -300,7 +301,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-10-29 22:55:43" itemprop="dateModified" datetime="2021-10-29T22:55:43+08:00">2021-10-29</time>
+                <time title="修改时间：2021-11-16 12:50:55" itemprop="dateModified" datetime="2021-11-16T12:50:55+08:00">2021-11-16</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -488,10 +489,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h1 id="模型训练"><a href="#模型训练" class="headerlink" title="模型训练"></a>模型训练</h1><h2 id="线性模型"><a href="#线性模型" class="headerlink" title="线性模型"></a>线性模型</h2><h3 id="Lasso回归"><a href="#Lasso回归" class="headerlink" title="Lasso回归"></a>Lasso回归</h3><p>Least absolute shrinkage and selection operator，是对普通的线性回归使用L1正则进行优化。</p>
-<script type="math/tex; mode=display">
-\min{||Y-X\theta||_2^2 + \lambda||\theta||_1}</script><p>其中，\lambda是正则项(惩罚项)的系数，通过改变\lambda的值，基本上可以控制惩罚项。</p>
+          <h1 id="模型训练"><a href="#模型训练" class="headerlink" title="模型训练"></a>模型训练</h1><h2 id="线性模型"><a href="#线性模型" class="headerlink" title="线性模型"></a>线性模型</h2><h3 id="Lasso回归"><a href="#Lasso回归" class="headerlink" title="Lasso回归"></a>Lasso回归</h3><p>Least absolute shrinkage and selection operator，是对普通的线性回归使用L1正则进行优化。<br>$$<br>\min{||Y-X\theta||_2^2 + \lambda||\theta||_1}<br>$$</p>
+<p>其中，\lambda是正则项(惩罚项)的系数，通过改变\lambda的值，基本上可以控制惩罚项。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.linear_model import Lasso</span><br><span class="line">lasso_model = Lasso(alpha=0.1, normalize=True)</span><br></pre></td></tr></table></figure>
+
 <h3 id="Ridge回归"><a href="#Ridge回归" class="headerlink" title="Ridge回归"></a>Ridge回归</h3><p>Ridge回归是对普通的线性回归使用L2正则进行优化，对特征的权重系数设置了惩罚项。</p>
           <!--noindex-->
             <div class="post-button">
@@ -765,10 +766,11 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>本文为学习<a href="[开篇词 - labuladong 的算法小抄 (gitbook.io">labuladong的算法小抄</a>](<a target="_blank" rel="noopener" href="https://labuladong.gitbook.io/algo/))时所做的笔记，仅供复习总结参考，不做任何商业用途，如有侵权，请联系删除。">https://labuladong.gitbook.io/algo/))时所做的笔记，仅供复习总结参考，不做任何商业用途，如有侵权，请联系删除。</a></p>
+          <p>本文为学习[labuladong的算法小抄](<a target="_blank" rel="noopener" href="https://labuladong.gitbook.io/algo/">开篇词 - labuladong 的算法小抄 (gitbook.io)</a>)时所做的笔记，仅供复习总结参考，不做任何商业用途，如有侵权，请联系删除。</p>
 <h1 id="递归反转链表的一部分"><a href="#递归反转链表的一部分" class="headerlink" title="递归反转链表的一部分"></a>递归反转链表的一部分</h1><p>该小节主题为解决<a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/reverse-linked-list-ii/">92. 反转链表 II - 力扣（LeetCode）</a></p>
 <p><strong>用递归解决问题，不要跳进递归之中，我们不是计算机，脑袋中压不了那么多的栈，我们需要弄清楚的是递归的base case，以及整个递归会产生的结果。</strong></p>
 <h2 id="递归反转整个链表"><a href="#递归反转整个链表" class="headerlink" title="递归反转整个链表"></a>递归反转整个链表</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">ListNode <span class="title">reverse</span><span class="params">(ListNode head)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(head-&gt;next == nullptrptr) <span class="keyword">return</span> head;  <span class="comment">//base case</span></span><br><span class="line">    ListNode last = <span class="built_in">reverse</span>(head-&gt;next);</span><br><span class="line">    head-&gt;next-&gt;next = head;</span><br><span class="line">    head-&gt;next = nullptrptr;</span><br><span class="line">    <span class="keyword">return</span> last;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <p><img src="/2021/10/03/algorithm-1/image-20211003164412438.png" alt="image1"></p>
           <!--noindex-->
             <div class="post-button">
@@ -858,6 +860,7 @@
 <h1 id="机器翻译任务"><a href="#机器翻译任务" class="headerlink" title="机器翻译任务"></a>机器翻译任务</h1><p>在这个小节中，我们将展示如何使用<a target="_blank" rel="noopener" href="https://github.com/huggingface/transformers">🤗 Transformers</a>代码库中的模型来解决自然语言处理中的翻译任务。我们将会使用<a target="_blank" rel="noopener" href="http://www.statmt.org/wmt16/">WMT dataset</a>数据集。这是翻译任务最常用的数据集之一。</p>
 <p>对于翻译任务，我们将展示如何使用简单的加载数据集，同时针对相应的仍无使用transformer中的Trainer接口对模型进行微调。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">model_checkpoint = <span class="string">&quot;Helsinki-NLP/opus-mt-en-ro&quot;</span>   <span class="comment"># 选择一个模型checkpoint</span></span><br></pre></td></tr></table></figure>
+
 <p>本文我们使用已经训练好的<a target="_blank" rel="noopener" href="https://huggingface.co/Helsinki-NLP/opus-mt-en-ro"><code>Helsinki-NLP/opus-mt-en-ro</code></a> checkpoint来做翻译任务。</p>
           <!--noindex-->
             <div class="post-button">
@@ -940,6 +943,7 @@
           <p>本文为参加Datawhale组队学习时所写，如若需了解细致内容，请去到Datawhale官方开源课程<a target="_blank" rel="noopener" href="https://datawhalechina.github.io/learn-nlp-with-transformers/#/">基于transformers的自然语言处理(NLP)入门 (datawhalechina.github.io)</a></p>
 <h1 id="抽取式问答任务"><a href="#抽取式问答任务" class="headerlink" title="抽取式问答任务"></a>抽取式问答任务</h1><p>抽取式问答任务：给定一个问题和一段文本，从这段文本中找出能够回答该问题的文本片段(span), 通过使用Tranier API和dataset包，我们可以轻松加载数据，然后微调transformers。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># squad_v2等于True或者False分别代表使用SQUAD v1 或者 SQUAD v2。</span></span><br><span class="line"><span class="comment"># 如果您使用的是其他数据集，那么True代表的是：模型可以回答“不可回答”问题，也就是部分问题不给出答案，而False则代表所有问题必须回答。</span></span><br><span class="line">squad_v2 = <span class="literal">False</span></span><br><span class="line">model_checkpoint = <span class="string">&quot;distilbert-base-uncased&quot;</span></span><br><span class="line">batch_size = <span class="number">16</span></span><br></pre></td></tr></table></figure>
+
 <h2 id="加载数据集"><a href="#加载数据集" class="headerlink" title="加载数据集"></a>加载数据集</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> datasets <span class="keyword">import</span> load_datasets, load_metric</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">#  下载数据</span></span><br><span class="line">datasets = load_dataset(<span class="string">&quot;squad_v2&quot;</span> <span class="keyword">if</span> squad_v2 <span class="keyword">else</span> <span class="string">&quot;squad&quot;</span>)</span><br></pre></td></tr></table></figure>
           <!--noindex-->
             <div class="post-button">

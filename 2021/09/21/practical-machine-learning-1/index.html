@@ -9,6 +9,7 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/images/learn32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/learn16x16.png">
   <link rel="mask-icon" href="/images/learn.svg" color="#222">
+  <meta name="baidu-site-verification" content="<meta name="baidu-site-verification" content="code-a86h7x1bd3" />">
 
 <link rel="stylesheet" href="/css/main.css">
 
@@ -262,12 +263,13 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p><strong><em>本文为学习李沐2021斯坦福秋季课程《实用机器学习》时所做的笔记，仅供学习复习回顾，不作任何商业用途，详细信息请访问<a target="_blank" rel="noopener" href="https://space.bilibili.com/1567748478">跟李沐学AI</a></em></strong></p>
+        <p><em><strong>本文为学习李沐2021斯坦福秋季课程《实用机器学习》时所做的笔记，仅供学习复习回顾，不作任何商业用途，详细信息请访问<a target="_blank" rel="noopener" href="https://space.bilibili.com/1567748478">跟李沐学AI</a></strong></em></p>
 <h1 id="课程介绍"><a href="#课程介绍" class="headerlink" title="课程介绍"></a>课程介绍</h1><p>机器学习工作流程</p>
 <p><img src="/2021/09/21/practical-machine-learning-1/image-20210921165637795.png" alt="ML Workflow"></p>
 <p><img src="/2021/09/21/practical-machine-learning-1/image-20210921165812892.png" alt="image-20210921165812892"></p>
 <p><img src="/2021/09/21/practical-machine-learning-1/image-20210921165812973.png" alt="ML Workflow"></p>
 <span id="more"></span>
+
 <h1 id="数据获取"><a href="#数据获取" class="headerlink" title="数据获取"></a>数据获取</h1><p><img src="/2021/09/21/practical-machine-learning-1/image-20210922201024824.png" alt="数据获取"></p>
 <p>寻找数据集的一些网站</p>
 <p><a target="_blank" rel="noopener" href="https://paperswithcode.com/sota">Papers With Code</a>   论文复现代码以及用到的一些数据集</p>
@@ -280,6 +282,7 @@
 <p><img src="/2021/09/21/practical-machine-learning-1/image-20210922203152721.png" alt="数据增强"></p>
 <h2 id="网页数据抓取"><a href="#网页数据抓取" class="headerlink" title="网页数据抓取"></a>网页数据抓取</h2><h3 id="网页抓取工具"><a href="#网页抓取工具" class="headerlink" title="网页抓取工具"></a>网页抓取工具</h3><p>凭借python工具，通过一个带浏览器表示的url请求，来向web网站抓取数据。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver</span><br><span class="line">chrome_options = webdriver.ChromeOptions()</span><br><span class="line">chrome_optinos.headless = <span class="literal">True</span>  <span class="comment"># 通过添加浏览器标识，可以减少网站对于爬虫的反爬限制，但同一IP地址短时间发起多个请求时，依旧会被认为异常行为</span></span><br><span class="line">chrome = webdriver.Chrome(chrome_options=chrome_options)</span><br><span class="line"></span><br><span class="line">page = chrome.get(url)</span><br></pre></td></tr></table></figure>
+
 <h3 id="Legal-Consideration"><a href="#Legal-Consideration" class="headerlink" title="Legal Consideration"></a>Legal Consideration</h3><p><strong>虽然我们只是出于学习的目的去收集数据，但我们绝对不能去侵害别人的隐私信息！！！</strong></p>
 <h2 id="数据标注"><a href="#数据标注" class="headerlink" title="数据标注"></a>数据标注</h2><p>是否有足够多的标注的数据，根据标注数据的数量来选择下一步来进行学习的模型。</p>
 <p><img src="/2021/09/21/practical-machine-learning-1/image-20210925163352042.png" alt="数据标注"></p>
@@ -307,20 +310,31 @@
 <li>数据编程</li>
 </ul>
 <h1 id="数据处理"><a href="#数据处理" class="headerlink" title="数据处理"></a>数据处理</h1><h2 id="探索性数据分析"><a href="#探索性数据分析" class="headerlink" title="探索性数据分析"></a>探索性数据分析</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> seaborn <span class="keyword">as</span> sns</span><br><span class="line"><span class="keyword">from</span> IPython <span class="keyword">import</span> display</span><br><span class="line">display.set_matplotlib_formats(<span class="string">&#x27;svg&#x27;</span>)</span><br><span class="line"></span><br><span class="line">data = pd.read_csv(<span class="string">&#x27;house_sales.zip&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">null_sum = data.isnull().<span class="built_in">sum</span>()</span><br><span class="line">data.columns[null_sum &lt; <span class="built_in">len</span>(data) * <span class="number">0.3</span>]  <span class="comment"># columns will keep</span></span><br></pre></td></tr></table></figure>
+
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">data.drop(columns=data.columns[null_sum &gt; <span class="built_in">len</span>(data) * <span class="number">0.3</span>], inplace=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看数据类型是否正确</span></span><br><span class="line">data.dtypes</span><br></pre></td></tr></table></figure>
+
 <p><img src="/2021/09/21/practical-machine-learning-1/image-20211014201624054.png" alt="data types"></p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 对数据进行转化</span></span><br><span class="line">currency = [<span class="string">&#x27;Sold Price&#x27;</span>, <span class="string">&#x27;Listed Price&#x27;</span>, <span class="string">&#x27;Tax assessed value&#x27;</span>, <span class="string">&#x27;Annual tax amount&#x27;</span>]</span><br><span class="line"><span class="keyword">for</span> c <span class="keyword">in</span> currency:</span><br><span class="line">    data[c] = data[c].replace(</span><br><span class="line">        <span class="string">r&#x27;[$,-]&#x27;</span>, <span class="string">&#x27;&#x27;</span>, regex=<span class="literal">True</span>).replace(</span><br><span class="line">        <span class="string">r&#x27;^\s*$&#x27;</span>, np.nan, regex=<span class="literal">True</span>).astype(<span class="built_in">float</span>)</span><br></pre></td></tr></table></figure>
+
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 房屋面积转换</span></span><br><span class="line">areas = [<span class="string">&#x27;Total interior livable area&#x27;</span>, <span class="string">&#x27;Lot size&#x27;</span>]</span><br><span class="line"><span class="keyword">for</span> c <span class="keyword">in</span> areas:</span><br><span class="line">    acres = data[c].<span class="built_in">str</span>.contains(<span class="string">&#x27;Acres&#x27;</span>) == <span class="literal">True</span></span><br><span class="line">    col = data[c].replace(<span class="string">r&#x27;\b sqft\b|\b Acres\b|\b,\b&#x27;</span>,<span class="string">&#x27;&#x27;</span>, regex=<span class="literal">True</span>).astype(<span class="built_in">float</span>)</span><br><span class="line">    col[acres] *= <span class="number">43560</span></span><br><span class="line">    data[c] = col</span><br></pre></td></tr></table></figure>
+
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">data.describe()</span><br></pre></td></tr></table></figure>
+
 <p><img src="/2021/09/21/practical-machine-learning-1/image-20211014201902092.png" alt="image-20211014201902092"></p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 过滤掉不正常数据</span></span><br><span class="line">abnormal = (data[areas[<span class="number">1</span>]] &lt; <span class="number">10</span>) | (data[areas[<span class="number">1</span>]] &gt; <span class="number">1e4</span>)</span><br><span class="line">data = data[~abnormal]</span><br><span class="line"><span class="built_in">sum</span>(abnormal)</span><br></pre></td></tr></table></figure>
+
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 绘制房屋价格图</span></span><br><span class="line">ax = sns.histplot(np.log10(data[<span class="string">&#x27;Sold Price&#x27;</span>]))</span><br><span class="line">ax.set_xlim([<span class="number">3</span>, <span class="number">8</span>])</span><br><span class="line">ax.set_xticks(<span class="built_in">range</span>(<span class="number">3</span>, <span class="number">9</span>))</span><br><span class="line">ax.set_xticklabels([<span class="string">&#x27;%.0e&#x27;</span>%a <span class="keyword">for</span> a <span class="keyword">in</span> <span class="number">10</span>**ax.get_xticks()]);</span><br></pre></td></tr></table></figure>
+
 <p><img src="/2021/09/21/practical-machine-learning-1/image-20211014202225216.png" alt="image-20211014202225216"></p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># the differences between different house types.</span></span><br><span class="line">data[<span class="string">&#x27;Price per living sqft&#x27;</span>] = data[<span class="string">&#x27;Sold Price&#x27;</span>] / data[<span class="string">&#x27;Total interior livable area&#x27;</span>]</span><br><span class="line">ax = sns.boxplot(x=<span class="string">&#x27;Type&#x27;</span>, y=<span class="string">&#x27;Price per living sqft&#x27;</span>, data=data[types], fliersize=<span class="number">0</span>)</span><br><span class="line">ax.set_ylim([<span class="number">0</span>, <span class="number">2000</span>]);</span><br></pre></td></tr></table></figure>
+
 <p><img src="/2021/09/21/practical-machine-learning-1/image-20211014202542817.png" alt="image-20211014202542817"></p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">_, ax = plt.subplots(figsize=(<span class="number">6</span>,<span class="number">6</span>))</span><br><span class="line">columns = [<span class="string">&#x27;Sold Price&#x27;</span>, <span class="string">&#x27;Listed Price&#x27;</span>, <span class="string">&#x27;Annual tax amount&#x27;</span>, <span class="string">&#x27;Price per living sqft&#x27;</span>, <span class="string">&#x27;Elementary School Score&#x27;</span>, <span class="string">&#x27;High School Score&#x27;</span>]</span><br><span class="line">sns.heatmap(data[columns].corr(),annot=<span class="literal">True</span>,cmap=<span class="string">&#x27;RdYlGn&#x27;</span>, ax=ax);</span><br></pre></td></tr></table></figure>
+
 <p><img src="/2021/09/21/practical-machine-learning-1/image-20211014203303934.png" alt="image-20211014203303934"></p>
 <h2 id="数据清理"><a href="#数据清理" class="headerlink" title="数据清理"></a>数据清理</h2><ul>
 <li>异常值</li>
