@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/learn-apple.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/learn32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/learn16x16.png">
+  <link rel="mask-icon" href="/images/learn.svg" color="#222">
+  <meta name="baidu-site-verification" content="code-a86h7x1bd3">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.spacezxy.top","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="模型训练线性模型Lasso回归Least absolute shrinkage and selection operator，是对普通的线性回归使用L1正则进行优化。$$\min{||Y-X\theta||_2^2 + \lambda||\theta||_1}$$ 其中，\lambda是正则项(惩罚项)的系数，通过改变\lambda的值，基本上可以控制惩罚项。 12from sklearn.lin">
+<meta property="og:type" content="article">
+<meta property="og:title" content="机器学习算法竞赛实战(三)">
+<meta property="og:url" content="https://www.spacezxy.top/2021/10/22/ML-Algorithm-pratice/ML-Algorithm-pratice-3/index.html">
+<meta property="og:site_name" content="Xavier ZXY">
+<meta property="og:description" content="模型训练线性模型Lasso回归Least absolute shrinkage and selection operator，是对普通的线性回归使用L1正则进行优化。$$\min{||Y-X\theta||_2^2 + \lambda||\theta||_1}$$ 其中，\lambda是正则项(惩罚项)的系数，通过改变\lambda的值，基本上可以控制惩罚项。 12from sklearn.lin">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-10-22T07:05:25.000Z">
+<meta property="article:modified_time" content="2021-10-23T08:48:44.300Z">
+<meta property="article:author" content="Xavier ZXY">
+<meta property="article:tag" content="竞赛实战">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://www.spacezxy.top/2021/10/22/ML-Algorithm-pratice/ML-Algorithm-pratice-3/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>机器学习算法竞赛实战(三) | Xavier ZXY</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+  <a target="_blank" rel="noopener" href="https://github.com/XavierZXY" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Xavier ZXY</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.spacezxy.top/2021/10/22/ML-Algorithm-pratice/ML-Algorithm-pratice-3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/autor.jpg">
+      <meta itemprop="name" content="Xavier ZXY">
+      <meta itemprop="description" content="ZXY 想去看极光">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xavier ZXY">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          机器学习算法竞赛实战(三)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-10-22 15:05:25" itemprop="dateCreated datePublished" datetime="2021-10-22T15:05:25+08:00">2021-10-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-10-23 16:48:44" itemprop="dateModified" datetime="2021-10-23T16:48:44+08:00">2021-10-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="模型训练"><a href="#模型训练" class="headerlink" title="模型训练"></a>模型训练</h1><h2 id="线性模型"><a href="#线性模型" class="headerlink" title="线性模型"></a>线性模型</h2><h3 id="Lasso回归"><a href="#Lasso回归" class="headerlink" title="Lasso回归"></a>Lasso回归</h3><p>Least absolute shrinkage and selection operator，是对普通的线性回归使用L1正则进行优化。<br>$$<br>\min{||Y-X\theta||_2^2 + \lambda||\theta||_1}<br>$$</p>
+<p>其中，\lambda是正则项(惩罚项)的系数，通过改变\lambda的值，基本上可以控制惩罚项。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">from sklearn.linear_model import Lasso</span><br><span class="line">lasso_model = Lasso(alpha=0.1, normalize=True)</span><br></pre></td></tr></table></figure>
+
+<h3 id="Ridge回归"><a href="#Ridge回归" class="headerlink" title="Ridge回归"></a>Ridge回归</h3><p>Ridge回归是对普通的线性回归使用L2正则进行优化，对特征的权重系数设置了惩罚项。</p>
+<span id="more"></span>
+<p>$$<br>\min{||Y-X\theta||_2^2 + \lambda||\theta||_2^2}<br>$$</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.linear_model <span class="keyword">import</span> Ridge</span><br><span class="line">Ridge_model = Ridge(alpha=<span class="number">0.05</span>, normalize=<span class="literal">True</span>)</span><br></pre></td></tr></table></figure>
+
+<p>面对非常大的数据集时，若使用Lasso回归进行训练，当存在相关的特征时，Lasso只保留其中的一个特征，而将其他的特征设置为零，这会导致一些信息丢失，从而降低模型的准确性。若使用Ridge回归，虽然能降低模型的负责性，但并不会减少特征的数量，模型可能会很复杂，因此可能会导致模型性能不佳。</p>
+<h2 id="树模型"><a href="#树模型" class="headerlink" title="树模型"></a>树模型</h2><ul>
+<li>随机森林(Random Forest，RF)</li>
+<li>梯度提升树(GBDT)</li>
+</ul>
+<h3 id="随机森林"><a href="#随机森林" class="headerlink" title="随机森林"></a>随机森林</h3><p>随即森林算法就是通过集成学习的思想将多个决策树集成在一起。</p>
+<p><strong>构造过程</strong></p>
+<ol>
+<li>随机抽样，训练决策树</li>
+<li>随机选取属性做节点分裂属性</li>
+<li>重复步骤2直到不能再分裂</li>
+<li>建立大量决策树形成森林</li>
+</ol>
+<p><strong>优缺点</strong></p>
+<p>随机森林的优点非常明显：不仅可以解决分类和回归问题，还可以同时处理类别特征和数值特征，不容易过拟合，非常稳定。</p>
+<p>随机森林计算更加复杂。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.ensemble <span class="keyword">import</span> RandomForestClassifier</span><br><span class="line">rf = RandomForestClassifier(max_features=<span class="string">&#x27;auto&#x27;</span>, obb_score=<span class="literal">True</span>, random_state=<span class="number">1</span>, n_jobs=<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="梯度提升树"><a href="#梯度提升树" class="headerlink" title="梯度提升树"></a>梯度提升树</h3><p>梯度提升树(GBDT)是基于Boosting改进而得的。</p>
+<h3 id="XGBoost"><a href="#XGBoost" class="headerlink" title="XGBoost"></a>XGBoost</h3><ul>
+<li>采用稀疏感知算法</li>
+<li>近似数学习</li>
+<li>并行计算，分布式计算</li>
+<li>核外计算</li>
+<li>有效地处理缺失值</li>
+</ul>
+<h3 id="LightGBM"><a href="#LightGBM" class="headerlink" title="LightGBM"></a>LightGBM</h3><ul>
+<li>比XGBoost准确性更高，训练时间更短</li>
+<li>支持并行树增强</li>
+<li>将连续特征提取为离散特征</li>
+<li>通过使用按叶分割而不是按级别分割来获得更高精度，加快目标函数的收敛过程，并在非常复杂的树捕获训练数据的底层模式。</li>
+</ul>
+<h3 id="CatBoost"><a href="#CatBoost" class="headerlink" title="CatBoost"></a>CatBoost</h3><ul>
+<li>支持类别特征</li>
+<li>提出一种全新的梯度提升机制(Ordered Boosting)，不仅可以减少过拟合的风险，也大大提高了准确性</li>
+<li>支持开箱即用的GPU训练</li>
+<li>训练中使用了组合类别特征，利用特征之间的联系，极大丰富了特征维度。</li>
+</ul>
+<h2 id="神经网络"><a href="#神经网络" class="headerlink" title="神经网络"></a>神经网络</h2><h3 id="多层感知机"><a href="#多层感知机" class="headerlink" title="多层感知机"></a>多层感知机</h3><p>多层感知机(MLP)也可以称作深度神经网络(Deep Neural Networks, DNN)。</p>
+<ul>
+<li>权重与偏置。</li>
+<li>激活函数</li>
+</ul>
+<h3 id="卷积神经网络"><a href="#卷积神经网络" class="headerlink" title="卷积神经网络"></a>卷积神经网络</h3><ul>
+<li>能够有效地将大数据量的图片降维成小数据量，简化复杂问题</li>
+<li>能够有效保留图像特征，并且符合图像处理的原则。</li>
+</ul>
+<h3 id="循环神经网络"><a href="#循环神经网络" class="headerlink" title="循环神经网络"></a>循环神经网络</h3><p>循环神经网络(RNN)是神经网络的一种扩展，更擅长对序列数据进行建模处理。</p>
+<h1 id="模型融合"><a href="#模型融合" class="headerlink" title="模型融合"></a>模型融合</h1><h2 id="构建多样性"><a href="#构建多样性" class="headerlink" title="构建多样性"></a>构建多样性</h2><h3 id="特征多样性"><a href="#特征多样性" class="headerlink" title="特征多样性"></a>特征多样性</h3><p>构建多个有差异的特征集并分别建立模型，可以使特征存在于不同的超空间，从而建立的多个模型有不同的泛化误差，最终模型融合时可以起到互补的效果。</p>
+<h3 id="样本多样性"><a href="#样本多样性" class="headerlink" title="样本多样性"></a>样本多样性</h3><p>具体做法是将数据集切分成多份，然后分别建立模型。很多树模型在训练的时候会进行采样，主要目的是防止过拟合，从而提升预测的准确性。</p>
+<h3 id="模型多样性"><a href="#模型多样性" class="headerlink" title="模型多样性"></a>模型多样性</h3><p>不同模型对数据的表达能力是不同的。</p>
+<h2 id="训练模型融合"><a href="#训练模型融合" class="headerlink" title="训练模型融合"></a>训练模型融合</h2><h3 id="Bagging"><a href="#Bagging" class="headerlink" title="Bagging"></a>Bagging</h3><p>Bagging的思想很简答，即从训练集中有返回地取出数据(Bootstraping)，这些数据构成样本集，然后用样本训练弱分类器。重复上述过程多次，取平均值或者采用投票机制得到模型融合的最终结果。</p>
+<h3 id="Boosting"><a href="#Boosting" class="headerlink" title="Boosting"></a>Boosting</h3><p>首先训练一个弱分类器，并把这个弱分类器分错类的样本记录下来，同时给予这个弱分类器一定的权重；然后建立一个新的弱分类器，新的弱分类器基于前面记录的错误样本进行训练，同时，我们也给予这个分类器一个权重。</p>
+<h2 id="训练结果融合"><a href="#训练结果融合" class="headerlink" title="训练结果融合"></a>训练结果融合</h2><h3 id="加权法"><a href="#加权法" class="headerlink" title="加权法"></a>加权法</h3><ul>
+<li><p>分类问题</p>
+<p>投票法。</p>
+</li>
+<li><p>回归问题</p>
+</li>
+<li><p>排序问题</p>
+</li>
+</ul>
+<h3 id="Stacking"><a href="#Stacking" class="headerlink" title="Stacking"></a>Stacking</h3><p>通过新的模型来学习每个分类器的权重。</p>
+<ul>
+<li>构建的新模型一般是简单模型</li>
+<li>使用多个模型进行Stacking融合会有比较好的效果。</li>
+</ul>
+<h3 id="Blending"><a href="#Blending" class="headerlink" title="Blending"></a>Blending</h3><p>Blending融合是建立一个Holdout集,将不相交的数据集用于不同层的训练，这样可以很大程度上降低过拟合的风险。</p>
+<p>假设我们构造两层Blending，将训练及按5:5的比例分为两部分(train_one和train_two)，测试集为test</p>
+<p>第一层用train_one训练多个模型，将此模型对train_two和test的预测结果合并到原始特征集中，作为第二层的 特征集。第二层用train_two的特征集和标签训练新的模型，然后对test预测得到最终的融合结果。</p>
+<h2 id="实战案例"><a href="#实战案例" class="headerlink" title="实战案例"></a>实战案例</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">import numpy as np</span><br><span class="line">import pandas as pd</span><br><span class="line">from sklearn.model_selection import KFold</span><br><span class="line">from sklearn.metrics import mean_squared_error</span><br><span class="line">from sklearn.preprocessing import OneHotEncoder</span><br><span class="line">import lightgbm as lgb</span><br><span class="line"></span><br><span class="line">from matplotlib import colors </span><br><span class="line">from matplotlib.ticker import PercentFormatter </span><br><span class="line">import matplotlib.pyplot as plt</span><br><span class="line">import time</span><br><span class="line">import warnings</span><br><span class="line">warnings.filterwarnings(&#x27;ignore&#x27;)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">train = pd.read_csv(<span class="string">&#x27;train.csv&#x27;</span>)</span><br><span class="line">test = pd.read_csv(<span class="string">&#x27;test.csv&#x27;</span>)</span><br><span class="line"></span><br><span class="line">all_data = pd.concat((train,test))</span><br><span class="line">all_data = pd.get_dummies(all_data)</span><br><span class="line"><span class="comment"># 填充缺失值</span></span><br><span class="line">all_data = all_data.fillna(all_data.mean())</span><br><span class="line"><span class="comment"># 数据切分</span></span><br><span class="line">x_train = all_data[:train.shape[<span class="number">0</span>]]</span><br><span class="line">x_test = all_data[train.shape[<span class="number">0</span>]:]</span><br><span class="line">y_train = train.SalePrice</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.ensemble <span class="keyword">import</span> ExtraTreesRegressor</span><br><span class="line"><span class="keyword">from</span> sklearn.ensemble <span class="keyword">import</span> RandomForestRegressor</span><br><span class="line"><span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> mean_squared_error</span><br><span class="line"><span class="keyword">from</span> sklearn.linear_model <span class="keyword">import</span> Ridge, Lasso</span><br><span class="line"><span class="keyword">from</span> math <span class="keyword">import</span> sqrt  </span><br><span class="line"><span class="comment"># 依然采用5折交叉验证 </span></span><br><span class="line">kf = KFold(n_splits=<span class="number">5</span>, shuffle=<span class="literal">True</span>, random_state=<span class="number">2020</span>)                                                                           </span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SklearnWrapper</span>(<span class="params"><span class="built_in">object</span></span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, clf, seed=<span class="number">0</span>, params=<span class="literal">None</span></span>):</span></span><br><span class="line">        params[<span class="string">&#x27;random_state&#x27;</span>] = seed</span><br><span class="line">        self.clf = clf(**params)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">train</span>(<span class="params">self, x_train, y_train</span>):</span></span><br><span class="line">        self.clf.fit(x_train, y_train)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">predict</span>(<span class="params">self, x</span>):</span></span><br><span class="line">        <span class="keyword">return</span> self.clf.predict(x)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_oof</span>(<span class="params">clf</span>):</span></span><br><span class="line">    oof_train = np.zeros((x_train.shape[<span class="number">0</span>],))</span><br><span class="line">    oof_test = np.zeros((x_test.shape[<span class="number">0</span>],))</span><br><span class="line">    oof_test_skf = np.empty((<span class="number">5</span>, x_test.shape[<span class="number">0</span>]))</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> i, (train_index, valid_index) <span class="keyword">in</span> <span class="built_in">enumerate</span>(kf.split(x_train, y_train)):</span><br><span class="line">        trn_x, trn_y, val_x, val_y = x_train.iloc[train_index], y_train[train_index],\</span><br><span class="line">            x_train.iloc[valid_index], y_train[valid_index]</span><br><span class="line">        clf.train(trn_x, trn_y)</span><br><span class="line"></span><br><span class="line">        oof_train[valid_index] = clf.predict(val_x)</span><br><span class="line">        oof_test_skf[i, :] = clf.predict(x_test)</span><br><span class="line"></span><br><span class="line">    oof_test[:] = oof_test_skf.mean(axis=<span class="number">0</span>)</span><br><span class="line">    <span class="keyword">return</span> oof_train.reshape(-<span class="number">1</span>, <span class="number">1</span>), oof_test.reshape(-<span class="number">1</span>, <span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">et_params = &#123;</span><br><span class="line">   <span class="string">&#x27;n_estimators&#x27;</span>: <span class="number">100</span>,</span><br><span class="line">    <span class="string">&#x27;max_features&#x27;</span>: <span class="number">0.5</span>,</span><br><span class="line">    <span class="string">&#x27;max_depth&#x27;</span>: <span class="number">12</span>,</span><br><span class="line">    <span class="string">&#x27;min_samples_leaf&#x27;</span>: <span class="number">2</span>,</span><br><span class="line">&#125;</span><br><span class="line">rf_params = &#123;</span><br><span class="line">    <span class="string">&#x27;n_estimators&#x27;</span>: <span class="number">100</span>,</span><br><span class="line">    <span class="string">&#x27;max_features&#x27;</span>: <span class="number">0.2</span>,</span><br><span class="line">    <span class="string">&#x27;max_depth&#x27;</span>: <span class="number">12</span>,</span><br><span class="line">    <span class="string">&#x27;min_samples_leaf&#x27;</span>: <span class="number">2</span>,</span><br><span class="line">&#125;</span><br><span class="line">rd_params=&#123;<span class="string">&#x27;alpha&#x27;</span>: <span class="number">10</span>&#125;</span><br><span class="line">ls_params=&#123; <span class="string">&#x27;alpha&#x27;</span>: <span class="number">0.005</span>&#125;</span><br><span class="line">et = SklearnWrapper(clf=ExtraTreesRegressor, seed=<span class="number">2020</span>, params=et_params)</span><br><span class="line">rf = SklearnWrapper(clf=RandomForestRegressor, seed=<span class="number">2020</span>, params=rf_params)</span><br><span class="line">rd = SklearnWrapper(clf=Ridge, seed=<span class="number">2020</span>, params=rd_params)</span><br><span class="line">ls = SklearnWrapper(clf=Lasso, seed=<span class="number">2020</span>, params=ls_params)</span><br><span class="line"></span><br><span class="line">et_oof_train, et_oof_test = get_oof(et)</span><br><span class="line">rf_oof_train, rf_oof_test = get_oof(rf)</span><br><span class="line">rd_oof_train, rd_oof_test = get_oof(rd)</span><br><span class="line">ls_oof_train, ls_oof_test = get_oof(ls)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">stack_model</span>(<span class="params">oof_1, oof_2, oof_3, oof_4, predictions_1, predictions_2, predictions_3, predictions_4, y</span>):</span></span><br><span class="line">    train_stack = np.hstack([oof_1, oof_2, oof_3, oof_4])</span><br><span class="line">    test_stack = np.hstack([predictions_1, predictions_2, predictions_3, predictions_4])</span><br><span class="line">    </span><br><span class="line">    oof = np.zeros((train_stack.shape[<span class="number">0</span>],))</span><br><span class="line">    predictions = np.zeros((test_stack.shape[<span class="number">0</span>],))</span><br><span class="line">    scores = []</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> fold_, (trn_idx, val_idx) <span class="keyword">in</span> <span class="built_in">enumerate</span>(kf.split(train_stack, y)): </span><br><span class="line">        trn_data, trn_y = train_stack[trn_idx], y[trn_idx]</span><br><span class="line">        val_data, val_y = train_stack[val_idx], y[val_idx]</span><br><span class="line">        </span><br><span class="line">        clf = Ridge(random_state=<span class="number">2020</span>)</span><br><span class="line">        clf.fit(trn_data, trn_y)</span><br><span class="line"></span><br><span class="line">        oof[val_idx] = clf.predict(val_data)</span><br><span class="line">        predictions += clf.predict(test_stack) / <span class="number">5</span></span><br><span class="line">        </span><br><span class="line">        score_single = sqrt(mean_squared_error(val_y, oof[val_idx]))</span><br><span class="line">        scores.append(score_single)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">f&#x27;<span class="subst">&#123;fold_+<span class="number">1</span>&#125;</span>/<span class="subst">&#123;<span class="number">5</span>&#125;</span>&#x27;</span>, score_single)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&#x27;mean: &#x27;</span>,np.mean(scores))</span><br><span class="line">   </span><br><span class="line">    <span class="keyword">return</span> oof, predictions</span><br><span class="line"></span><br><span class="line">oof_stack , predictions_stack  = stack_model(et_oof_train, rf_oof_train, rd_oof_train, ls_oof_train, \</span><br><span class="line">                                             et_oof_test, rf_oof_test, rd_oof_test, </span><br><span class="line">    ls_oof_test, y_train)</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AB%9E%E8%B5%9B%E5%AE%9E%E6%88%98/" rel="tag"># 竞赛实战</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/10/14/ML-Algorithm-pratice/ML-Algorithm-pratice-2/" rel="prev" title="机器学习算法竞赛实战(二)">
+      <i class="fa fa-chevron-left"></i> 机器学习算法竞赛实战(二)
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/10/23/ML-Algorithm-pratice/ML-Algorithm-pratice-4/" rel="next" title="机器学习算法竞赛实战(四)">
+      机器学习算法竞赛实战(四) <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E8%AE%AD%E7%BB%83"><span class="nav-number">1.</span> <span class="nav-text">模型训练</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.1.</span> <span class="nav-text">线性模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Lasso%E5%9B%9E%E5%BD%92"><span class="nav-number">1.1.1.</span> <span class="nav-text">Lasso回归</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Ridge%E5%9B%9E%E5%BD%92"><span class="nav-number">1.1.2.</span> <span class="nav-text">Ridge回归</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%91%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.2.</span> <span class="nav-text">树模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9A%8F%E6%9C%BA%E6%A3%AE%E6%9E%97"><span class="nav-number">1.2.1.</span> <span class="nav-text">随机森林</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A2%AF%E5%BA%A6%E6%8F%90%E5%8D%87%E6%A0%91"><span class="nav-number">1.2.2.</span> <span class="nav-text">梯度提升树</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#XGBoost"><span class="nav-number">1.2.3.</span> <span class="nav-text">XGBoost</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LightGBM"><span class="nav-number">1.2.4.</span> <span class="nav-text">LightGBM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CatBoost"><span class="nav-number">1.2.5.</span> <span class="nav-text">CatBoost</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C"><span class="nav-number">1.3.</span> <span class="nav-text">神经网络</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E5%B1%82%E6%84%9F%E7%9F%A5%E6%9C%BA"><span class="nav-number">1.3.1.</span> <span class="nav-text">多层感知机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C"><span class="nav-number">1.3.2.</span> <span class="nav-text">卷积神经网络</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BE%AA%E7%8E%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C"><span class="nav-number">1.3.3.</span> <span class="nav-text">循环神经网络</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E8%9E%8D%E5%90%88"><span class="nav-number">2.</span> <span class="nav-text">模型融合</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%84%E5%BB%BA%E5%A4%9A%E6%A0%B7%E6%80%A7"><span class="nav-number">2.1.</span> <span class="nav-text">构建多样性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%B9%E5%BE%81%E5%A4%9A%E6%A0%B7%E6%80%A7"><span class="nav-number">2.1.1.</span> <span class="nav-text">特征多样性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B7%E6%9C%AC%E5%A4%9A%E6%A0%B7%E6%80%A7"><span class="nav-number">2.1.2.</span> <span class="nav-text">样本多样性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E5%A4%9A%E6%A0%B7%E6%80%A7"><span class="nav-number">2.1.3.</span> <span class="nav-text">模型多样性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B%E8%9E%8D%E5%90%88"><span class="nav-number">2.2.</span> <span class="nav-text">训练模型融合</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Bagging"><span class="nav-number">2.2.1.</span> <span class="nav-text">Bagging</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Boosting"><span class="nav-number">2.2.2.</span> <span class="nav-text">Boosting</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%AD%E7%BB%83%E7%BB%93%E6%9E%9C%E8%9E%8D%E5%90%88"><span class="nav-number">2.3.</span> <span class="nav-text">训练结果融合</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A0%E6%9D%83%E6%B3%95"><span class="nav-number">2.3.1.</span> <span class="nav-text">加权法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Stacking"><span class="nav-number">2.3.2.</span> <span class="nav-text">Stacking</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Blending"><span class="nav-number">2.3.3.</span> <span class="nav-text">Blending</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E6%88%98%E6%A1%88%E4%BE%8B"><span class="nav-number">2.4.</span> <span class="nav-text">实战案例</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Xavier ZXY"
+      src="/images/autor.jpg">
+  <p class="site-author-name" itemprop="name">Xavier ZXY</p>
+  <div class="site-description" itemprop="description">ZXY 想去看极光</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xavierzxy" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xavierzxy" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zxy_xavier@163.com" title="E-Mail → mailto:zxy_xavier@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">湘ICP备  2021018889 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Xavier ZXY</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    // window.MathJax = {
+    //   loader: {
+    //
+    //       load: ['[tex]/mhchem'],
+    //
+    //     source: {
+    //       '[tex]/amsCd': '[tex]/amscd',
+    //       '[tex]/AMScd': '[tex]/amscd'
+    //     }
+    //   },
+    //   tex: {
+    //     inlineMath: {'[+]': [['$', '$']]},
+    //
+    //       packages: {'[+]': ['mhchem']},
+    //
+    //     tags: 'ams'
+    //   },
+    //   options: {
+    //     renderActions: {
+    //       findScript: [10, doc => {
+    //         document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+    //           const display = !!node.type.match(/; *mode=display/);
+    //           const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+    //           const text = document.createTextNode('');
+    //           node.parentNode.replaceChild(text, node);
+    //           math.start = {node: text, delim: '', n: 0};
+    //           math.end = {node: text, delim: '', n: 0};
+    //           doc.math.push(math);
+    //         });
+    //       }, '', false],
+    //       insertedScript: [200, () => {
+    //         document.querySelectorAll('mjx-container').forEach(node => {
+    //           let target = node.parentNode;
+    //           if (target.nodeName.toLowerCase() === 'li') {
+    //             target.parentNode.classList.add('has-jax');
+    //           }
+    //         });
+    //       }, '', false]
+    //     }
+    //   }
+    // };
+    window.MathJax = {
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        processEscapes: true
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/mathjax@2.7.8/unpacked/MathJax.js?config=TeX-MML-AM_CHTML';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

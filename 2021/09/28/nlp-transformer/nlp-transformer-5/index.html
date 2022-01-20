@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/learn-apple.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/learn32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/learn16x16.png">
+  <link rel="mask-icon" href="/images/learn.svg" color="#222">
+  <meta name="baidu-site-verification" content="code-a86h7x1bd3">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.spacezxy.top","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="本文为参加Datawhale组队学习时所写，如若需了解细致内容，请去到Datawhale官方开源课程基于transformers的自然语言处理(NLP)入门 (datawhalechina.github.io) 抽取式问答任务抽取式问答任务：给定一个问题和一段文本，从这段文本中找出能够回答该问题的文本片段(span), 通过使用Tranier API和dataset包，我们可以轻松加载数据，然后微">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于Transformers的自然语言处理(NLP)入门(五)">
+<meta property="og:url" content="https://www.spacezxy.top/2021/09/28/nlp-transformer/nlp-transformer-5/index.html">
+<meta property="og:site_name" content="Xavier ZXY">
+<meta property="og:description" content="本文为参加Datawhale组队学习时所写，如若需了解细致内容，请去到Datawhale官方开源课程基于transformers的自然语言处理(NLP)入门 (datawhalechina.github.io) 抽取式问答任务抽取式问答任务：给定一个问题和一段文本，从这段文本中找出能够回答该问题的文本片段(span), 通过使用Tranier API和dataset包，我们可以轻松加载数据，然后微">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/28/nlp-transformer/nlp-transformer-5/image-20210928150458790.png">
+<meta property="article:published_time" content="2021-09-28T06:19:32.000Z">
+<meta property="article:modified_time" content="2021-09-28T08:23:52.490Z">
+<meta property="article:author" content="Xavier ZXY">
+<meta property="article:tag" content="Datawhale组队学习">
+<meta property="article:tag" content="NLP入门">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.spacezxy.top/2021/09/28/nlp-transformer/nlp-transformer-5/image-20210928150458790.png">
+
+<link rel="canonical" href="https://www.spacezxy.top/2021/09/28/nlp-transformer/nlp-transformer-5/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>基于Transformers的自然语言处理(NLP)入门(五) | Xavier ZXY</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+  <a target="_blank" rel="noopener" href="https://github.com/XavierZXY" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#151513; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Xavier ZXY</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.spacezxy.top/2021/09/28/nlp-transformer/nlp-transformer-5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/autor.jpg">
+      <meta itemprop="name" content="Xavier ZXY">
+      <meta itemprop="description" content="ZXY 想去看极光">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xavier ZXY">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          基于Transformers的自然语言处理(NLP)入门(五)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-09-28 14:19:32 / 修改时间：16:23:52" itemprop="dateCreated datePublished" datetime="2021-09-28T14:19:32+08:00">2021-09-28</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">深度学习</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%87%AA%E7%84%B6%E8%AF%AD%E8%A8%80%E5%A4%84%E7%90%86/" itemprop="url" rel="index"><span itemprop="name">自然语言处理</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本文为参加Datawhale组队学习时所写，如若需了解细致内容，请去到Datawhale官方开源课程<a target="_blank" rel="noopener" href="https://datawhalechina.github.io/learn-nlp-with-transformers/#/">基于transformers的自然语言处理(NLP)入门 (datawhalechina.github.io)</a></p>
+<h1 id="抽取式问答任务"><a href="#抽取式问答任务" class="headerlink" title="抽取式问答任务"></a>抽取式问答任务</h1><p>抽取式问答任务：给定一个问题和一段文本，从这段文本中找出能够回答该问题的文本片段(span), 通过使用Tranier API和dataset包，我们可以轻松加载数据，然后微调transformers。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># squad_v2等于True或者False分别代表使用SQUAD v1 或者 SQUAD v2。</span></span><br><span class="line"><span class="comment"># 如果您使用的是其他数据集，那么True代表的是：模型可以回答“不可回答”问题，也就是部分问题不给出答案，而False则代表所有问题必须回答。</span></span><br><span class="line">squad_v2 = <span class="literal">False</span></span><br><span class="line">model_checkpoint = <span class="string">&quot;distilbert-base-uncased&quot;</span></span><br><span class="line">batch_size = <span class="number">16</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="加载数据集"><a href="#加载数据集" class="headerlink" title="加载数据集"></a>加载数据集</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> datasets <span class="keyword">import</span> load_datasets, load_metric</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">#  下载数据</span></span><br><span class="line">datasets = load_dataset(<span class="string">&quot;squad_v2&quot;</span> <span class="keyword">if</span> squad_v2 <span class="keyword">else</span> <span class="string">&quot;squad&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
+<p>datasets的属性结构</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">DatasetDict(&#123;</span><br><span class="line">    train: Dataset(&#123;</span><br><span class="line">        features: [<span class="string">&#x27;id&#x27;</span>, <span class="string">&#x27;title&#x27;</span>, <span class="string">&#x27;context&#x27;</span>, <span class="string">&#x27;question&#x27;</span>, <span class="string">&#x27;answers&#x27;</span>],</span><br><span class="line">        num_rows: <span class="number">87599</span></span><br><span class="line">    &#125;)</span><br><span class="line">    validation: Dataset(&#123;</span><br><span class="line">        features: [<span class="string">&#x27;id&#x27;</span>, <span class="string">&#x27;title&#x27;</span>, <span class="string">&#x27;context&#x27;</span>, <span class="string">&#x27;question&#x27;</span>, <span class="string">&#x27;answers&#x27;</span>],</span><br><span class="line">        num_rows: <span class="number">10570</span></span><br><span class="line">    &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>无论是训练集、验证集还是测试集，对于每一个问答数据样本都会有“context”, “question”和“answers”三个key。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">datasets[<span class="string">&quot;train&quot;</span>][<span class="number">0</span>]</span><br><span class="line"><span class="comment"># answers代表答案</span></span><br><span class="line"><span class="comment"># context代表文本片段</span></span><br><span class="line"><span class="comment"># question代表问题</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="string">&#x27;answers&#x27;</span>: &#123;<span class="string">&#x27;answer_start&#x27;</span>: [<span class="number">515</span>], <span class="string">&#x27;text&#x27;</span>: [<span class="string">&#x27;Saint Bernadette Soubirous&#x27;</span>]&#125;,</span><br><span class="line"> <span class="string">&#x27;context&#x27;</span>: <span class="string">&#x27;Architecturally, the school has a Catholic character. Atop the Main Building\&#x27;s gold dome is a golden statue of the Virgin Mary. Immediately in front of the Main Building and facing it, is a copper statue of Christ with arms upraised with the legend &quot;Venite Ad Me Omnes&quot;. Next to the Main Building is the Basilica of the Sacred Heart. Immediately behind the basilica is the Grotto, a Marian place of prayer and reflection. It is a replica of the grotto at Lourdes, France where the Virgin Mary reputedly appeared to Saint Bernadette Soubirous in 1858. At the end of the main drive (and in a direct line that connects through 3 statues and the Gold Dome), is a simple, modern stone statue of Mary.&#x27;</span>,</span><br><span class="line"> <span class="string">&#x27;id&#x27;</span>: <span class="string">&#x27;5733be284776f41900661182&#x27;</span>,</span><br><span class="line"> <span class="string">&#x27;question&#x27;</span>: <span class="string">&#x27;To whom did the Virgin Mary allegedly appear in 1858 in Lourdes France?&#x27;</span>,</span><br><span class="line"> <span class="string">&#x27;title&#x27;</span>: <span class="string">&#x27;University_of_Notre_Dame&#x27;</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<p>answers除了给出了文本片段里的答案文本之外，还给出了该answer所在位置（以character开始计算，上面的例子是第515位）。</p>
+<p>随机抽取数据，进行展示。</p>
+<p><img src="/2021/09/28/nlp-transformer/nlp-transformer-5/image-20210928150458790.png" alt="data"></p>
+<h2 id="数据预处理"><a href="#数据预处理" class="headerlink" title="数据预处理"></a>数据预处理</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> transformers <span class="keyword">import</span> AutoTokenizer</span><br><span class="line">    </span><br><span class="line">tokenizer = AutoTokenizer.from_pretrained(model_checkpoint)</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> transformers</span><br><span class="line"><span class="keyword">assert</span> <span class="built_in">isinstance</span>(tokenizer, transformers.PreTrainedTokenizerFast)</span><br></pre></td></tr></table></figure>
+
+<p>现在我们还需要思考预训练机器问答模型们是如何处理非常长的文本的。一般来说预训练模型输入有最大长度要求，所以我们通常将超长的输入进行截断。但是，如果我们将问答数据三元组&lt;question, context, answer&gt;中的超长context截断，那么我们可能丢掉答案（因为我们是从context中抽取出一个小片段作为答案）。</p>
+<p>为了解决这个问题，下面的代码找到一个超过长度的例子，然后向您演示如何进行处理。我们把超长的输入切片为多个较短的输入，每个输入都要满足模型最大长度输入要求。由于答案可能存在与切片的地方，因此我们需要允许相邻切片之间有交集，代码中通过<code>doc_stride</code>参数控制。</p>
+<p>机器问答预训练模型通常将question和context拼接之后作为输入，然后让模型从context里寻找答案。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">max_length = <span class="number">384</span>  <span class="comment"># 输入feature的最大长度，question和context拼接之后</span></span><br><span class="line">doc_stride = <span class="number">128</span>  <span class="comment"># 2个切片之间的重合token数量。</span></span><br></pre></td></tr></table></figure>
+
+<p>for循环遍历数据集，寻找一个超长样本，本notebook例子模型所要求的最大输入是384（经常使用的还有512）</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i, example <span class="keyword">in</span> <span class="built_in">enumerate</span>(datasets[<span class="string">&quot;train&quot;</span>]):</span><br><span class="line">    <span class="keyword">if</span> <span class="built_in">len</span>(tokenizer(example[<span class="string">&quot;question&quot;</span>], example[<span class="string">&quot;context&quot;</span>])[<span class="string">&quot;input_ids&quot;</span>]) &gt; <span class="number">384</span>:</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">example = datasets[<span class="string">&quot;train&quot;</span>][i]</span><br></pre></td></tr></table></figure>
+
+<p>如果不截断的话，那么输入的长度是396</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">len</span>(tokenizer(example[<span class="string">&quot;question&quot;</span>], example[<span class="string">&quot;context&quot;</span>])[<span class="string">&quot;input_ids&quot;</span>])</span><br><span class="line"><span class="number">396</span></span><br></pre></td></tr></table></figure>
+
+<p>现在如果我们截断成最大长度384，将会丢失超长部分的信息</p>
+<p>注意，一般来说，我们只对context进行切片，不会对问题进行切片，由于context是拼接在question后面的，对应着第2个文本，所以使用<code>only_second</code>控制.tokenizer使用<code>doc_stride</code>控制切片之间的重合长度。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">tokenized_example = tokenizer(</span><br><span class="line">    example[<span class="string">&quot;question&quot;</span>],</span><br><span class="line">    example[<span class="string">&quot;context&quot;</span>],</span><br><span class="line">    max_length=max_length,</span><br><span class="line">    truncation=<span class="string">&quot;only_second&quot;</span>,</span><br><span class="line">    return_overflowing_tokens=<span class="literal">True</span>,</span><br><span class="line">    stride=doc_stride</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>由于对超长输入进行了切片，我们得到了多个输入，这些输入input_ids对应的长度是</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[<span class="built_in">len</span>(x) <span class="keyword">for</span> x <span class="keyword">in</span> tokenized_example[<span class="string">&quot;input_ids&quot;</span>]]</span><br><span class="line"></span><br><span class="line">[<span class="number">384</span>, <span class="number">157</span>]</span><br></pre></td></tr></table></figure>
+
+<p>我们可以将预处理后的token IDs，input_ids还原为文本格式：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i, x <span class="keyword">in</span> <span class="built_in">enumerate</span>(tokenized_example[<span class="string">&quot;input_ids&quot;</span>][:<span class="number">2</span>]):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;切片: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(i))</span><br><span class="line">    <span class="built_in">print</span>(tokenizer.decode(x))</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">切片: <span class="number">0</span></span><br><span class="line">[CLS] how many wins does the notre dame men<span class="string">&#x27;s basketball team have? [SEP] the men&#x27;</span>s basketball team has over <span class="number">1</span>, <span class="number">600</span> wins, one of only <span class="number">12</span> schools who have reached that ....</span><br><span class="line">championship. the <span class="number">2010</span> – <span class="number">11</span> team concluded its regular season ranked number seven <span class="keyword">in</span> the country, <span class="keyword">with</span> a record of <span class="number">25</span> – <span class="number">5</span>, brey<span class="string">&#x27;s fifth straight 20 - win season, and a second - place finish in the big east. during the 2014 - 15 season, the team went 32 - 6 and won the acc conference tournament, later advancing to the elite 8, where the fighting irish lost on a missed buzzer - beater against then undefeated kentucky. led by nba draft picks jerian grant and pat connaughton, the fighting irish beat the eventual national champion duke blue devils twice during the season. the 32 wins were [SEP]</span></span><br><span class="line"><span class="string">切片: 1</span></span><br><span class="line"><span class="string">[CLS] how many wins does the notre dame men&#x27;</span>s basketball team have? [SEP] championship. the <span class="number">2010</span> – <span class="number">11</span> team concluded its regular season ranked number seven <span class="keyword">in</span> the country, <span class="keyword">with</span> a record of <span class="number">25</span> – <span class="number">5</span>, brey<span class="string">&#x27;s fifth straight 20 - win season, and a second - place finish in the big east. during the 2014 - 15 season, the team went 32 - 6 and won the acc conference tournament, later advancing to the elite 8, where the fighting irish lost on a missed buzzer - beater against then undefeated kentucky. led by nba draft picks jerian grant and pat connaughton, the fighting irish beat the eventual national champion duke blue devils twice during the season. the 32 wins were the most by the fighting irish team since 1908 - 09. [SEP]</span></span><br></pre></td></tr></table></figure>
+
+<p>由于我们对超长文本进行了切片，我们需要重新寻找答案所在位置（相对于每一片context开头的相对位置）。机器问答模型将使用答案的位置（答案的起始位置和结束位置，start和end）作为训练标签（而不是答案的token IDS）。所以切片需要和原始输入有一个对应关系，每个token在切片后context的位置和原始超长context里位置的对应关系。在tokenizer里可以使用<code>return_offsets_mapping</code>参数得到这个对应关系的map：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">tokenized_example = tokenizer(</span><br><span class="line">    example[<span class="string">&quot;question&quot;</span>],</span><br><span class="line">    example[<span class="string">&quot;context&quot;</span>],</span><br><span class="line">    max_length=max_length,</span><br><span class="line">    truncation=<span class="string">&quot;only_second&quot;</span>,</span><br><span class="line">    return_overflowing_tokens=<span class="literal">True</span>,</span><br><span class="line">    return_offsets_mapping=<span class="literal">True</span>,</span><br><span class="line">    stride=doc_stride</span><br><span class="line">)</span><br><span class="line"><span class="comment"># 打印切片前后位置下标的对应关系</span></span><br><span class="line"><span class="built_in">print</span>(tokenized_example[<span class="string">&quot;offset_mapping&quot;</span>][<span class="number">0</span>][:<span class="number">100</span>])</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[(0, 0), (0, 3), (4, 8), (9, 13), (14, 18), (19, 22), (23, 28), (29, 33), (34, 37), (37, 38), (38, 39), (40, 50), (51, 55), (56, 60), (60, 61), (0, 0), (0, 3), (4, 7), (7, 8), (8, 9), (10, 20), (21, 25), (26, 29), (30, 34), (35, 36), (36, 37), (37, 40), (41, 45), (45, 46), (47, 50), (51, 53), (54, 58), (59, 61), (62, 69), (70, 73), (74, 78), (79, 86), (87, 91), (92, 96), (96, 97), (98, 101), (102, 106), (107, 115), (116, 118), (119, 121), (122, 126), (127, 138), (138, 139), (140, 146), (147, 153), (154, 160), (161, 165), (166, 171), (172, 175), (176, 182), (183, 186), (187, 191), (192, 198), (199, 205), (206, 208), (209, 210), (211, 217), (218, 222), (223, 225), (226, 229), (230, 240), (241, 245), (246, 248), (248, 249), (250, 258), (259, 262), (263, 267), (268, 271), (272, 277), (278, 281), (282, 285), (286, 290), (291, 301), (301, 302), (303, 307), (308, 312), (313, 318), (319, 321), (322, 325), (326, 330), (330, 331), (332, 340), (341, 351), (352, 354), (355, 363), (364, 373), (374, 379), (379, 380), (381, 384), (385, 389), (390, 393), (394, 406), (407, 408), (409, 415), (416, 418)]</span><br><span class="line">[0, 0]</span><br></pre></td></tr></table></figure>
+
+<p>上面打印的是tokenized_example第0片的前100个tokens在原始context片里的位置。注意第一个token是<code>[CLS]</code>设定为(0, 0)是因为这个token不属于qeustion或者answer的一部分。第2个token对应的起始和结束位置是0和3。我们可以根据切片后的token id转化对应的token；然后使用<code>offset_mapping</code>参数映射回切片前的token位置，找到原始位置的tokens。由于question拼接在context前面，所以直接从question里根据下标找就行了。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">first_token_id = tokenized_example[<span class="string">&quot;input_ids&quot;</span>][<span class="number">0</span>][<span class="number">1</span>]</span><br><span class="line">offsets = tokenized_example[<span class="string">&quot;offset_mapping&quot;</span>][<span class="number">0</span>][<span class="number">1</span>]</span><br><span class="line"><span class="built_in">print</span>(tokenizer.convert_ids_to_tokens([first_token_id])[<span class="number">0</span>], example[<span class="string">&quot;question&quot;</span>][offsets[<span class="number">0</span>]:offsets[<span class="number">1</span>]])</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">how How</span><br></pre></td></tr></table></figure>
+
+<p>因此，我们得到了切片前后的位置对应关系。我们还需要使用<code>sequence_ids</code>参数来区分question和context。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sequence_ids = tokenized_example.sequence_ids()</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[None, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, None, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, None]</span><br></pre></td></tr></table></figure>
+
+<p><code>None</code>对应了special tokens，然后0或者1分表代表第1个文本和第2个文本，由于我们qeustin第1个传入，context第2个传入，所以分别对应question和context。最终我们可以找到标注的答案在预处理之后的features里的位置:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">answers = example[<span class="string">&quot;answers&quot;</span>]</span><br><span class="line">start_char = answers[<span class="string">&quot;answer_start&quot;</span>][<span class="number">0</span>]</span><br><span class="line">end_char = start_char + <span class="built_in">len</span>(answers[<span class="string">&quot;text&quot;</span>][<span class="number">0</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 找到当前文本的Start token index.</span></span><br><span class="line">token_start_index = <span class="number">0</span></span><br><span class="line"><span class="keyword">while</span> sequence_ids[token_start_index] != <span class="number">1</span>:</span><br><span class="line">    token_start_index += <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 找到当前文本的End token idnex.</span></span><br><span class="line">token_end_index = <span class="built_in">len</span>(tokenized_example[<span class="string">&quot;input_ids&quot;</span>][<span class="number">0</span>]) - <span class="number">1</span></span><br><span class="line"><span class="keyword">while</span> sequence_ids[token_end_index] != <span class="number">1</span>:</span><br><span class="line">    token_end_index -= <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 检测答案是否在文本区间的外部，这种情况下意味着该样本的数据标注在CLS token位置。</span></span><br><span class="line">offsets = tokenized_example[<span class="string">&quot;offset_mapping&quot;</span>][<span class="number">0</span>]</span><br><span class="line"><span class="keyword">if</span> (offsets[token_start_index][<span class="number">0</span>] &lt;= start_char <span class="keyword">and</span> offsets[token_end_index][<span class="number">1</span>] &gt;= end_char):</span><br><span class="line">    <span class="comment"># 将token_start_index和token_end_index移动到answer所在位置的两侧.</span></span><br><span class="line">    <span class="comment"># 注意：答案在最末尾的边界条件.</span></span><br><span class="line">    <span class="keyword">while</span> token_start_index &lt; <span class="built_in">len</span>(offsets) <span class="keyword">and</span> offsets[token_start_index][<span class="number">0</span>] &lt;= start_char:</span><br><span class="line">        token_start_index += <span class="number">1</span></span><br><span class="line">    start_position = token_start_index - <span class="number">1</span></span><br><span class="line">    <span class="keyword">while</span> offsets[token_end_index][<span class="number">1</span>] &gt;= end_char:</span><br><span class="line">        token_end_index -= <span class="number">1</span></span><br><span class="line">    end_position = token_end_index + <span class="number">1</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;start_position: &#123;&#125;, end_position: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(start_position, end_position))</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;The answer is not in this feature.&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">start_position: 23, end_position: 26</span><br></pre></td></tr></table></figure>
+
+<p>我们需要对答案的位置进行验证，验证方式是：使用答案所在位置下标，取到对应的token ID，然后转化为文本，然后和原始答案进行但对比。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(tokenizer.decode(tokenized_example[<span class="string">&quot;input_ids&quot;</span>][<span class="number">0</span>][start_position: end_position+<span class="number">1</span>]))</span><br><span class="line"><span class="built_in">print</span>(answers[<span class="string">&quot;text&quot;</span>][<span class="number">0</span>])</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">over 1, 600</span><br><span class="line">over 1,600</span><br></pre></td></tr></table></figure>
+
+<p>有时候question拼接context，而有时候是context拼接question，不同的模型有不同的要求，因此我们需要使用<code>padding_side</code>参数来指定。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pad_on_right = tokenizer.padding_side == <span class="string">&quot;right&quot;</span>  <span class="comment"># context在右边</span></span><br></pre></td></tr></table></figure>
+
+<p>现在，把所有步骤合并到一起。对于context中无答案的情况，我们直接将标注的答案起始位置和结束位置放置在CLS的下标处。如果<code>allow_impossible_answers</code>这个参数是<code>False</code>的化，那这些无答案的样本都会被扔掉。现在，把所有步骤合并到一起。对于context中无答案的情况，我们直接将标注的答案起始位置和结束位置放置在CLS的下标处。如果<code>allow_impossible_answers</code>这个参数是<code>False</code>的化，那这些无答案的样本都会被扔掉。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">prepare_train_features</span>(<span class="params">examples</span>):</span></span><br><span class="line">    <span class="comment"># 既要对examples进行truncation（截断）和padding（补全）还要还要保留所有信息，所以要用的切片的方法。</span></span><br><span class="line">    <span class="comment"># 每一个一个超长文本example会被切片成多个输入，相邻两个输入之间会有交集。</span></span><br><span class="line">    tokenized_examples = tokenizer(</span><br><span class="line">        examples[<span class="string">&quot;question&quot;</span> <span class="keyword">if</span> pad_on_right <span class="keyword">else</span> <span class="string">&quot;context&quot;</span>],</span><br><span class="line">        examples[<span class="string">&quot;context&quot;</span> <span class="keyword">if</span> pad_on_right <span class="keyword">else</span> <span class="string">&quot;question&quot;</span>],</span><br><span class="line">        truncation=<span class="string">&quot;only_second&quot;</span> <span class="keyword">if</span> pad_on_right <span class="keyword">else</span> <span class="string">&quot;only_first&quot;</span>,</span><br><span class="line">        max_length=max_length,</span><br><span class="line">        stride=doc_stride,</span><br><span class="line">        return_overflowing_tokens=<span class="literal">True</span>,</span><br><span class="line">        return_offsets_mapping=<span class="literal">True</span>,</span><br><span class="line">        padding=<span class="string">&quot;max_length&quot;</span>,</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 我们使用overflow_to_sample_mapping参数来映射切片片ID到原始ID。</span></span><br><span class="line">    <span class="comment"># 比如有2个expamples被切成4片，那么对应是[0, 0, 1, 1]，前两片对应原来的第一个example。</span></span><br><span class="line">    sample_mapping = tokenized_examples.pop(<span class="string">&quot;overflow_to_sample_mapping&quot;</span>)</span><br><span class="line">    <span class="comment"># offset_mapping也对应4片</span></span><br><span class="line">    <span class="comment"># offset_mapping参数帮助我们映射到原始输入，由于答案标注在原始输入上，所以有助于我们找到答案的起始和结束位置。</span></span><br><span class="line">    offset_mapping = tokenized_examples.pop(<span class="string">&quot;offset_mapping&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 重新标注数据</span></span><br><span class="line">    tokenized_examples[<span class="string">&quot;start_positions&quot;</span>] = []</span><br><span class="line">    tokenized_examples[<span class="string">&quot;end_positions&quot;</span>] = []</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i, offsets <span class="keyword">in</span> <span class="built_in">enumerate</span>(offset_mapping):</span><br><span class="line">        <span class="comment"># 对每一片进行处理</span></span><br><span class="line">        <span class="comment"># 将无答案的样本标注到CLS上</span></span><br><span class="line">        input_ids = tokenized_examples[<span class="string">&quot;input_ids&quot;</span>][i]</span><br><span class="line">        cls_index = input_ids.index(tokenizer.cls_token_id)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 区分question和context</span></span><br><span class="line">        sequence_ids = tokenized_examples.sequence_ids(i)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 拿到原始的example 下标.</span></span><br><span class="line">        sample_index = sample_mapping[i]</span><br><span class="line">        answers = examples[<span class="string">&quot;answers&quot;</span>][sample_index]</span><br><span class="line">        <span class="comment"># 如果没有答案，则使用CLS所在的位置为答案.</span></span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">len</span>(answers[<span class="string">&quot;answer_start&quot;</span>]) == <span class="number">0</span>:</span><br><span class="line">            tokenized_examples[<span class="string">&quot;start_positions&quot;</span>].append(cls_index)</span><br><span class="line">            tokenized_examples[<span class="string">&quot;end_positions&quot;</span>].append(cls_index)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="comment"># 答案的character级别Start/end位置.</span></span><br><span class="line">            start_char = answers[<span class="string">&quot;answer_start&quot;</span>][<span class="number">0</span>]</span><br><span class="line">            end_char = start_char + <span class="built_in">len</span>(answers[<span class="string">&quot;text&quot;</span>][<span class="number">0</span>])</span><br><span class="line"></span><br><span class="line">            <span class="comment"># 找到token级别的index start.</span></span><br><span class="line">            token_start_index = <span class="number">0</span></span><br><span class="line">            <span class="keyword">while</span> sequence_ids[token_start_index] != (<span class="number">1</span> <span class="keyword">if</span> pad_on_right <span class="keyword">else</span> <span class="number">0</span>):</span><br><span class="line">                token_start_index += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">            <span class="comment"># 找到token级别的index end.</span></span><br><span class="line">            token_end_index = <span class="built_in">len</span>(input_ids) - <span class="number">1</span></span><br><span class="line">            <span class="keyword">while</span> sequence_ids[token_end_index] != (<span class="number">1</span> <span class="keyword">if</span> pad_on_right <span class="keyword">else</span> <span class="number">0</span>):</span><br><span class="line">                token_end_index -= <span class="number">1</span></span><br><span class="line"></span><br><span class="line">            <span class="comment"># 检测答案是否超出文本长度，超出的话也适用CLS index作为标注.</span></span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> (offsets[token_start_index][<span class="number">0</span>] &lt;= start_char <span class="keyword">and</span> offsets[token_end_index][<span class="number">1</span>] &gt;= end_char):</span><br><span class="line">                tokenized_examples[<span class="string">&quot;start_positions&quot;</span>].append(cls_index)</span><br><span class="line">                tokenized_examples[<span class="string">&quot;end_positions&quot;</span>].append(cls_index)</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="comment"># 如果不超出则找到答案token的start和end位置。.</span></span><br><span class="line">                <span class="comment"># Note: we could go after the last offset if the answer is the last word (edge case).</span></span><br><span class="line">                <span class="keyword">while</span> token_start_index &lt; <span class="built_in">len</span>(offsets) <span class="keyword">and</span> offsets[token_start_index][<span class="number">0</span>] &lt;= start_char:</span><br><span class="line">                    token_start_index += <span class="number">1</span></span><br><span class="line">                tokenized_examples[<span class="string">&quot;start_positions&quot;</span>].append(token_start_index - <span class="number">1</span>)</span><br><span class="line">                <span class="keyword">while</span> offsets[token_end_index][<span class="number">1</span>] &gt;= end_char:</span><br><span class="line">                    token_end_index -= <span class="number">1</span></span><br><span class="line">                tokenized_examples[<span class="string">&quot;end_positions&quot;</span>].append(token_end_index + <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> tokenized_examples</span><br></pre></td></tr></table></figure>
+
+<h2 id="Fine-tuning微调模型"><a href="#Fine-tuning微调模型" class="headerlink" title="Fine-tuning微调模型"></a>Fine-tuning微调模型</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> transformers <span class="keyword">import</span> AutoModelForQuestionAnswering, TrainingArguments, Trainer</span><br><span class="line"></span><br><span class="line">model = AutoModelForQuestionAnswering.from_pretrained(model_checkpoint)</span><br></pre></td></tr></table></figure>
+
+<p>训练参数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">args = TrainingArguments(</span><br><span class="line">    <span class="string">f&quot;test-squad&quot;</span>,</span><br><span class="line">    evaluation_strategy = <span class="string">&quot;epoch&quot;</span>,</span><br><span class="line">    learning_rate=<span class="number">2e-5</span>, <span class="comment">#学习率</span></span><br><span class="line">    per_device_train_batch_size=batch_size,</span><br><span class="line">    per_device_eval_batch_size=batch_size,</span><br><span class="line">    num_train_epochs=<span class="number">3</span>, <span class="comment"># 训练的论次</span></span><br><span class="line">    weight_decay=<span class="number">0.01</span>,</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> transformers <span class="keyword">import</span> default_data_collator</span><br><span class="line"></span><br><span class="line">data_collator = default_data_collator</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">trainer = Trainer(</span><br><span class="line">    model,</span><br><span class="line">    args,</span><br><span class="line">    train_dataset=tokenized_datasets[<span class="string">&quot;train&quot;</span>],</span><br><span class="line">    eval_dataset=tokenized_datasets[<span class="string">&quot;validation&quot;</span>],</span><br><span class="line">    data_collator=data_collator,</span><br><span class="line">    tokenizer=tokenizer,</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">#  开始训练</span></span><br><span class="line">trainer.train()</span><br><span class="line"></span><br><span class="line"><span class="comment">#  保存模型</span></span><br><span class="line">trainer.save_model(<span class="string">&quot;test-squad-trained&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="Evaluation评估"><a href="#Evaluation评估" class="headerlink" title="Evaluation评估"></a>Evaluation评估</h2><p>我们需要将模型的输出后处理成我们需要的文本格式。模型本身预测的是answer所在start/end位置的logits。如果我们评估时喂入模型的是一个batch，那么输出如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> torch</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> batch <span class="keyword">in</span> trainer.get_eval_dataloader():</span><br><span class="line">    <span class="keyword">break</span></span><br><span class="line">batch = &#123;k: v.to(trainer.args.device) <span class="keyword">for</span> k, v <span class="keyword">in</span> batch.items()&#125;</span><br><span class="line"><span class="keyword">with</span> torch.no_grad():</span><br><span class="line">    output = trainer.model(**batch)</span><br><span class="line">output.keys()</span><br></pre></td></tr></table></figure>
+
+<p>模型的输出是一个像dict的数据结构，包含了loss（因为提供了label，所有有loss），answer start和end的logits。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">output.start_logits.shape, output.end_logits.shape</span><br><span class="line"></span><br><span class="line">(torch.Size([<span class="number">16</span>, <span class="number">384</span>]), torch.Size([<span class="number">16</span>, <span class="number">384</span>]))</span><br></pre></td></tr></table></figure>
+
+<p>每个feature里的每个token都会有一个logit。预测answer最简单的方法就是选择start的logits里最大的下标最为answer其实位置，end的logits里最大下标作为answer的结束位置。</p>
+<p>以上策略大部分情况下都是不错的。但是，如果我们的输入告诉我们找不到答案：比如start的位置比end的位置下标大，或者start和end的位置指向了question。</p>
+<p>这个时候，简单的方法是我们继续需要选择第2好的预测作为我们的答案了，实在不行看第3好的预测，以此类推。</p>
+<p>由于上面的方法不太容易找到可行的答案，我们需要思考更合理的方法。我们将start和end的logits相加得到新的打分，然后去看最好的<code>n_best_size</code>个start和end对。从<code>n_best_size</code>个start和end对里推出相应的答案，然后检查答案是否有效，最后将他们按照打分进行怕苦，选择得分最高的作为答案。由于上面的方法不太容易找到可行的答案，我们需要思考更合理的方法。我们将start和end的logits相加得到新的打分，然后去看最好的<code>n_best_size</code>个start和end对。从<code>n_best_size</code>个start和end对里推出相应的答案，然后检查答案是否有效，最后将他们按照打分进行怕苦，选择得分最高的作为答案。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">n_best_size = <span class="number">20</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line">start_logits = output.start_logits[<span class="number">0</span>].cpu().numpy()</span><br><span class="line">end_logits = output.end_logits[<span class="number">0</span>].cpu().numpy()</span><br><span class="line"><span class="comment"># 收集最佳的start和end logits的位置:</span></span><br><span class="line">start_indexes = np.argsort(start_logits)[-<span class="number">1</span> : -n_best_size - <span class="number">1</span> : -<span class="number">1</span>].tolist()</span><br><span class="line">end_indexes = np.argsort(end_logits)[-<span class="number">1</span> : -n_best_size - <span class="number">1</span> : -<span class="number">1</span>].tolist()</span><br><span class="line">valid_answers = []</span><br><span class="line"><span class="keyword">for</span> start_index <span class="keyword">in</span> start_indexes:</span><br><span class="line">    <span class="keyword">for</span> end_index <span class="keyword">in</span> end_indexes:</span><br><span class="line">        <span class="keyword">if</span> start_index &lt;= end_index: <span class="comment"># 如果start小雨end，那么合理的</span></span><br><span class="line">            valid_answers.append(</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="string">&quot;score&quot;</span>: start_logits[start_index] + end_logits[end_index],</span><br><span class="line">                    <span class="string">&quot;text&quot;</span>: <span class="string">&quot;&quot;</span> <span class="comment"># 后续需要根据token的下标将答案找出来</span></span><br><span class="line">                &#125;</span><br><span class="line">            )</span><br></pre></td></tr></table></figure>
+
+<p>随后我们对根据<code>score</code>对<code>valid_answers</code>进行排序，找到最好的那一个。最后还剩一步是：检查start和end位置对应的文本是否在context里面而不是在question里面。</p>
+<p>为了完成这件事情，我们需要添加以下两个信息到validation的features里面：</p>
+<ul>
+<li>产生feature的example的ID。由于每个example可能会产生多个feature，所以每个feature/切片的feature需要知道他们对应的example。</li>
+<li>offset mapping： 将每个切片的tokens的位置映射会原始文本基于character的下标位置。</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">prepare_validation_features</span>(<span class="params">examples</span>):</span></span><br><span class="line">    <span class="comment"># Tokenize our examples with truncation and maybe padding, but keep the overflows using a stride. This results</span></span><br><span class="line">    <span class="comment"># in one example possible giving several features when a context is long, each of those features having a</span></span><br><span class="line">    <span class="comment"># context that overlaps a bit the context of the previous feature.</span></span><br><span class="line">    tokenized_examples = tokenizer(</span><br><span class="line">        examples[<span class="string">&quot;question&quot;</span> <span class="keyword">if</span> pad_on_right <span class="keyword">else</span> <span class="string">&quot;context&quot;</span>],</span><br><span class="line">        examples[<span class="string">&quot;context&quot;</span> <span class="keyword">if</span> pad_on_right <span class="keyword">else</span> <span class="string">&quot;question&quot;</span>],</span><br><span class="line">        truncation=<span class="string">&quot;only_second&quot;</span> <span class="keyword">if</span> pad_on_right <span class="keyword">else</span> <span class="string">&quot;only_first&quot;</span>,</span><br><span class="line">        max_length=max_length,</span><br><span class="line">        stride=doc_stride,</span><br><span class="line">        return_overflowing_tokens=<span class="literal">True</span>,</span><br><span class="line">        return_offsets_mapping=<span class="literal">True</span>,</span><br><span class="line">        padding=<span class="string">&quot;max_length&quot;</span>,</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Since one example might give us several features if it has a long context, we need a map from a feature to</span></span><br><span class="line">    <span class="comment"># its corresponding example. This key gives us just that.</span></span><br><span class="line">    sample_mapping = tokenized_examples.pop(<span class="string">&quot;overflow_to_sample_mapping&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># We keep the example_id that gave us this feature and we will store the offset mappings.</span></span><br><span class="line">    tokenized_examples[<span class="string">&quot;example_id&quot;</span>] = []</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="built_in">len</span>(tokenized_examples[<span class="string">&quot;input_ids&quot;</span>])):</span><br><span class="line">        <span class="comment"># Grab the sequence corresponding to that example (to know what is the context and what is the question).</span></span><br><span class="line">        sequence_ids = tokenized_examples.sequence_ids(i)</span><br><span class="line">        context_index = <span class="number">1</span> <span class="keyword">if</span> pad_on_right <span class="keyword">else</span> <span class="number">0</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># One example can give several spans, this is the index of the example containing this span of text.</span></span><br><span class="line">        sample_index = sample_mapping[i]</span><br><span class="line">        tokenized_examples[<span class="string">&quot;example_id&quot;</span>].append(examples[<span class="string">&quot;id&quot;</span>][sample_index])</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Set to None the offset_mapping that are not part of the context so it&#x27;s easy to determine if a token</span></span><br><span class="line">        <span class="comment"># position is part of the context or not.</span></span><br><span class="line">        tokenized_examples[<span class="string">&quot;offset_mapping&quot;</span>][i] = [</span><br><span class="line">            (o <span class="keyword">if</span> sequence_ids[k] == context_index <span class="keyword">else</span> <span class="literal">None</span>)</span><br><span class="line">            <span class="keyword">for</span> k, o <span class="keyword">in</span> <span class="built_in">enumerate</span>(tokenized_examples[<span class="string">&quot;offset_mapping&quot;</span>][i])</span><br><span class="line">        ]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> tokenized_examples</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">validation_features = datasets[<span class="string">&quot;validation&quot;</span>].<span class="built_in">map</span>(</span><br><span class="line">    prepare_validation_features,</span><br><span class="line">    batched=<span class="literal">True</span>,</span><br><span class="line">    remove_columns=datasets[<span class="string">&quot;validation&quot;</span>].column_names</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">HBox(children=(FloatProgress(value=<span class="number">0.0</span>, <span class="built_in">max</span>=<span class="number">11.0</span>), HTML(value=<span class="string">&#x27;&#x27;</span>)))</span><br></pre></td></tr></table></figure>
+
+<p>使用<code>Trainer.predict</code>方法获得所有预测结果</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">raw_predictions = trainer.predict(validation_features)</span><br></pre></td></tr></table></figure>
+
+<p>这个 <code>Trainer</code> <em>隐藏了</em> 一些模型训练时候没有使用的属性(这里是 <code>example_id</code>和<code>offset_mapping</code>，后处理的时候会用到),所以我们需要把这些设置回来:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">validation_features.set_format(<span class="built_in">type</span>=validation_features.<span class="built_in">format</span>[<span class="string">&quot;type&quot;</span>], columns=<span class="built_in">list</span>(validation_features.features.keys()))</span><br></pre></td></tr></table></figure>
+
+<p>当一个token位置对应着question部分时候，<code>prepare_validation_features</code>函数将offset mappings设定为<code>None</code>，所以我们根据offset mapping很容易可以鉴定token是否在context里面啦。我们同样也根绝扔掉了特别长的答案。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">max_answer_length = <span class="number">30</span></span><br><span class="line"></span><br><span class="line">start_logits = output.start_logits[<span class="number">0</span>].cpu().numpy()</span><br><span class="line">end_logits = output.end_logits[<span class="number">0</span>].cpu().numpy()</span><br><span class="line">offset_mapping = validation_features[<span class="number">0</span>][<span class="string">&quot;offset_mapping&quot;</span>]</span><br><span class="line"><span class="comment"># The first feature comes from the first example. For the more general case, we will need to be match the example_id to</span></span><br><span class="line"><span class="comment"># an example index</span></span><br><span class="line">context = datasets[<span class="string">&quot;validation&quot;</span>][<span class="number">0</span>][<span class="string">&quot;context&quot;</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># Gather the indices the best start/end logits:</span></span><br><span class="line">start_indexes = np.argsort(start_logits)[-<span class="number">1</span> : -n_best_size - <span class="number">1</span> : -<span class="number">1</span>].tolist()</span><br><span class="line">end_indexes = np.argsort(end_logits)[-<span class="number">1</span> : -n_best_size - <span class="number">1</span> : -<span class="number">1</span>].tolist()</span><br><span class="line">valid_answers = []</span><br><span class="line"><span class="keyword">for</span> start_index <span class="keyword">in</span> start_indexes:</span><br><span class="line">    <span class="keyword">for</span> end_index <span class="keyword">in</span> end_indexes:</span><br><span class="line">        <span class="comment"># Don&#x27;t consider out-of-scope answers, either because the indices are out of bounds or correspond</span></span><br><span class="line">        <span class="comment"># to part of the input_ids that are not in the context.</span></span><br><span class="line">        <span class="keyword">if</span> (</span><br><span class="line">            start_index &gt;= <span class="built_in">len</span>(offset_mapping)</span><br><span class="line">            <span class="keyword">or</span> end_index &gt;= <span class="built_in">len</span>(offset_mapping)</span><br><span class="line">            <span class="keyword">or</span> offset_mapping[start_index] <span class="keyword">is</span> <span class="literal">None</span></span><br><span class="line">            <span class="keyword">or</span> offset_mapping[end_index] <span class="keyword">is</span> <span class="literal">None</span></span><br><span class="line">        ):</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        <span class="comment"># Don&#x27;t consider answers with a length that is either &lt; 0 or &gt; max_answer_length.</span></span><br><span class="line">        <span class="keyword">if</span> end_index &lt; start_index <span class="keyword">or</span> end_index - start_index + <span class="number">1</span> &gt; max_answer_length:</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">        <span class="keyword">if</span> start_index &lt;= end_index: <span class="comment"># We need to refine that test to check the answer is inside the context</span></span><br><span class="line">            start_char = offset_mapping[start_index][<span class="number">0</span>]</span><br><span class="line">            end_char = offset_mapping[end_index][<span class="number">1</span>]</span><br><span class="line">            valid_answers.append(</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="string">&quot;score&quot;</span>: start_logits[start_index] + end_logits[end_index],</span><br><span class="line">                    <span class="string">&quot;text&quot;</span>: context[start_char: end_char]</span><br><span class="line">                &#125;</span><br><span class="line">            )</span><br><span class="line"></span><br><span class="line">valid_answers = <span class="built_in">sorted</span>(valid_answers, key=<span class="keyword">lambda</span> x: x[<span class="string">&quot;score&quot;</span>], reverse=<span class="literal">True</span>)[:n_best_size]</span><br><span class="line">valid_answers</span><br></pre></td></tr></table></figure>
+
+<p>将预测答案和真实答案进行比较即可：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">datasets[&quot;validation&quot;][0][&quot;answers&quot;]</span><br><span class="line"></span><br><span class="line">&#123;&#x27;answer_start&#x27;: [177, 177, 177],</span><br><span class="line"> &#x27;text&#x27;: [&#x27;Denver Broncos&#x27;, &#x27;Denver Broncos&#x27;, &#x27;Denver Broncos&#x27;]&#125;</span><br></pre></td></tr></table></figure>
+
+<p>由于第1个feature一定是来自于第1个example，所以相对容易。对于其他的fearures来说，我们需要一个features和examples的一个映射map。同样，由于一个example可能被切片成多个features，所以我们也需要将所有features里的答案全部联系起来。以下的代码就将exmaple的下标和features的下标进行map映射。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> collections</span><br><span class="line"></span><br><span class="line">examples = datasets[<span class="string">&quot;validation&quot;</span>]</span><br><span class="line">features = validation_features</span><br><span class="line"></span><br><span class="line">example_id_to_index = &#123;k: i <span class="keyword">for</span> i, k <span class="keyword">in</span> <span class="built_in">enumerate</span>(examples[<span class="string">&quot;id&quot;</span>])&#125;</span><br><span class="line">features_per_example = collections.defaultdict(<span class="built_in">list</span>)</span><br><span class="line"><span class="keyword">for</span> i, feature <span class="keyword">in</span> <span class="built_in">enumerate</span>(features):</span><br><span class="line">    features_per_example[example_id_to_index[feature[<span class="string">&quot;example_id&quot;</span>]]].append(i)</span><br></pre></td></tr></table></figure>
+
+<p>最后一点事情是如何解决无答案的情况（squad_v2=True的时候）。以上的代码都只考虑了context里面的asnwers，所以我们同样需要将无答案的预测得分进行搜集（无答案的预测对应的CLSt oken的start和end）。如果一个example样本又多个features，那么我们还需要在多个features里预测是不是都无答案。所以无答案的最终得分是所有features的无答案得分最小的那个。</p>
+<p>只要无答案的最终得分高于其他所有答案的得分，那么该问题就是无答案。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> tqdm.auto <span class="keyword">import</span> tqdm</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">postprocess_qa_predictions</span>(<span class="params">examples, features, raw_predictions, n_best_size = <span class="number">20</span>, max_answer_length = <span class="number">30</span></span>):</span></span><br><span class="line">    all_start_logits, all_end_logits = raw_predictions</span><br><span class="line">    <span class="comment"># Build a map example to its corresponding features.</span></span><br><span class="line">    example_id_to_index = &#123;k: i <span class="keyword">for</span> i, k <span class="keyword">in</span> <span class="built_in">enumerate</span>(examples[<span class="string">&quot;id&quot;</span>])&#125;</span><br><span class="line">    features_per_example = collections.defaultdict(<span class="built_in">list</span>)</span><br><span class="line">    <span class="keyword">for</span> i, feature <span class="keyword">in</span> <span class="built_in">enumerate</span>(features):</span><br><span class="line">        features_per_example[example_id_to_index[feature[<span class="string">&quot;example_id&quot;</span>]]].append(i)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># The dictionaries we have to fill.</span></span><br><span class="line">    predictions = collections.OrderedDict()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Logging.</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&quot;Post-processing <span class="subst">&#123;<span class="built_in">len</span>(examples)&#125;</span> example predictions split into <span class="subst">&#123;<span class="built_in">len</span>(features)&#125;</span> features.&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Let&#x27;s loop over all the examples!</span></span><br><span class="line">    <span class="keyword">for</span> example_index, example <span class="keyword">in</span> <span class="built_in">enumerate</span>(tqdm(examples)):</span><br><span class="line">        <span class="comment"># Those are the indices of the features associated to the current example.</span></span><br><span class="line">        feature_indices = features_per_example[example_index]</span><br><span class="line"></span><br><span class="line">        min_null_score = <span class="literal">None</span> <span class="comment"># Only used if squad_v2 is True.</span></span><br><span class="line">        valid_answers = []</span><br><span class="line">        </span><br><span class="line">        context = example[<span class="string">&quot;context&quot;</span>]</span><br><span class="line">        <span class="comment"># Looping through all the features associated to the current example.</span></span><br><span class="line">        <span class="keyword">for</span> feature_index <span class="keyword">in</span> feature_indices:</span><br><span class="line">            <span class="comment"># We grab the predictions of the model for this feature.</span></span><br><span class="line">            start_logits = all_start_logits[feature_index]</span><br><span class="line">            end_logits = all_end_logits[feature_index]</span><br><span class="line">            <span class="comment"># This is what will allow us to map some the positions in our logits to span of texts in the original</span></span><br><span class="line">            <span class="comment"># context.</span></span><br><span class="line">            offset_mapping = features[feature_index][<span class="string">&quot;offset_mapping&quot;</span>]</span><br><span class="line"></span><br><span class="line">            <span class="comment"># Update minimum null prediction.</span></span><br><span class="line">            cls_index = features[feature_index][<span class="string">&quot;input_ids&quot;</span>].index(tokenizer.cls_token_id)</span><br><span class="line">            feature_null_score = start_logits[cls_index] + end_logits[cls_index]</span><br><span class="line">            <span class="keyword">if</span> min_null_score <span class="keyword">is</span> <span class="literal">None</span> <span class="keyword">or</span> min_null_score &lt; feature_null_score:</span><br><span class="line">                min_null_score = feature_null_score</span><br><span class="line"></span><br><span class="line">            <span class="comment"># Go through all possibilities for the `n_best_size` greater start and end logits.</span></span><br><span class="line">            start_indexes = np.argsort(start_logits)[-<span class="number">1</span> : -n_best_size - <span class="number">1</span> : -<span class="number">1</span>].tolist()</span><br><span class="line">            end_indexes = np.argsort(end_logits)[-<span class="number">1</span> : -n_best_size - <span class="number">1</span> : -<span class="number">1</span>].tolist()</span><br><span class="line">            <span class="keyword">for</span> start_index <span class="keyword">in</span> start_indexes:</span><br><span class="line">                <span class="keyword">for</span> end_index <span class="keyword">in</span> end_indexes:</span><br><span class="line">                    <span class="comment"># Don&#x27;t consider out-of-scope answers, either because the indices are out of bounds or correspond</span></span><br><span class="line">                    <span class="comment"># to part of the input_ids that are not in the context.</span></span><br><span class="line">                    <span class="keyword">if</span> (</span><br><span class="line">                        start_index &gt;= <span class="built_in">len</span>(offset_mapping)</span><br><span class="line">                        <span class="keyword">or</span> end_index &gt;= <span class="built_in">len</span>(offset_mapping)</span><br><span class="line">                        <span class="keyword">or</span> offset_mapping[start_index] <span class="keyword">is</span> <span class="literal">None</span></span><br><span class="line">                        <span class="keyword">or</span> offset_mapping[end_index] <span class="keyword">is</span> <span class="literal">None</span></span><br><span class="line">                    ):</span><br><span class="line">                        <span class="keyword">continue</span></span><br><span class="line">                    <span class="comment"># Don&#x27;t consider answers with a length that is either &lt; 0 or &gt; max_answer_length.</span></span><br><span class="line">                    <span class="keyword">if</span> end_index &lt; start_index <span class="keyword">or</span> end_index - start_index + <span class="number">1</span> &gt; max_answer_length:</span><br><span class="line">                        <span class="keyword">continue</span></span><br><span class="line"></span><br><span class="line">                    start_char = offset_mapping[start_index][<span class="number">0</span>]</span><br><span class="line">                    end_char = offset_mapping[end_index][<span class="number">1</span>]</span><br><span class="line">                    valid_answers.append(</span><br><span class="line">                        &#123;</span><br><span class="line">                            <span class="string">&quot;score&quot;</span>: start_logits[start_index] + end_logits[end_index],</span><br><span class="line">                            <span class="string">&quot;text&quot;</span>: context[start_char: end_char]</span><br><span class="line">                        &#125;</span><br><span class="line">                    )</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> <span class="built_in">len</span>(valid_answers) &gt; <span class="number">0</span>:</span><br><span class="line">            best_answer = <span class="built_in">sorted</span>(valid_answers, key=<span class="keyword">lambda</span> x: x[<span class="string">&quot;score&quot;</span>], reverse=<span class="literal">True</span>)[<span class="number">0</span>]</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="comment"># In the very rare edge case we have not a single non-null prediction, we create a fake prediction to avoid</span></span><br><span class="line">            <span class="comment"># failure.</span></span><br><span class="line">            best_answer = &#123;<span class="string">&quot;text&quot;</span>: <span class="string">&quot;&quot;</span>, <span class="string">&quot;score&quot;</span>: <span class="number">0.0</span>&#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># Let&#x27;s pick our final answer: the best one or the null answer (only for squad_v2)</span></span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> squad_v2:</span><br><span class="line">            predictions[example[<span class="string">&quot;id&quot;</span>]] = best_answer[<span class="string">&quot;text&quot;</span>]</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            answer = best_answer[<span class="string">&quot;text&quot;</span>] <span class="keyword">if</span> best_answer[<span class="string">&quot;score&quot;</span>] &gt; min_null_score <span class="keyword">else</span> <span class="string">&quot;&quot;</span></span><br><span class="line">            predictions[example[<span class="string">&quot;id&quot;</span>]] = answer</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> predictions</span><br></pre></td></tr></table></figure>
+
+<p>将后处理函数应用到原始预测上</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">final_predictions = postprocess_qa_predictions(datasets[<span class="string">&quot;validation&quot;</span>], validation_features, raw_predictions.predictions)</span><br></pre></td></tr></table></figure>
+
+<p>加载评价指标</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">metric = load_metric(&quot;squad_v2&quot; if squad_v2 else &quot;squad&quot;)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> squad_v2:</span><br><span class="line">    formatted_predictions = [&#123;<span class="string">&quot;id&quot;</span>: k, <span class="string">&quot;prediction_text&quot;</span>: v, <span class="string">&quot;no_answer_probability&quot;</span>: <span class="number">0.0</span>&#125; <span class="keyword">for</span> k, v <span class="keyword">in</span> predictions.items()]</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    formatted_predictions = [&#123;<span class="string">&quot;id&quot;</span>: k, <span class="string">&quot;prediction_text&quot;</span>: v&#125; <span class="keyword">for</span> k, v <span class="keyword">in</span> final_predictions.items()]</span><br><span class="line">references = [&#123;<span class="string">&quot;id&quot;</span>: ex[<span class="string">&quot;id&quot;</span>], <span class="string">&quot;answers&quot;</span>: ex[<span class="string">&quot;answers&quot;</span>]&#125; <span class="keyword">for</span> ex <span class="keyword">in</span> datasets[<span class="string">&quot;validation&quot;</span>]]</span><br><span class="line">metric.compute(predictions=formatted_predictions, references=references)</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Datawhale%E7%BB%84%E9%98%9F%E5%AD%A6%E4%B9%A0/" rel="tag"># Datawhale组队学习</a>
+              <a href="/tags/NLP%E5%85%A5%E9%97%A8/" rel="tag"># NLP入门</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/09/25/nlp-transformer/nlp-transformer-4/" rel="prev" title="基于Transformers的自然语言处理(NLP)入门(四)">
+      <i class="fa fa-chevron-left"></i> 基于Transformers的自然语言处理(NLP)入门(四)
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/09/28/nlp-transformer/nlp-transformer-6/" rel="next" title="基于Transformers的自然语言处理(NLP)入门(六)">
+      基于Transformers的自然语言处理(NLP)入门(六) <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8A%BD%E5%8F%96%E5%BC%8F%E9%97%AE%E7%AD%94%E4%BB%BB%E5%8A%A1"><span class="nav-number">1.</span> <span class="nav-text">抽取式问答任务</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8A%A0%E8%BD%BD%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="nav-number">1.1.</span> <span class="nav-text">加载数据集</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E9%A2%84%E5%A4%84%E7%90%86"><span class="nav-number">1.2.</span> <span class="nav-text">数据预处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Fine-tuning%E5%BE%AE%E8%B0%83%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.3.</span> <span class="nav-text">Fine-tuning微调模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Evaluation%E8%AF%84%E4%BC%B0"><span class="nav-number">1.4.</span> <span class="nav-text">Evaluation评估</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Xavier ZXY"
+      src="/images/autor.jpg">
+  <p class="site-author-name" itemprop="name">Xavier ZXY</p>
+  <div class="site-description" itemprop="description">ZXY 想去看极光</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/xavierzxy" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;xavierzxy" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zxy_xavier@163.com" title="E-Mail → mailto:zxy_xavier@163.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">湘ICP备  2021018889 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Xavier ZXY</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

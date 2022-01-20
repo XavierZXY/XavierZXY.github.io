@@ -1,63 +1,75 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://www.spacezxy.top/2021/11/04/ML-Algorithm-pratice-5/</loc>
+    <loc>https://www.spacezxy.top/2022/01/20/ML-Notes/ML-Notes-1/</loc>
+    <lastmod>2022-01-20</lastmod>
+  </url>
+  <url>
+    <loc>https://www.spacezxy.top/2022/01/15/Kaggle-Example/Kaggle-Example-1/</loc>
+    <lastmod>2022-01-15</lastmod>
+  </url>
+  <url>
+    <loc>https://www.spacezxy.top/2021/12/20/CTF/CTF-1/</loc>
+    <lastmod>2021-12-20</lastmod>
+  </url>
+  <url>
+    <loc>https://www.spacezxy.top/2021/11/04/ML-Algorithm-pratice/ML-Algorithm-pratice-5/</loc>
     <lastmod>2021-11-19</lastmod>
   </url>
   <url>
-    <loc>https://www.spacezxy.top/2021/10/25/algorithm-2/</loc>
+    <loc>https://www.spacezxy.top/2021/10/25/Algorithm/algorithm-2/</loc>
     <lastmod>2021-11-16</lastmod>
   </url>
   <url>
-    <loc>https://www.spacezxy.top/2021/10/03/algorithm-1/</loc>
+    <loc>https://www.spacezxy.top/2021/10/03/Algorithm/algorithm-1/</loc>
     <lastmod>2021-11-05</lastmod>
   </url>
   <url>
-    <loc>https://www.spacezxy.top/2021/10/23/ML-Algorithm-pratice-4/</loc>
+    <loc>https://www.spacezxy.top/2021/10/23/ML-Algorithm-pratice/ML-Algorithm-pratice-4/</loc>
     <lastmod>2021-10-23</lastmod>
   </url>
   <url>
-    <loc>https://www.spacezxy.top/2021/10/22/ML-Algorithm-pratice-3/</loc>
+    <loc>https://www.spacezxy.top/2021/10/22/ML-Algorithm-pratice/ML-Algorithm-pratice-3/</loc>
     <lastmod>2021-10-23</lastmod>
   </url>
   <url>
-    <loc>https://www.spacezxy.top/2021/10/14/ML-Algorithm-pratice-2/</loc>
+    <loc>https://www.spacezxy.top/2021/10/14/ML-Algorithm-pratice/ML-Algorithm-pratice-2/</loc>
     <lastmod>2021-10-23</lastmod>
   </url>
   <url>
-    <loc>https://www.spacezxy.top/2021/09/21/practical-machine-learning-1/</loc>
+    <loc>https://www.spacezxy.top/2021/09/21/practical-machine-learning/practical-machine-learning-1/</loc>
     <lastmod>2021-10-14</lastmod>
   </url>
   <url>
-    <loc>https://www.spacezxy.top/2021/10/10/ML-Algorithm-pratice-1/</loc>
+    <loc>https://www.spacezxy.top/2021/10/10/ML-Algorithm-pratice/ML-Algorithm-pratice-1/</loc>
     <lastmod>2021-10-14</lastmod>
   </url>
   <url>
-    <loc>https://www.spacezxy.top/2021/09/28/nlp-transformer-6/</loc>
+    <loc>https://www.spacezxy.top/2021/09/28/nlp-transformer/nlp-transformer-6/</loc>
     <lastmod>2021-10-01</lastmod>
   </url>
   <url>
-    <loc>https://www.spacezxy.top/2021/09/28/nlp-transformer-5/</loc>
+    <loc>https://www.spacezxy.top/2021/09/28/nlp-transformer/nlp-transformer-5/</loc>
     <lastmod>2021-09-28</lastmod>
   </url>
   <url>
-    <loc>https://www.spacezxy.top/2021/09/25/nlp-transformer-4/</loc>
+    <loc>https://www.spacezxy.top/2021/09/25/nlp-transformer/nlp-transformer-4/</loc>
     <lastmod>2021-09-25</lastmod>
   </url>
   <url>
-    <loc>https://www.spacezxy.top/2021/09/18/nlp-transformer-3/</loc>
+    <loc>https://www.spacezxy.top/2021/09/18/nlp-transformer/nlp-transformer-3/</loc>
     <lastmod>2021-09-19</lastmod>
   </url>
   <url>
-    <loc>https://www.spacezxy.top/2021/09/16/nlp-transformer-2/</loc>
+    <loc>https://www.spacezxy.top/2021/09/16/nlp-transformer/nlp-transformer-2/</loc>
     <lastmod>2021-09-17</lastmod>
   </url>
   <url>
-    <loc>https://www.spacezxy.top/2021/09/13/nlp-transformers/</loc>
+    <loc>https://www.spacezxy.top/2021/09/13/nlp-transformer/nlp-transformer-1/</loc>
     <lastmod>2021-09-16</lastmod>
   </url>
   <url>
-    <loc>https://www.spacezxy.top/2021/09/01/Yolo/</loc>
+    <loc>https://www.spacezxy.top/2021/09/01/Models/Yolo/</loc>
     <lastmod>2021-09-02</lastmod>
   </url>
 </urlset> 

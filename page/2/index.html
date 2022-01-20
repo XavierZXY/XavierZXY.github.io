@@ -187,7 +187,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://www.spacezxy.top/2021/09/21/practical-machine-learning-1/">
+    <link itemprop="mainEntityOfPage" href="https://www.spacezxy.top/2021/09/28/nlp-transformer/nlp-transformer-6/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/autor.jpg">
@@ -201,7 +201,271 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/09/21/practical-machine-learning-1/" class="post-title-link" itemprop="url">实用机器学习(一)</a>
+            <a href="/2021/09/28/nlp-transformer/nlp-transformer-6/" class="post-title-link" itemprop="url">基于Transformers的自然语言处理(NLP)入门(六)</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-09-28 16:24:49" itemprop="dateCreated datePublished" datetime="2021-09-28T16:24:49+08:00">2021-09-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-10-01 08:20:42" itemprop="dateModified" datetime="2021-10-01T08:20:42+08:00">2021-10-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">深度学习</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%87%AA%E7%84%B6%E8%AF%AD%E8%A8%80%E5%A4%84%E7%90%86/" itemprop="url" rel="index"><span itemprop="name">自然语言处理</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>本文为参加Datawhale组队学习时所写，如若需了解细致内容，请去到Datawhale官方开源课程<a target="_blank" rel="noopener" href="https://datawhalechina.github.io/learn-nlp-with-transformers/#/">基于transformers的自然语言处理(NLP)入门 (datawhalechina.github.io)</a></p>
+<h1 id="机器翻译任务"><a href="#机器翻译任务" class="headerlink" title="机器翻译任务"></a>机器翻译任务</h1><p>在这个小节中，我们将展示如何使用<a target="_blank" rel="noopener" href="https://github.com/huggingface/transformers">🤗 Transformers</a>代码库中的模型来解决自然语言处理中的翻译任务。我们将会使用<a target="_blank" rel="noopener" href="http://www.statmt.org/wmt16/">WMT dataset</a>数据集。这是翻译任务最常用的数据集之一。</p>
+<p>对于翻译任务，我们将展示如何使用简单的加载数据集，同时针对相应的仍无使用transformer中的Trainer接口对模型进行微调。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">model_checkpoint = <span class="string">&quot;Helsinki-NLP/opus-mt-en-ro&quot;</span>   <span class="comment"># 选择一个模型checkpoint</span></span><br></pre></td></tr></table></figure>
+
+<p>本文我们使用已经训练好的<a target="_blank" rel="noopener" href="https://huggingface.co/Helsinki-NLP/opus-mt-en-ro"><code>Helsinki-NLP/opus-mt-en-ro</code></a> checkpoint来做翻译任务。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/09/28/nlp-transformer/nlp-transformer-6/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.spacezxy.top/2021/09/28/nlp-transformer/nlp-transformer-5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/autor.jpg">
+      <meta itemprop="name" content="Xavier ZXY">
+      <meta itemprop="description" content="ZXY 想去看极光">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xavier ZXY">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/28/nlp-transformer/nlp-transformer-5/" class="post-title-link" itemprop="url">基于Transformers的自然语言处理(NLP)入门(五)</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-09-28 14:19:32 / 修改时间：16:23:52" itemprop="dateCreated datePublished" datetime="2021-09-28T14:19:32+08:00">2021-09-28</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">深度学习</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%87%AA%E7%84%B6%E8%AF%AD%E8%A8%80%E5%A4%84%E7%90%86/" itemprop="url" rel="index"><span itemprop="name">自然语言处理</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>本文为参加Datawhale组队学习时所写，如若需了解细致内容，请去到Datawhale官方开源课程<a target="_blank" rel="noopener" href="https://datawhalechina.github.io/learn-nlp-with-transformers/#/">基于transformers的自然语言处理(NLP)入门 (datawhalechina.github.io)</a></p>
+<h1 id="抽取式问答任务"><a href="#抽取式问答任务" class="headerlink" title="抽取式问答任务"></a>抽取式问答任务</h1><p>抽取式问答任务：给定一个问题和一段文本，从这段文本中找出能够回答该问题的文本片段(span), 通过使用Tranier API和dataset包，我们可以轻松加载数据，然后微调transformers。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># squad_v2等于True或者False分别代表使用SQUAD v1 或者 SQUAD v2。</span></span><br><span class="line"><span class="comment"># 如果您使用的是其他数据集，那么True代表的是：模型可以回答“不可回答”问题，也就是部分问题不给出答案，而False则代表所有问题必须回答。</span></span><br><span class="line">squad_v2 = <span class="literal">False</span></span><br><span class="line">model_checkpoint = <span class="string">&quot;distilbert-base-uncased&quot;</span></span><br><span class="line">batch_size = <span class="number">16</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="加载数据集"><a href="#加载数据集" class="headerlink" title="加载数据集"></a>加载数据集</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> datasets <span class="keyword">import</span> load_datasets, load_metric</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">#  下载数据</span></span><br><span class="line">datasets = load_dataset(<span class="string">&quot;squad_v2&quot;</span> <span class="keyword">if</span> squad_v2 <span class="keyword">else</span> <span class="string">&quot;squad&quot;</span>)</span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/09/28/nlp-transformer/nlp-transformer-5/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.spacezxy.top/2021/09/25/nlp-transformer/nlp-transformer-4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/autor.jpg">
+      <meta itemprop="name" content="Xavier ZXY">
+      <meta itemprop="description" content="ZXY 想去看极光">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xavier ZXY">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/25/nlp-transformer/nlp-transformer-4/" class="post-title-link" itemprop="url">基于Transformers的自然语言处理(NLP)入门(四)</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-09-25 09:55:35 / 修改时间：16:21:31" itemprop="dateCreated datePublished" datetime="2021-09-25T09:55:35+08:00">2021-09-25</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">深度学习</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%87%AA%E7%84%B6%E8%AF%AD%E8%A8%80%E5%A4%84%E7%90%86/" itemprop="url" rel="index"><span itemprop="name">自然语言处理</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>本文为参加Datawhale组队学习时所写，如若需了解细致内容，请去到Datawhale官方开源课程<a target="_blank" rel="noopener" href="https://datawhalechina.github.io/learn-nlp-with-transformers/#/">基于transformers的自然语言处理(NLP)入门 (datawhalechina.github.io)</a></p>
+<h1 id="使用Transoformer解决NLP问题"><a href="#使用Transoformer解决NLP问题" class="headerlink" title="使用Transoformer解决NLP问题"></a>使用Transoformer解决NLP问题</h1><h2 id="文本分类"><a href="#文本分类" class="headerlink" title="文本分类"></a>文本分类</h2><p>GLUE榜单包含了9个句子级别的分类任务，分别是：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://nyu-mll.github.io/CoLA/">CoLA</a> (Corpus of Linguistic Acceptability) 鉴别一个句子是否语法正确.</li>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1704.05426">MNLI</a> (Multi-Genre Natural Language Inference) 给定一个假设，判断另一个句子与该假设的关系：entails, contradicts 或者 unrelated。</li>
+<li><a target="_blank" rel="noopener" href="https://www.microsoft.com/en-us/download/details.aspx?id=52398">MRPC</a> (Microsoft Research Paraphrase Corpus) 判断两个句子是否互为paraphrases.</li>
+<li><a target="_blank" rel="noopener" href="https://rajpurkar.github.io/SQuAD-explorer/">QNLI</a> (Question-answering Natural Language Inference) 判断第2句是否包含第1句问题的答案。</li>
+<li><a target="_blank" rel="noopener" href="https://data.quora.com/First-Quora-Dataset-Release-Question-Pairs">QQP</a> (Quora Question Pairs2) 判断两个问句是否语义相同。</li>
+<li><a target="_blank" rel="noopener" href="https://aclweb.org/aclwiki/Recognizing_Textual_Entailment">RTE</a> (Recognizing Textual Entailment)判断一个句子是否与假设成entail关系。</li>
+<li><a target="_blank" rel="noopener" href="https://nlp.stanford.edu/sentiment/index.html">SST-2</a> (Stanford Sentiment Treebank) 判断一个句子的情感正负向.</li>
+<li><a target="_blank" rel="noopener" href="http://ixa2.si.ehu.es/stswiki/index.php/STSbenchmark">STS-B</a> (Semantic Textual Similarity Benchmark) 判断两个句子的相似性（分数为1-5分）。</li>
+<li><a target="_blank" rel="noopener" href="https://cs.nyu.edu/faculty/davise/papers/WinogradSchemas/WS.html">WNLI</a> (Winograd Natural Language Inference) Determine if a sentence with an anonymous pronoun and a sentence with this pronoun replaced are entailed or not.</li>
+</ul>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/09/25/nlp-transformer/nlp-transformer-4/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.spacezxy.top/2021/09/21/practical-machine-learning/practical-machine-learning-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/autor.jpg">
+      <meta itemprop="name" content="Xavier ZXY">
+      <meta itemprop="description" content="ZXY 想去看极光">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xavier ZXY">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/21/practical-machine-learning/practical-machine-learning-1/" class="post-title-link" itemprop="url">实用机器学习(一)</a>
         </h2>
 
         <div class="post-meta">
@@ -247,12 +511,12 @@
       
           <p><em><strong>本文为学习李沐2021斯坦福秋季课程《实用机器学习》时所做的笔记，仅供学习复习回顾，不作任何商业用途，详细信息请访问<a target="_blank" rel="noopener" href="https://space.bilibili.com/1567748478">跟李沐学AI</a></strong></em></p>
 <h1 id="课程介绍"><a href="#课程介绍" class="headerlink" title="课程介绍"></a>课程介绍</h1><p>机器学习工作流程</p>
-<p><img src="/2021/09/21/practical-machine-learning-1/image-20210921165637795.png" alt="ML Workflow"></p>
-<p><img src="/2021/09/21/practical-machine-learning-1/image-20210921165812892.png" alt="image-20210921165812892"></p>
-<p><img src="/2021/09/21/practical-machine-learning-1/image-20210921165812973.png" alt="ML Workflow"></p>
+<p><img src="/2021/09/21/practical-machine-learning/practical-machine-learning-1/image-20210921165637795.png" alt="ML Workflow"></p>
+<p><img src="/2021/09/21/practical-machine-learning/practical-machine-learning-1/image-20210921165812892.png" alt="image-20210921165812892"></p>
+<p><img src="/2021/09/21/practical-machine-learning/practical-machine-learning-1/image-20210921165812973.png" alt="ML Workflow"></p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2021/09/21/practical-machine-learning-1/#more" rel="contents">
+              <a class="btn" href="/2021/09/21/practical-machine-learning/practical-machine-learning-1/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -276,7 +540,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://www.spacezxy.top/2021/09/18/nlp-transformer-3/">
+    <link itemprop="mainEntityOfPage" href="https://www.spacezxy.top/2021/09/18/nlp-transformer/nlp-transformer-3/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/autor.jpg">
@@ -290,7 +554,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/09/18/nlp-transformer-3/" class="post-title-link" itemprop="url">基于Transformers的自然语言处理(NLP)入门(三)</a>
+            <a href="/2021/09/18/nlp-transformer/nlp-transformer-3/" class="post-title-link" itemprop="url">基于Transformers的自然语言处理(NLP)入门(三)</a>
         </h2>
 
         <div class="post-meta">
@@ -343,7 +607,7 @@
 <p><strong>自编码语言模型</strong>代表就是BERT。自编码语言模型通过随机mask输入的部分单词，然后预训练的目标是预测被mask的单词，不仅可以融入上文信息，还可以自然地融入下文信息。</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2021/09/18/nlp-transformer-3/#more" rel="contents">
+              <a class="btn" href="/2021/09/18/nlp-transformer/nlp-transformer-3/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -367,7 +631,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://www.spacezxy.top/2021/09/16/nlp-transformer-2/">
+    <link itemprop="mainEntityOfPage" href="https://www.spacezxy.top/2021/09/16/nlp-transformer/nlp-transformer-2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/autor.jpg">
@@ -381,7 +645,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/09/16/nlp-transformer-2/" class="post-title-link" itemprop="url">基于Transformers的自然语言处理(NLP)入门(二)</a>
+            <a href="/2021/09/16/nlp-transformer/nlp-transformer-2/" class="post-title-link" itemprop="url">基于Transformers的自然语言处理(NLP)入门(二)</a>
         </h2>
 
         <div class="post-meta">
@@ -436,7 +700,7 @@
 <p>BERT进行句子分类，判断一个邮件是”垃圾邮件”或者”非垃圾邮件”</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2021/09/16/nlp-transformer-2/#more" rel="contents">
+              <a class="btn" href="/2021/09/16/nlp-transformer/nlp-transformer-2/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -460,7 +724,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://www.spacezxy.top/2021/09/13/nlp-transformers/">
+    <link itemprop="mainEntityOfPage" href="https://www.spacezxy.top/2021/09/13/nlp-transformer/nlp-transformer-1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/autor.jpg">
@@ -474,7 +738,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/09/13/nlp-transformers/" class="post-title-link" itemprop="url">基于Transformers的自然语言处理(NLP)入门(一)</a>
+            <a href="/2021/09/13/nlp-transformer/nlp-transformer-1/" class="post-title-link" itemprop="url">基于Transformers的自然语言处理(NLP)入门(一)</a>
         </h2>
 
         <div class="post-meta">
@@ -540,7 +804,7 @@
 </ul>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2021/09/13/nlp-transformers/#more" rel="contents">
+              <a class="btn" href="/2021/09/13/nlp-transformer/nlp-transformer-1/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -564,7 +828,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://www.spacezxy.top/2021/09/01/Yolo/">
+    <link itemprop="mainEntityOfPage" href="https://www.spacezxy.top/2021/09/01/Models/Yolo/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/autor.jpg">
@@ -578,7 +842,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2021/09/01/Yolo/" class="post-title-link" itemprop="url">Yolo</a>
+            <a href="/2021/09/01/Models/Yolo/" class="post-title-link" itemprop="url">Yolo</a>
         </h2>
 
         <div class="post-meta">
@@ -624,10 +888,10 @@
       
           <h1 id="Yolo-V1"><a href="#Yolo-V1" class="headerlink" title="Yolo  V1"></a>Yolo  V1</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>  在Yolo v1提出之前，R-CNN算法在目标领域独占鳌头，但由于R-CNN的网络结构是双阶段(two stage)的特点，使得它的检测速度不能满足实时性。2016年，Joseph Redmon、Santosh Divvala、Ross Girshick等人提出了一种单阶段（one-stage）的目标检测网络。它的检测速度非常快，每秒可以处理45帧图片，能够轻松地实时运行。由于其速度之快和其使用的特殊方法，作者将其取名为：You Only Look Once</p>
 <p>  YOLO 的核心思想就是把目标检测转变成一个<strong>回归问题</strong>，利用整张图作为网络的输入，仅仅经过一个神经网络，得到bounding box（边界框） 的位置及其所属的类别。</p>
-<p><img src="/2021/09/01/Yolo/image-20210901165626159.png" alt="image-20210901165626159"></p>
+<p><img src="/2021/09/01/Models/Yolo/image-20210901165626159.png" alt="image-20210901165626159"></p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2021/09/01/Yolo/#more" rel="contents">
+              <a class="btn" href="/2021/09/01/Models/Yolo/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -718,20 +982,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-count">18</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-count">7</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-count">9</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -768,7 +1032,7 @@
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2021</span>
+  <span itemprop="copyrightYear">2022</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
