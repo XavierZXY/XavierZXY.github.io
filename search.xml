@@ -257,24 +257,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Kaggle实例(一)</title>
-    <url>/2022/01/15/Kaggle-Example/Kaggle-Example-1/</url>
-    <content><![CDATA[<p>本文为学习<a href="https://www.bilibili.com/video/BV11L411j7sX?from=search&amp;seid=17410297694137764514&amp;spm_id_from=333.337.0.0">《Kaggle顶级赛事Top 1%方案精讲与实践》</a>时所做的笔记，仅供复习总结参考，不做任何商业用途，如有侵权，请联系删除。</p>
-<p>该文为<a href="https://www.kaggle.com/c/elo-merchant-category-recommendation/overview">Elo Merchant Category Recommendation | Kaggle</a>的实例操作学习记录。</p>
-<h1 id="赛题理解"><a href="#赛题理解" class="headerlink" title="赛题理解"></a>赛题理解</h1><p>  通过官方描述以及社区讨论初步理解赛题。</p>
-<h1 id="数据探索"><a href="#数据探索" class="headerlink" title="数据探索"></a>数据探索</h1><ul>
-<li>获取数据集</li>
-<li></li>
-</ul>
-]]></content>
-      <categories>
-        <category>机器学习</category>
-      </categories>
-      <tags>
-        <tag>竞赛实战</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Introduction</title>
     <url>/2022/01/20/ML-Notes/ML-Notes-1/</url>
     <content><![CDATA[<p>对概率的诠释有两大学派，一种是频率派，一种是贝叶斯派。<br>$$<br>X_{N\times p}=(X_{1}, X_{2}, \cdots, X_{N})^{T},X_{i}=<br>(X_{i1}, X_{i2}, \cdots, X_{ip})^{T}<br>$$<br>上述表达式中，表示有<em>N</em>个样本，每个样本都是<em>p</em>维向量。其中每个观测都是由$p(x|\theta)$生成的。</p>
@@ -1753,5 +1735,39 @@
       <categories>
         <category>Tools</category>
       </categories>
+  </entry>
+  <entry>
+    <title>ML-Notes-2</title>
+    <url>/2022/02/23/ML-Notes/ML-Notes-2/</url>
+    <content><![CDATA[<h1 id="模型部署"><a href="#模型部署" class="headerlink" title="模型部署"></a>模型部署</h1><h2 id="ONNX模型转换"><a href="#ONNX模型转换" class="headerlink" title="ONNX模型转换"></a>ONNX模型转换</h2>]]></content>
+      <categories>
+        <category>深度学习</category>
+      </categories>
+      <tags>
+        <tag>paddlepaddle</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>CMake-1</title>
+    <url>/2022/02/27/CMake/CMake-1/</url>
+    <content><![CDATA[<h1 id="CMake介绍"><a href="#CMake介绍" class="headerlink" title="CMake介绍"></a>CMake介绍</h1><h2 id="CMake简介"><a href="#CMake简介" class="headerlink" title="CMake简介"></a>CMake简介</h2><p>​        cmake是一个高级编译配置工具。</p>
+<p>​        当多个人用不同语言或者编译器开发一个项目，最终要输出一个可执行文件或者共享库（dll，so等等），这时候就需要CMake。所有操作都是通过编译CMakeLists.txt来完成的。</p>
+<h2 id="HelloWorld"><a href="#HelloWorld" class="headerlink" title="HelloWorld"></a>HelloWorld</h2><ol>
+<li><p>编写HelloWorld程序</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#main.cpp</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	std::cout &lt;&lt; <span class="string">&quot;Hello World!&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>配置CMakeLists.txt</p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="comment">#CMakeLists.txt</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">PROJECT</span> (HELLO)</span><br><span class="line"><span class="keyword">SET</span>(SRC_LIST main.cpp)</span><br><span class="line"><span class="keyword">MESSAGE</span>(STATUS <span class="string">&quot;This is BINARY dir&quot;</span> <span class="variable">$&#123;HELLO_BINARY_DIR&#125;</span>)</span><br><span class="line"><span class="keyword">MESSAGE</span>(STATUS <span class="string">&quot;This is SOURCE dir&quot;</span> <span class="variable">$&#123;HELLO_SOURCE_DIR&#125;</span>)</span><br><span class="line"><span class="keyword">ADD_EXECUTABLE</span>(hello <span class="variable">$&#123;SRC_LIST&#125;</span>)</span><br></pre></td></tr></table></figure></li>
+<li><p>使用cmake，生成makefile</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">❯ cmake ./</span><br><span class="line">-- The C compiler identification is GNU 4.8.5</span><br><span class="line">-- The CXX compiler identification is GNU 4.8.5</span><br><span class="line">-- Check for working C compiler: /usr/bin/cc</span><br><span class="line">-- Check for working C compiler: /usr/bin/cc -- works</span><br><span class="line">-- Detecting C compiler ABI info</span><br><span class="line">-- Detecting C compiler ABI info - done</span><br><span class="line">-- Check for working CXX compiler: /usr/bin/c++</span><br><span class="line">-- Check for working CXX compiler: /usr/bin/c++ -- works</span><br><span class="line">-- Detecting CXX compiler ABI info</span><br><span class="line">-- Detecting CXX compiler ABI info - done</span><br><span class="line">-- This is BINARY dir/root/codes/cpp</span><br><span class="line">-- This is SOURCE dir/root/codes/cpp</span><br><span class="line">-- Configuring done</span><br><span class="line">-- Generating done</span><br><span class="line">-- Build files have been written to: /root/codes/cpp</span><br></pre></td></tr></table></figure></li>
+<li><p>使用make命令编译makefile</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">❯ make</span><br><span class="line">Scanning dependencies of target hello</span><br><span class="line"><span class="meta">[100%</span><span class="bash">] Building CXX object CMakeFiles/hello.dir/hello.cpp.o</span></span><br><span class="line">Linking CXX executable hello</span><br><span class="line"><span class="meta">[100%</span><span class="bash">] Built target hello</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+<h1 id="CMake语法"><a href="#CMake语法" class="headerlink" title="CMake语法"></a>CMake语法</h1><h2 id="关键字"><a href="#关键字" class="headerlink" title="关键字"></a>关键字</h2><h3 id="PROJECT"><a href="#PROJECT" class="headerlink" title="PROJECT"></a>PROJECT</h3>]]></content>
+      <categories>
+        <category>C++</category>
+      </categories>
+      <tags>
+        <tag>CMake</tag>
+      </tags>
   </entry>
 </search>
