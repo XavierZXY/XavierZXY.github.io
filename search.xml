@@ -1737,17 +1737,6 @@
       </categories>
   </entry>
   <entry>
-    <title>ML-Notes-2</title>
-    <url>/2022/02/23/ML-Notes/ML-Notes-2/</url>
-    <content><![CDATA[<h1 id="模型部署"><a href="#模型部署" class="headerlink" title="模型部署"></a>模型部署</h1><h2 id="ONNX模型转换"><a href="#ONNX模型转换" class="headerlink" title="ONNX模型转换"></a>ONNX模型转换</h2>]]></content>
-      <categories>
-        <category>深度学习</category>
-      </categories>
-      <tags>
-        <tag>paddlepaddle</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>CMake-1</title>
     <url>/2022/02/27/CMake/CMake-1/</url>
     <content><![CDATA[<h1 id="CMake介绍"><a href="#CMake介绍" class="headerlink" title="CMake介绍"></a>CMake介绍</h1><h2 id="CMake简介"><a href="#CMake简介" class="headerlink" title="CMake简介"></a>CMake简介</h2><p>​        cmake是一个高级编译配置工具。</p>
