@@ -285,6 +285,7 @@
 </ul>
 <p>BERT进行句子分类，判断一个邮件是”垃圾邮件”或者”非垃圾邮件”</p>
 <span id="more"></span>
+
 <p><img src="/2021/09/16/nlp-transformer/nlp-transformer-2/image-20210916201227474.png" alt="垃圾邮件分类"></p>
 <p>我们在BERT模型上增加一个简单的classifier层，由于这一层神经网络参数是新添加的，一开始只能随机初始化它的参数，所以需要用对应的监督数据来训练这个classifier。由于classifier是连接在BERT模型之上的，训练的时候也可以更新BERT的参数。</p>
 <p><img src="/2021/09/16/nlp-transformer/nlp-transformer-2/image-20210916201315406.png" alt="BERT句子分类"></p>
@@ -292,7 +293,7 @@
 <p><img src="/2021/09/16/nlp-transformer/nlp-transformer-2/image-20210916201401391.png" alt="BERT base/large"></p>
 <p>BERT模型结构基本上就是Transformer的encoder部分，BERT-base对应的是12层encoder，BERT-large对应的是24层encoder。</p>
 <p><img src="/2021/09/16/nlp-transformer/nlp-transformer-2/image-20210916201508262.png" alt="BERT-base的12层encoder"></p>
-<h2 id="模型输入"><a href="#模型输入" class="headerlink" title="模型输入"></a>模型输入</h2><p>BERT模型输入有一点特殊的地方是在一句话最开始拼接了一个<strong>[CLS] token</strong>，如下图所示。这个特殊的<strong>[CLS] token</strong>经过BERT得到的向量表示通常被用作当前的句子表示。</p>
+<h2 id="模型输入"><a href="#模型输入" class="headerlink" title="模型输入"></a>模型输入</h2><p>BERT模型输入有一点特殊的地方是在一句话最开始拼接了一个**[CLS] token<strong>，如下图所示。这个特殊的</strong>[CLS] token**经过BERT得到的向量表示通常被用作当前的句子表示。</p>
 <p><img src="/2021/09/16/nlp-transformer/nlp-transformer-2/image-20210916201653599.png" alt="模型输入"></p>
 <h2 id="模型输出"><a href="#模型输出" class="headerlink" title="模型输出"></a>模型输出</h2><p>BERT输入的所有token经过BERt编码后，会在每个位置输出一个大小为 hidden_size（在 BERT-base中是 768）的向量。</p>
 <p><img src="/2021/09/16/nlp-transformer/nlp-transformer-2/image-20210916202452414.png" alt="output"></p>
