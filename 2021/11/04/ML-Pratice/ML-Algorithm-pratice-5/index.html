@@ -24,7 +24,7 @@
   <meta name="description" content="时间序列什么是时间按序列时间序列是按时间按顺序索引的一系列数据点，因此，组成时间序列的数据由相对确定的时间戳组成，与随机样本数据相比，从时间序列数据中能够提取更多的附加信息。 从变量角度可以将这些变量归纳为单变量时间序列和多变量时间序列，其次可以从预测目标角度将这些问题归纳为单步预测和多步预测。 交叉验证由于时间序列中包含时间结构，因此一般在保留这种结构的同时要注意不能在折叠中出现数据穿越的情况。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="机器学习算法竞赛实战(五)">
-<meta property="og:url" content="https://www.spacezxy.top/2021/11/04/ML-Algorithm-Pratice/ML-Algorithm-pratice-5/index.html">
+<meta property="og:url" content="https://www.spacezxy.top/2021/11/04/ML-Pratice/ML-Algorithm-pratice-5/index.html">
 <meta property="og:site_name" content="Xavier ZXY">
 <meta property="og:description" content="时间序列什么是时间按序列时间序列是按时间按顺序索引的一系列数据点，因此，组成时间序列的数据由相对确定的时间戳组成，与随机样本数据相比，从时间序列数据中能够提取更多的附加信息。 从变量角度可以将这些变量归纳为单变量时间序列和多变量时间序列，其次可以从预测目标角度将这些问题归纳为单步预测和多步预测。 交叉验证由于时间序列中包含时间结构，因此一般在保留这种结构的同时要注意不能在折叠中出现数据穿越的情况。">
 <meta property="og:locale" content="zh_CN">
@@ -34,7 +34,7 @@
 <meta property="article:tag" content="竞赛实战">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://www.spacezxy.top/2021/11/04/ML-Algorithm-Pratice/ML-Algorithm-pratice-5/">
+<link rel="canonical" href="https://www.spacezxy.top/2021/11/04/ML-Pratice/ML-Algorithm-pratice-5/">
 
 
 <script id="page-configurations">
@@ -191,7 +191,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://www.spacezxy.top/2021/11/04/ML-Algorithm-Pratice/ML-Algorithm-pratice-5/">
+    <link itemprop="mainEntityOfPage" href="https://www.spacezxy.top/2021/11/04/ML-Pratice/ML-Algorithm-pratice-5/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/autor.jpg">
@@ -255,11 +255,14 @@
 <p>从变量角度可以将这些变量归纳为<strong>单变量时间序列</strong>和多变量时间序列，其次可以从预测目标角度将这些问题归纳为<strong>单步预测</strong>和<strong>多步预测</strong>。</p>
 <h3 id="交叉验证"><a href="#交叉验证" class="headerlink" title="交叉验证"></a>交叉验证</h3><p>由于时间序列中包含时间结构，因此一般在保留这种结构的同时要注意不能在折叠中出现数据穿越的情况。如果进行随机化的交叉验证，那么标签值之间的所有的时间相关性都将丢失，并且会导致数据穿越。</p>
 <span id="more"></span>
-
 <p>我们首先用初始时间到t时刻的数据来训练模型，然后从t到t+n的时刻进行线下验证，并计算评价指标的分数；接下来，将训练样本扩展到t+n时刻，用t+n到t+2n时刻的数据进行验证，不断重复这个过程，直到达最后一个可用的标签值。验证次数可以自由控制，最后对多次验证结果计算平均值得到最终的线下验证结果。</p>
 <h3 id="基本规则方法"><a href="#基本规则方法" class="headerlink" title="基本规则方法"></a>基本规则方法</h3><ul>
-<li>加权平均<br>$$<br>y_t=\frac{1}{N}{(w_1<em>y_{t-1}+w_2</em>y_{t-2}+\dots+w_N*y_{t-N}}<br>$$</li>
-<li>指数平滑<br>$$<br>y_i=a\sum_{n=0}^{t}{1-a}y_{t-n}<br>$$</li>
+<li><p>加权平均</p>
+<script type="math/tex; mode=display">
+y_t=\frac{1}{N}{(w_1*y_{t-1}+w_2*y_{t-2}+\dots+w_N*y_{t-N}}</script></li>
+<li><p>指数平滑</p>
+<script type="math/tex; mode=display">
+y_i=a\sum_{n=0}^{t}{1-a}y_{t-n}</script></li>
 </ul>
 <h2 id="时间序列模式"><a href="#时间序列模式" class="headerlink" title="时间序列模式"></a>时间序列模式</h2><ul>
 <li>趋势性</li>
@@ -279,7 +282,6 @@
 <li>数据准备</li>
 </ul>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">from</span> tqdm <span class="keyword">import</span> tqdm</span><br><span class="line"><span class="keyword">import</span> lightgbm <span class="keyword">as</span> lgb</span><br><span class="line"></span><br><span class="line"><span class="comment">#读取数据</span></span><br><span class="line">path = <span class="string">&#x27;./input/&#x27;</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> tqdm(<span class="built_in">range</span>(<span class="number">1</span>, <span class="number">26</span>)):</span><br><span class="line">    <span class="keyword">if</span> i &lt; <span class="number">10</span>:</span><br><span class="line">        train_tmp = pd.read_csv(path + <span class="string">&#x27;Metro_train/record_2019-01-0&#x27;</span> + <span class="built_in">str</span>(i) + <span class="string">&#x27;.csv&#x27;</span>)</span><br><span class="line">	<span class="keyword">else</span>:</span><br><span class="line">        train_tmp = pd.read_csv(path + <span class="string">&#x27;Metro_train/record_2019-01-&#x27;</span> + <span class="built_in">str</span>(i) + <span class="string">&#x27;.csv&#x27;</span>)</span><br><span class="line">	<span class="keyword">if</span> i == <span class="number">1</span>:</span><br><span class="line">        </span><br></pre></td></tr></table></figure>
-
 
     </div>
 

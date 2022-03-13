@@ -314,7 +314,6 @@
 </ul>
 <p><strong>自编码语言模型</strong>代表就是BERT。自编码语言模型通过随机mask输入的部分单词，然后预训练的目标是预测被mask的单词，不仅可以融入上文信息，还可以自然地融入下文信息。</p>
 <span id="more"></span>
-
 <p><img src="/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210918200729037.png" alt="Bert mask"></p>
 <p>自编码语言模型的优缺点</p>
 <ul>
@@ -361,7 +360,6 @@
 <h3 id="多层Decoder"><a href="#多层Decoder" class="headerlink" title="多层Decoder"></a>多层Decoder</h3><p>第一层Decoder现在可以处理 s token所对应的向量了：首先通过 Self Attention 层，然后通过全连接神经网络。一旦Transformer 的第1个Decoder处理了s token，依旧可以得到一个向量，这个结果向量会再次被发送到下一层Decoder。</p>
 <p><img src="/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210918205515342.png" alt="多层编码"></p>
 <h3 id="Decoder中的self-attention"><a href="#Decoder中的self-attention" class="headerlink" title="Decoder中的self-attention"></a>Decoder中的self-attention</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">机器人第2定律：机器人必须服从人给予 它 的命令，当 该命令 与 第一定律 冲突时例外。</span><br></pre></td></tr></table></figure>
-
 <p>例句中包含了多个代词。如果不结合它们所指的上下文，就无法理解或者处理这些词。当一个模型处理这个句子，它必须能够知道：</p>
 <ul>
 <li>它 指的是机器人</li>
@@ -471,10 +469,10 @@
 </li>
 </ol>
 <p>通过以上步骤，我们产生了一个向量，我们可以把这个向量传给下一层。</p>
-<h3 id="GPT2全连接神经网络"><a href="#GPT2全连接神经网络" class="headerlink" title="GPT2全连接神经网络"></a>GPT2全连接神经网络</h3><p><em><strong>第一层</strong></em></p>
+<h3 id="GPT2全连接神经网络"><a href="#GPT2全连接神经网络" class="headerlink" title="GPT2全连接神经网络"></a>GPT2全连接神经网络</h3><p><strong><em>第一层</em></strong></p>
 <p>全连接神经网络是用于处理 Self Attention 层的输出，这个输出的表示包含了合适的上下文。全连接神经网络由两层组成。第一层是模型大小的 4 倍（由于 GPT-2 small 是 768，因此这个网络会有3072个神经元）。</p>
 <p><img src="/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919154503863.png" alt="全连接层"></p>
-<p><em><strong>第二层，把向量映射到模型的维度</strong></em></p>
+<p><strong><em>第二层，把向量映射到模型的维度</em></strong></p>
 <p>第 2 层把第一层得到的结果映射回模型的维度（在 GPT-2 small 中是 768）。这个相乘的结果是 Transformer 对这个 token 的输出。</p>
 <p><img src="/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919154605387.png" alt="全连接层"></p>
 <h2 id="语言模型应用"><a href="#语言模型应用" class="headerlink" title="语言模型应用"></a>语言模型应用</h2><h3 id="机器翻译"><a href="#机器翻译" class="headerlink" title="机器翻译"></a>机器翻译</h3><p>进行机器翻译时，Encoder 不是必须的。我们可以用只有 Decoder 的 Transformer 来解决同样的任务：</p>
@@ -483,7 +481,7 @@
 <p><img src="/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919154829762.png" alt="生成摘要"></p>
 <h3 id="迁移学习"><a href="#迁移学习" class="headerlink" title="迁移学习"></a>迁移学习</h3><p>在 Sample Efficient Text Summarization Using a Single Pre-Trained Transformer(<a target="_blank" rel="noopener" href="https://arxiv.org/abs/1905.08836">https://arxiv.org/abs/1905.08836</a>) 中，一个只有 Decoder 的 Transformer 首先在语言模型上进行预训练，然后微调进行生成摘要。结果表明，在数据量有限制时，它比预训练的 Encoder-Decoder Transformer 能够获得更好的结果。</p>
 <h3 id="音乐生成"><a href="#音乐生成" class="headerlink" title="音乐生成"></a>音乐生成</h3><p>Music Transformer(<a target="_blank" rel="noopener" href="https://magenta.tensorflow.org/music-transformer">https://magenta.tensorflow.org/music-transformer</a>) 论文使用了只有 Decoder 的 Transformer 来生成具有表现力的时序和动态性的音乐。音乐建模 就像语言建模一样，只需要让模型以无监督的方式学习音乐，然后让它采样输出（前面我们称这个为 漫步）。</p>
-<p>你可能会好奇在这个场景中，音乐是如何表现的。请记住，语言建模可以把字符、单词、或者单词的一部分（token），表示为向量。在音乐表演中（让我们考虑一下钢琴），我们不仅要表示音符，还要表示速度–衡量钢琴键被按下的力度。</p>
+<p>你可能会好奇在这个场景中，音乐是如何表现的。请记住，语言建模可以把字符、单词、或者单词的一部分（token），表示为向量。在音乐表演中（让我们考虑一下钢琴），我们不仅要表示音符，还要表示速度—衡量钢琴键被按下的力度。</p>
 <p><img src="/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919154944710.png" alt="音乐生成"></p>
 
     </div>

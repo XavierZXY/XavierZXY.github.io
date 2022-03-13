@@ -263,7 +263,6 @@
 <li>基于Transformer</li>
 </ul>
 <span id="more"></span>
-
 <h1 id="模型性能优化"><a href="#模型性能优化" class="headerlink" title="模型性能优化"></a>模型性能优化</h1><p>模型性能优化利器：量化，剪枝和蒸馏</p>
 <ul>
 <li><strong>模型量化</strong></li>
@@ -303,7 +302,7 @@
 </li>
 <li><p>总体而言包含两个循环结构，第一个循环是epoch，该过程其实就是普通的迭代训练，在每训完一个epoch后开始执行剪枝操作。</p>
 </li>
-<li><p>第二个循环为遍历网络中的每一层，通过计算卷积核的几何中位数，选中       $N_{i+1}*P_{i}$个几何中位数附近的卷积核进行剪枝，剪枝的表现形式就是将卷积核参数置0。</p>
+<li><p>第二个循环为遍历网络中的每一层，通过计算卷积核的几何中位数，选中       $N<em>{i+1}*P</em>{i}$个几何中位数附近的卷积核进行剪枝，剪枝的表现形式就是将卷积核参数置0。</p>
 </li>
 <li><p>在所有的epoch迭代结束之后，最终得到的模型权重会包含一些值为0的卷积核，将这些卷积核直接去掉就可以得到最终的权重</p>
 </li>
@@ -311,8 +310,7 @@
 <h2 id="模型蒸馏"><a href="#模型蒸馏" class="headerlink" title="模型蒸馏"></a>模型蒸馏</h2><p>​        通过引入与教师网络（Teacher network：复杂、但预测精度优越）相关的软目标（Soft-target）作为Total loss的一部分，以诱导学生网络（Student network：精简、低复杂度，更适合推理部署）的训练，实现知识迁移（Knowledge transfer）。教师网络的预测精度通常要优于学生网络，而模型容量则无具体限制，且教师网络推理精度越高，越有利于学生网络的学习。</p>
 <p>​        所以说，知识蒸馏的目的就是<strong>保证小模型在参数量不变的情况下，得到比较大的性能提升，甚至获得与大模型相似的精度指标。</strong> </p>
 <ul>
-<li><p><strong>Response based distillation：教师模型对学生模型的输出进行监督</strong></p>
-</li>
+<li><strong>Response based distillation：教师模型对学生模型的输出进行监督</strong></li>
 <li><p><strong>Feature based distillation：教师模型对学生模型的中间层 feature map 进行监督</strong></p>
 </li>
 <li><p><strong>Relation based distillation：对于不同的样本，使用教师模型和学生模型同时计算样本之间 feature map 的相关性，使得学生模型和教师模型得到的相关性矩阵尽可能一致</strong></p>

