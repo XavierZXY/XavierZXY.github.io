@@ -187,6 +187,83 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.spacezxy.top/2022/03/13/CMake/CMake-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/autor.jpg">
+      <meta itemprop="name" content="Xavier ZXY">
+      <meta itemprop="description" content="ZXY 想去看极光">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Xavier ZXY">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/03/13/CMake/CMake-2/" class="post-title-link" itemprop="url">CMake-2</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-03-13 07:56:20 / 修改时间：08:02:07" itemprop="dateCreated datePublished" datetime="2022-03-13T07:56:20+08:00">2022-03-13</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="CMake简明教程"><a href="#CMake简明教程" class="headerlink" title="CMake简明教程"></a>CMake简明教程</h1><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/whahu1989/article/details/82078563"> Linux下CMake简明教程</a></p>
+<h1 id="CMake问题汇总"><a href="#CMake问题汇总" class="headerlink" title="CMake问题汇总"></a>CMake问题汇总</h1><h2 id="引用动态库和静态库"><a href="#引用动态库和静态库" class="headerlink" title="引用动态库和静态库"></a>引用动态库和静态库</h2><ul>
+<li><p>动态库的添加</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">link_directories</span>(<span class="variable">$&#123;PROJECT_SOURCE_DIR&#125;</span>/lib) <span class="comment">#添加动态连接库的路径</span></span><br><span class="line"><span class="keyword">target_link_libraries</span>(<span class="variable">$&#123;PROJECT_NAME&#125;</span> mxnet ) <span class="comment">#添加libmxnet.so</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>静态库的添加</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">link_directories</span>(<span class="variable">$&#123;PROJECT_SOURCE_DIR&#125;</span>/lib) </span><br><span class="line"><span class="keyword">target_link_libraries</span>(<span class="variable">$&#123;PROJECT_NAME&#125;</span> mxnet )</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+  <figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">add_library</span>(mxnet STATIC IMPORTED)</span><br><span class="line"><span class="keyword">set_property</span>(<span class="keyword">TARGET</span> mxnet PROPERTY IMPORTED_LOCATION /path/to/libmxnet.a)</span><br><span class="line"><span class="keyword">target_link_libraries</span>(<span class="variable">$&#123;PROJECT_NAME&#125;</span> mxnet ) <span class="comment">#添加libmxnet.a</span></span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.spacezxy.top/2022/02/27/CMake/CMake-1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -931,105 +1008,10 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://www.spacezxy.top/2021/10/14/ML-Algorithm-Pratice/ML-Algorithm-pratice-2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/autor.jpg">
-      <meta itemprop="name" content="Xavier ZXY">
-      <meta itemprop="description" content="ZXY 想去看极光">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Xavier ZXY">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2021/10/14/ML-Algorithm-Pratice/ML-Algorithm-pratice-2/" class="post-title-link" itemprop="url">机器学习算法竞赛实战(二)</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2021-10-14 14:59:55" itemprop="dateCreated datePublished" datetime="2021-10-14T14:59:55+08:00">2021-10-14</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-10-23 16:48:14" itemprop="dateModified" datetime="2021-10-23T16:48:14+08:00">2021-10-23</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="特征工程"><a href="#特征工程" class="headerlink" title="特征工程"></a>特征工程</h1><p>“机器学习的本质上还是特征工程，数据和特征决定了机器学习的上限，而模型和算法知识逼近这个上限而已。”特征工程主要分为数据预处理，特征变换，特征提取，特征选择这四个部分。</p>
-<h2 id="数据预处理"><a href="#数据预处理" class="headerlink" title="数据预处理"></a>数据预处理</h2><p>数据质量直接决定了模型的准确性和泛化能力的高低，同时在构造特征时也会影响其顺畅性。</p>
-<h3 id="缺失值处理"><a href="#缺失值处理" class="headerlink" title="缺失值处理"></a>缺失值处理</h3><ul>
-<li><p>区分缺失值</p>
-<p>缺失值的表现出了None，NA和NaN这些，还包括用于表示数值缺失的特殊数值。在具体业务之中有些数值没有意义也应作缺失值处理。</p>
-</li>
-<li><p>处理方法</p>
-<ul>
-<li>对于类别特征：填充众数，或者直接填充一个新类别</li>
-<li>对于数值特征：可以填充平均数，中位数，众数等</li>
-<li>对于有序数据：可以填充相邻值</li>
-<li>模型预测填充：可以对含有缺失值的那一列进行建模并预测其中缺失值的结果。</li>
-</ul>
-</li>
-</ul>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2021/10/14/ML-Algorithm-Pratice/ML-Algorithm-pratice-2/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1097,7 +1079,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">20</span>
+          <span class="site-state-item-count">21</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

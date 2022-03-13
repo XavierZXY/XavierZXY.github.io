@@ -1996,4 +1996,25 @@
         <tag>NLP入门</tag>
       </tags>
   </entry>
+  <entry>
+    <title>CMake-2</title>
+    <url>/2022/03/13/CMake/CMake-2/</url>
+    <content><![CDATA[<h1 id="CMake简明教程"><a href="#CMake简明教程" class="headerlink" title="CMake简明教程"></a>CMake简明教程</h1><p><a href="https://blog.csdn.net/whahu1989/article/details/82078563"> Linux下CMake简明教程</a></p>
+<h1 id="CMake问题汇总"><a href="#CMake问题汇总" class="headerlink" title="CMake问题汇总"></a>CMake问题汇总</h1><h2 id="引用动态库和静态库"><a href="#引用动态库和静态库" class="headerlink" title="引用动态库和静态库"></a>引用动态库和静态库</h2><ul>
+<li><p>动态库的添加</p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="keyword">link_directories</span>(<span class="variable">$&#123;PROJECT_SOURCE_DIR&#125;</span>/lib) <span class="comment">#添加动态连接库的路径</span></span><br><span class="line"><span class="keyword">target_link_libraries</span>(<span class="variable">$&#123;PROJECT_NAME&#125;</span> mxnet ) <span class="comment">#添加libmxnet.so</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>静态库的添加</p>
+<figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="keyword">link_directories</span>(<span class="variable">$&#123;PROJECT_SOURCE_DIR&#125;</span>/lib) </span><br><span class="line"><span class="keyword">target_link_libraries</span>(<span class="variable">$&#123;PROJECT_NAME&#125;</span> mxnet )</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+  <figure class="highlight cmake"><table><tr><td class="code"><pre><span class="line"><span class="keyword">add_library</span>(mxnet STATIC IMPORTED)</span><br><span class="line"><span class="keyword">set_property</span>(<span class="keyword">TARGET</span> mxnet PROPERTY IMPORTED_LOCATION /path/to/libmxnet.a)</span><br><span class="line"><span class="keyword">target_link_libraries</span>(<span class="variable">$&#123;PROJECT_NAME&#125;</span> mxnet ) <span class="comment">#添加libmxnet.a</span></span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>C++</category>
+      </categories>
+      <tags>
+        <tag>CMake</tag>
+      </tags>
+  </entry>
 </search>
