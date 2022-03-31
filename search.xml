@@ -1836,7 +1836,20 @@ y_i=a\sum_{n=0}^{t}{1-a}y_{t-n}</script></li>
   <entry>
     <title>机器学习进阶(一)</title>
     <url>/2022/03/23/ML-Advanced/ML-Advanced-1/</url>
-    <content><![CDATA[]]></content>
+    <content><![CDATA[<h1 id="机器学习的下一步"><a href="#机器学习的下一步" class="headerlink" title="机器学习的下一步"></a>机器学习的下一步</h1><p>识别马的深度学习模型，或许学到的不是马的特征，也可能是一些其他的特征，如文件下方的水印。</p>
+<p><img src="/2022/03/23/ML-Advanced/ML-Advanced-1/image-20220329223448541.png" alt="image-20220329223448541"></p>
+<p>终身学习，机器可不可以像人类一样，可以一直不断地去学习不同的能力，完成不同的任务？</p>
+<p>机器能不能获得自主学习的能力？</p>
+<p>能不能通过很少的数据集来完成一个学习任务？</p>
+<p>增强学习？神经网络压缩？训练资料和测试资料不一样？</p>
+<span id="more"></span>
+
+<h1 id="可解释的机器学习"><a href="#可解释的机器学习" class="headerlink" title="可解释的机器学习"></a>可解释的机器学习</h1><p>机器学习解释做了一些什么事情，来提高学习效果，判断学习目标是否正确。</p>
+<h2 id="神奇宝贝？数码宝贝？"><a href="#神奇宝贝？数码宝贝？" class="headerlink" title="神奇宝贝？数码宝贝？"></a>神奇宝贝？数码宝贝？</h2><p>在神奇宝贝和数码宝贝的图片上train一个model，能够分辨出一个图片是神奇宝贝还是数码宝贝。</p>
+<p>但Saliency Map并没有一个好的表现，机器更多在意边缘部分。</p>
+<p><img src="/2022/03/23/ML-Advanced/ML-Advanced-1/image-20220331225148602.png" alt="image-20220331225148602"></p>
+<p><img src="/2022/03/23/ML-Advanced/ML-Advanced-1/image-20220331225314261.png" alt="image-20220331225314261"></p>
+]]></content>
       <categories>
         <category>机器学习</category>
       </categories>
