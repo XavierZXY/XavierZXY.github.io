@@ -1849,6 +1849,13 @@ y_i=a\sum_{n=0}^{t}{1-a}y_{t-n}</script></li>
 <p>但Saliency Map并没有一个好的表现，机器更多在意边缘部分。</p>
 <p><img src="/2022/03/23/ML-Advanced/ML-Advanced-1/image-20220331225148602.png" alt="image-20220331225148602"></p>
 <p><img src="/2022/03/23/ML-Advanced/ML-Advanced-1/image-20220331225314261.png" alt="image-20220331225314261"></p>
+<h2 id="让机器学习更符合人的预期"><a href="#让机器学习更符合人的预期" class="headerlink" title="让机器学习更符合人的预期"></a>让机器学习更符合人的预期</h2><p>参数指标只是机器学习的一个方面，机器生成的东西更应该被人所理解。需要积雪约束来完成这一部分的工作。</p>
+<p><img src="/2022/03/23/ML-Advanced/ML-Advanced-1/image-20220331230324059.png" alt="image-20220331230324059"></p>
+<h2 id="Using-a-model-to-explain-another"><a href="#Using-a-model-to-explain-another" class="headerlink" title="Using  a model to explain another"></a>Using  a model to explain another</h2><p>通过构建一个可解释的model，来接近一个难解释的model，通过该可解释性model来研究不可解释的model。</p>
+<p><img src="/2022/03/23/ML-Advanced/ML-Advanced-1/image-20220404225006300.png" alt="image-20220404225006300"></p>
+<h3 id="Local-Interpertable-Model-Agnostic-Explantions-LIME"><a href="#Local-Interpertable-Model-Agnostic-Explantions-LIME" class="headerlink" title="Local Interpertable  Model-Agnostic Explantions(LIME)"></a>Local Interpertable  Model-Agnostic Explantions(LIME)</h3><p>在一定的区域可以用一个可解释的模型去拟合未知的模型。</p>
+<p>需要选择一个合理的<strong>附近</strong>区域。</p>
+<p><img src="/2022/03/23/ML-Advanced/ML-Advanced-1/image-20220404225151129.png" alt="image-20220404225151129"></p>
 ]]></content>
       <categories>
         <category>机器学习</category>

@@ -31,8 +31,11 @@
 <meta property="og:image" content="https://www.spacezxy.top/2022/03/23/ML-Advanced/ML-Advanced-1/image-20220329223448541.png">
 <meta property="og:image" content="https://www.spacezxy.top/2022/03/23/ML-Advanced/ML-Advanced-1/image-20220331225148602.png">
 <meta property="og:image" content="https://www.spacezxy.top/2022/03/23/ML-Advanced/ML-Advanced-1/image-20220331225314261.png">
+<meta property="og:image" content="https://www.spacezxy.top/2022/03/23/ML-Advanced/ML-Advanced-1/image-20220331230324059.png">
+<meta property="og:image" content="https://www.spacezxy.top/2022/03/23/ML-Advanced/ML-Advanced-1/image-20220404225006300.png">
+<meta property="og:image" content="https://www.spacezxy.top/2022/03/23/ML-Advanced/ML-Advanced-1/image-20220404225151129.png">
 <meta property="article:published_time" content="2022-03-23T14:55:56.000Z">
-<meta property="article:modified_time" content="2022-03-31T14:53:28.320Z">
+<meta property="article:modified_time" content="2022-04-04T14:55:50.951Z">
 <meta property="article:author" content="Xavier ZXY">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://www.spacezxy.top/2022/03/23/ML-Advanced/ML-Advanced-1/image-20220329223448541.png">
@@ -224,7 +227,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-03-31 22:53:28" itemprop="dateModified" datetime="2022-03-31T22:53:28+08:00">2022-03-31</time>
+                <time title="修改时间：2022-04-04 22:55:50" itemprop="dateModified" datetime="2022-04-04T22:55:50+08:00">2022-04-04</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -267,6 +270,13 @@
 <p>但Saliency Map并没有一个好的表现，机器更多在意边缘部分。</p>
 <p><img src="/2022/03/23/ML-Advanced/ML-Advanced-1/image-20220331225148602.png" alt="image-20220331225148602"></p>
 <p><img src="/2022/03/23/ML-Advanced/ML-Advanced-1/image-20220331225314261.png" alt="image-20220331225314261"></p>
+<h2 id="让机器学习更符合人的预期"><a href="#让机器学习更符合人的预期" class="headerlink" title="让机器学习更符合人的预期"></a>让机器学习更符合人的预期</h2><p>参数指标只是机器学习的一个方面，机器生成的东西更应该被人所理解。需要积雪约束来完成这一部分的工作。</p>
+<p><img src="/2022/03/23/ML-Advanced/ML-Advanced-1/image-20220331230324059.png" alt="image-20220331230324059"></p>
+<h2 id="Using-a-model-to-explain-another"><a href="#Using-a-model-to-explain-another" class="headerlink" title="Using  a model to explain another"></a>Using  a model to explain another</h2><p>通过构建一个可解释的model，来接近一个难解释的model，通过该可解释性model来研究不可解释的model。</p>
+<p><img src="/2022/03/23/ML-Advanced/ML-Advanced-1/image-20220404225006300.png" alt="image-20220404225006300"></p>
+<h3 id="Local-Interpertable-Model-Agnostic-Explantions-LIME"><a href="#Local-Interpertable-Model-Agnostic-Explantions-LIME" class="headerlink" title="Local Interpertable  Model-Agnostic Explantions(LIME)"></a>Local Interpertable  Model-Agnostic Explantions(LIME)</h3><p>在一定的区域可以用一个可解释的模型去拟合未知的模型。</p>
+<p>需要选择一个合理的<strong>附近</strong>区域。</p>
+<p><img src="/2022/03/23/ML-Advanced/ML-Advanced-1/image-20220404225151129.png" alt="image-20220404225151129"></p>
 
     </div>
 
@@ -344,7 +354,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%9A%84%E4%B8%8B%E4%B8%80%E6%AD%A5"><span class="nav-number">1.</span> <span class="nav-text">机器学习的下一步</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%AF%E8%A7%A3%E9%87%8A%E7%9A%84%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0"><span class="nav-number">2.</span> <span class="nav-text">可解释的机器学习</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A5%9E%E5%A5%87%E5%AE%9D%E8%B4%9D%EF%BC%9F%E6%95%B0%E7%A0%81%E5%AE%9D%E8%B4%9D%EF%BC%9F"><span class="nav-number">2.1.</span> <span class="nav-text">神奇宝贝？数码宝贝？</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E7%9A%84%E4%B8%8B%E4%B8%80%E6%AD%A5"><span class="nav-number">1.</span> <span class="nav-text">机器学习的下一步</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%AF%E8%A7%A3%E9%87%8A%E7%9A%84%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0"><span class="nav-number">2.</span> <span class="nav-text">可解释的机器学习</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A5%9E%E5%A5%87%E5%AE%9D%E8%B4%9D%EF%BC%9F%E6%95%B0%E7%A0%81%E5%AE%9D%E8%B4%9D%EF%BC%9F"><span class="nav-number">2.1.</span> <span class="nav-text">神奇宝贝？数码宝贝？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A9%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E6%9B%B4%E7%AC%A6%E5%90%88%E4%BA%BA%E7%9A%84%E9%A2%84%E6%9C%9F"><span class="nav-number">2.2.</span> <span class="nav-text">让机器学习更符合人的预期</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Using-a-model-to-explain-another"><span class="nav-number">2.3.</span> <span class="nav-text">Using  a model to explain another</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Local-Interpertable-Model-Agnostic-Explantions-LIME"><span class="nav-number">2.3.1.</span> <span class="nav-text">Local Interpertable  Model-Agnostic Explantions(LIME)</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
