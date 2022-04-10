@@ -1843,7 +1843,6 @@ y_i=a\sum_{n=0}^{t}{1-a}y_{t-n}</script></li>
 <p>能不能通过很少的数据集来完成一个学习任务？</p>
 <p>增强学习？神经网络压缩？训练资料和测试资料不一样？</p>
 <span id="more"></span>
-
 <h1 id="可解释的机器学习"><a href="#可解释的机器学习" class="headerlink" title="可解释的机器学习"></a>可解释的机器学习</h1><p>机器学习解释做了一些什么事情，来提高学习效果，判断学习目标是否正确。</p>
 <h2 id="神奇宝贝？数码宝贝？"><a href="#神奇宝贝？数码宝贝？" class="headerlink" title="神奇宝贝？数码宝贝？"></a>神奇宝贝？数码宝贝？</h2><p>在神奇宝贝和数码宝贝的图片上train一个model，能够分辨出一个图片是神奇宝贝还是数码宝贝。</p>
 <p>但Saliency Map并没有一个好的表现，机器更多在意边缘部分。</p>
@@ -1856,6 +1855,13 @@ y_i=a\sum_{n=0}^{t}{1-a}y_{t-n}</script></li>
 <h3 id="Local-Interpertable-Model-Agnostic-Explantions-LIME"><a href="#Local-Interpertable-Model-Agnostic-Explantions-LIME" class="headerlink" title="Local Interpertable  Model-Agnostic Explantions(LIME)"></a>Local Interpertable  Model-Agnostic Explantions(LIME)</h3><p>在一定的区域可以用一个可解释的模型去拟合未知的模型。</p>
 <p>需要选择一个合理的<strong>附近</strong>区域。</p>
 <p><img src="/2022/03/23/ML-Advanced/ML-Advanced-1/image-20220404225151129.png" alt="image-20220404225151129"></p>
+<h3 id="Devision-Tree"><a href="#Devision-Tree" class="headerlink" title="Devision Tree"></a>Devision Tree</h3><p>$\theta$为黑盒的参数，$T_\theta$为Decision Tree的参数</p>
+<p>$O(T<em>{\theta})$: how complex $T</em>{\theta}$  is </p>
+<p><img src="/2022/03/23/ML-Advanced/ML-Advanced-1/image-20220410192259418.png" alt="image-20220410192259418"></p>
+<ul>
+<li>Train a network that is easy to be interpreted by decision tree.<script type="math/tex; mode=display">
+\theta^{*} = argmin(L(\theta)) + \lambda O(T_{\theta})</script>通过另外一个network来求得这个$O(T_{\theta})$</li>
+</ul>
 ]]></content>
       <categories>
         <category>机器学习</category>
