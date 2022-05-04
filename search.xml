@@ -1867,4 +1867,19 @@ y_i=a\sum_{n=0}^{t}{1-a}y_{t-n}</script></li>
         <category>机器学习</category>
       </categories>
   </entry>
+  <entry>
+    <title>机器学习进阶(二)</title>
+    <url>/2022/05/04/ML-Advanced/ML-Advanced-2/</url>
+    <content><![CDATA[<h1 id="对抗攻击模型"><a href="#对抗攻击模型" class="headerlink" title="对抗攻击模型"></a>对抗攻击模型</h1><h2 id="Attack"><a href="#Attack" class="headerlink" title="Attack"></a>Attack</h2><p><img src="/2022/05/04/ML-Advanced/ML-Advanced-2/image-20220504131621955.png" alt="image-20220504131621955"></p>
+<p>Constrain应该根据不同的攻击模型类型来决定，模型是文本，语音还是图像？</p>
+<p>应当选取和人感知相近的constrain。</p>
+<p><img src="/2022/05/04/ML-Advanced/ML-Advanced-2/image-20220504131754796.png" alt="image-20220504131754796"></p>
+<h3 id="How-to-Attack"><a href="#How-to-Attack" class="headerlink" title="How to Attack"></a>How to Attack</h3><p>$$<br>x^{*} = \arg{\min_{d(x^{0}, x^{‘} \leq \varepsilon)} L(x^{‘})}<br>$$</p>
+<p><img src="/2022/05/04/ML-Advanced/ML-Advanced-2/image-20220504133045782.png" alt="image-20220504133045782"></p>
+<p><img src="/2022/05/04/ML-Advanced/ML-Advanced-2/image-20220504133059220.png" alt="image-20220504133059220"></p>
+]]></content>
+      <categories>
+        <category>机器学习</category>
+      </categories>
+  </entry>
 </search>
