@@ -1870,15 +1870,99 @@ y_i=a\sum_{n=0}^{t}{1-a}y_{t-n}</script></li>
   <entry>
     <title>机器学习进阶(二)</title>
     <url>/2022/05/04/ML-Advanced/ML-Advanced-2/</url>
-    <content><![CDATA[<h1 id="对抗攻击模型"><a href="#对抗攻击模型" class="headerlink" title="对抗攻击模型"></a>对抗攻击模型</h1><h2 id="Attack"><a href="#Attack" class="headerlink" title="Attack"></a>Attack</h2><p><img src="/2022/05/04/ML-Advanced/ML-Advanced-2/image-20220504131621955.png" alt="image-20220504131621955"></p>
+    <content><![CDATA[<h1 id="对抗攻击模型"><a href="#对抗攻击模型" class="headerlink" title="对抗攻击模型"></a>对抗攻击模型</h1><h1 id="Attack"><a href="#Attack" class="headerlink" title="Attack"></a>Attack</h1><p><img src="/2022/05/04/ML-Advanced/ML-Advanced-2/image-20220504131621955.png" alt="image-20220504131621955"></p>
 <p>Constrain应该根据不同的攻击模型类型来决定，模型是文本，语音还是图像？</p>
 <p>应当选取和人感知相近的constrain。</p>
 <span id="more"></span>
 
 <p><img src="/2022/05/04/ML-Advanced/ML-Advanced-2/image-20220504131754796.png" alt="image-20220504131754796"></p>
-<h3 id="How-to-Attack"><a href="#How-to-Attack" class="headerlink" title="How to Attack"></a>How to Attack</h3><p>$$<br>x^{*} = \arg{\min_{d(x^{0}, x^{‘} \leq \varepsilon)} L(x^{‘})}<br>$$</p>
+<h2 id="How-to-Attack"><a href="#How-to-Attack" class="headerlink" title="How to Attack"></a>How to Attack</h2><p>$$<br>x^{*} = \arg{\min_{d(x^{0}, x^{‘} \leq \varepsilon)} L(x^{‘})}<br>$$</p>
 <p><img src="/2022/05/04/ML-Advanced/ML-Advanced-2/image-20220504133045782.png" alt="image-20220504133045782"></p>
 <p><img src="/2022/05/04/ML-Advanced/ML-Advanced-2/image-20220504133059220.png" alt="image-20220504133059220"></p>
+<h2 id="what-happend？"><a href="#what-happend？" class="headerlink" title="what happend？"></a>what happend？</h2><p>在下图中的上半部分，tiger cat的置信范围是比较宽的，超出置信范围后，也会得到一个类似的结果。</p>
+<p>但在下半部分中，选取一个特定的特征空间，在这个特征空间中，tiger cat的范围是十分狭窄的，且超出置信范围后，会得到一个有很大区别的结果。</p>
+<p><img src="/2022/05/04/ML-Advanced/ML-Advanced-2/image-20220505130018534.png" alt="image-20220505130018534"></p>
+<h2 id="Attack-Approaches"><a href="#Attack-Approaches" class="headerlink" title="Attack Approaches"></a>Attack Approaches</h2><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>website</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>FGSM</td>
+<td><a href="https://arxiv.org/abs/1412.6572">https://arxiv.org/abs/1412.6572</a></td>
+</tr>
+<tr>
+<td>Basic iterative method</td>
+<td><a href="https://arxiv.org/abs/1607.02533">https://arxiv.org/abs/1607.02533</a></td>
+</tr>
+<tr>
+<td>L-BFGS</td>
+<td><a href="https://arxiv.org/abs/1312.6199">https://arxiv.org/abs/1312.6199</a></td>
+</tr>
+<tr>
+<td>Deepfool</td>
+<td><a href="https://arxiv.org/abs/1511.04599">https://arxiv.org/abs/1511.04599</a></td>
+</tr>
+<tr>
+<td>JSMA</td>
+<td><a href="https://arxiv.org/abs/1511.07528">https://arxiv.org/abs/1511.07528</a></td>
+</tr>
+<tr>
+<td>C&amp;W</td>
+<td><a href="https://arxiv.org/abs/1608.04644">https://arxiv.org/abs/1608.04644</a></td>
+</tr>
+<tr>
+<td>Elastic net attack</td>
+<td><a href="https://arxiv.org/abs/1709.04114">https://arxiv.org/abs/1709.04114</a></td>
+</tr>
+<tr>
+<td>Spatially Transformed</td>
+<td><a href="https://arxiv.org/abs/1801.02612">https://arxiv.org/abs/1801.02612</a></td>
+</tr>
+<tr>
+<td>One Pixel Attack</td>
+<td><a href="https://arxiv.org/abs/1710.08864">https://arxiv.org/abs/1710.08864</a></td>
+</tr>
+<tr>
+<td>…… only list a few</td>
+<td></td>
+</tr>
+</tbody></table>
+<p>不同的方法会使用不同的constraints和optimization methods来训练attck method。</p>
+<h2 id="Black-Box-Attack"><a href="#Black-Box-Attack" class="headerlink" title="Black Box Attack"></a>Black Box Attack</h2><p>If you have the training data of the target network</p>
+<ul>
+<li>Train a proxy network yourself</li>
+<li>Using the proxy network to generate attcked objects</li>
+</ul>
+<p>如果没有训练数据，我们可以使用提供的model来得到模型预测的标签，我们便可以运用这些数据来进行attack。</p>
+<p><a href="https://arxiv.org/abs/1610.08401">Universal adversarial perturbations</a></p>
+<h2 id="Attack-in-the-Real-World"><a href="#Attack-in-the-Real-World" class="headerlink" title="Attack in the Real World"></a>Attack in the Real World</h2><p>Some papers</p>
+<p><a href="https://www.cs.cmu.edu/~sbhagava/pape">人脸识别攻击</a></p>
+<h1 id="Defense"><a href="#Defense" class="headerlink" title="Defense"></a>Defense</h1><ul>
+<li>Passive defense: Finding the attached image without modifying the model </li>
+<li>Proactive defense: Training a model that is robust to adversarial attack</li>
+</ul>
+<h2 id="Passive-defense"><a href="#Passive-defense" class="headerlink" title="Passive defense"></a>Passive defense</h2><p>攻击生效往往是某一个或某几个维度上的特征，使用filter进行平滑化处理，可以在不大幅度改变原image的情况下，过滤调一些attck 特征。</p>
+<p><img src="/2022/05/04/ML-Advanced/ML-Advanced-2/image-20220505133511030.png" alt="image-20220505133511030"></p>
+<p>通过对input的处理，来判断该input是否为attck</p>
+<p><img src="/2022/05/04/ML-Advanced/ML-Advanced-2/image-20220505133652672.png" alt="image-20220505133652672"></p>
+<p><img src="/2022/05/04/ML-Advanced/ML-Advanced-2/image-20220505133752443.png" alt="image-20220505133752443"></p>
+<h2 id="Proactive-Defense"><a href="#Proactive-Defense" class="headerlink" title="Proactive Defense"></a>Proactive Defense</h2><p>Proactive Defense的主要思想是找出漏洞，补起来。</p>
+<p>在训练模型的时候，找出那些attack input，给attack正确的标签，再重新进行训练。</p>
+<h1 id="To-learn-more-…"><a href="#To-learn-more-…" class="headerlink" title="To learn more …"></a>To learn more …</h1><ul>
+<li>Reference<ul>
+<li><a href="https://adversarial-ml-tutorial.org/">https://adversarial-ml-tutorial.org</a></li>
+</ul>
+</li>
+<li>Adversarial Attack Toolbox:<ul>
+<li><a href="https://github.com/bethgelab/foolbox">https://github.com/bethgelab/foolbox</a></li>
+<li><a href="https://github.com/IBM/adversarial-robustness-toolbox">https://github.com/IBM/adversarial-robustness-toolbox</a></li>
+<li><a href="https://github.com/tensorflow/cleverhans">https://github.com/tensorflow/cleverhans</a></li>
+</ul>
+</li>
+</ul>
 ]]></content>
       <categories>
         <category>机器学习</category>
