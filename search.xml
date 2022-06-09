@@ -1968,4 +1968,33 @@ y_i=a\sum_{n=0}^{t}{1-a}y_{t-n}</script></li>
         <category>机器学习</category>
       </categories>
   </entry>
+  <entry>
+    <title>手把手刷数组</title>
+    <url>/2022/06/04/Algorithm/alogrithm-3/</url>
+    <content><![CDATA[<p>本文为学习[labuladong的算法小抄](<a href="https://labuladong.gitbook.io/algo/">开篇词 - labuladong 的算法小抄 (gitbook.io)</a>)时所做的笔记，仅供复习总结参考，不做任何商业用途，如有侵权，请联系删除。</p>
+]]></content>
+      <categories>
+        <category>算法</category>
+      </categories>
+      <tags>
+        <tag>数据结构</tag>
+        <tag>数组</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>机器学习进阶(三)</title>
+    <url>/2022/05/04/ML-Advanced/ML-Advanced-3/</url>
+    <content><![CDATA[<h1 id="神经网络压缩"><a href="#神经网络压缩" class="headerlink" title="神经网络压缩"></a>神经网络压缩</h1>]]></content>
+      <categories>
+        <category>机器学习</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>机器学习进阶(三)</title>
+    <url>/2022/05/04/ML-Advanced/Template/</url>
+    <content><![CDATA[]]></content>
+      <categories>
+        <category>机器学习</category>
+      </categories>
+  </entry>
 </search>
