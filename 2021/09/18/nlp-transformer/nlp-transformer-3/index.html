@@ -1,0 +1,1032 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/logo16.svg">
+  <link rel="icon" href="/img/logo32.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Xavier ZXY">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="本文为参加Datawhale组队学习时所写，如若需了解细致内容，请去到Datawhale官方开源课程基于transformers的自然语言处理(NLP)入门 (datawhalechina.github.io) 图解GPT 什么是语言模型 本文主要描述和对比两种语言模型  自编码(auto-encoder)语言模型 自回归(auto-regressive)语言模型  自编码语言模">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于Transformers的自然语言处理(NLP)入门(三)">
+<meta property="og:url" content="https://www.spacezxy.top/2021/09/18/nlp-transformer/nlp-transformer-3/index.html">
+<meta property="og:site_name" content="Xavier ZXY">
+<meta property="og:description" content="本文为参加Datawhale组队学习时所写，如若需了解细致内容，请去到Datawhale官方开源课程基于transformers的自然语言处理(NLP)入门 (datawhalechina.github.io) 图解GPT 什么是语言模型 本文主要描述和对比两种语言模型  自编码(auto-encoder)语言模型 自回归(auto-regressive)语言模型  自编码语言模">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210918200729037.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210918203321168.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210918203439661.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210918203607920.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210918203756070.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210918203859377.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210918204007767.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210918204045901.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210918204214467.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210918204327430.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210918204752948.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210918205045809.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210918205349065.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210918205418308.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210918205515342.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919144732335.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919144829495.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919144912368.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919145019792.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919145122628.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919145319228.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919150025822.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919150217882.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919150304519.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919150404684.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919150520109.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919150900082.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919151034459.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919151448489.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919151532858.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919151620605.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919151823316.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919151859377.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919151953906.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919153337472.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919153412973.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919153441073.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919153531362.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919153601375.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919153746482.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919153827272.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919153923491.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919154053712.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919154239317.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919154503863.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919154605387.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919154759298.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919154829762.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919154944710.png">
+<meta property="article:published_time" content="2021-09-18T11:49:59.000Z">
+<meta property="article:modified_time" content="2021-09-19T08:03:14.559Z">
+<meta property="article:author" content="Xavier ZXY">
+<meta property="article:tag" content="Datawhale组队学习">
+<meta property="article:tag" content="NLP入门">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.spacezxy.top/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210918200729037.png">
+  
+  
+  
+  <title>基于Transformers的自然语言处理(NLP)入门(三) - Xavier ZXY</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.spacezxy.top","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>SapceZXY</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="基于Transformers的自然语言处理(NLP)入门(三)"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-09-18 19:49" pubdate>
+          2021年9月18日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          7.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          60 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">基于Transformers的自然语言处理(NLP)入门(三)</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>本文为参加Datawhale组队学习时所写，如若需了解细致内容，请去到Datawhale官方开源课程<a
+target="_blank" rel="noopener" href="https://datawhalechina.github.io/learn-nlp-with-transformers/#/">基于transformers的自然语言处理(NLP)入门
+(datawhalechina.github.io)</a></p>
+<h1 id="图解gpt">图解GPT</h1>
+<h2 id="什么是语言模型">什么是语言模型</h2>
+<p>本文主要描述和对比两种语言模型</p>
+<ul>
+<li>自编码(auto-encoder)语言模型</li>
+<li>自回归(auto-regressive)语言模型</li>
+</ul>
+<p><strong>自编码语言模型</strong>代表就是BERT。自编码语言模型通过随机mask输入的部分单词，然后预训练的目标是预测被mask的单词，不仅可以融入上文信息，还可以自然地融入下文信息。</p>
+<span id="more"></span>
+<img src="/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210918200729037.png" srcset="/img/loading.gif" lazyload class="" title="Bert mask">
+<p>自编码语言模型的优缺点</p>
+<ul>
+<li>优点：自然地融入双向语言模型，同时看到被预测的单词的上下文</li>
+<li>缺点：训练和预测不一致。训练的时候引入了[mask]标记，但是在预测阶段往往没有mask标记，导致预训练阶段和Fine-tuning阶段不一致。</li>
+</ul>
+<p><strong>自回归语言模型：</strong>语言模型根据输入句子的一部分文本来预测下一个词。日常生活中最常见的就是输入法提示，它可以根据输入的内容，给出提示。</p>
+<p>自回归语言模型的优点和缺点：</p>
+<ul>
+<li>优点：对于生成类地NLP任务，比如文本摘要，机器翻译等从左向右的生成内容，天然和自回归语言模型契合。</li>
+<li>缺点：由于一般是从左到右(当然也可能从左到右)，所以只能利用上文或者下文地信息，不能同时利用上下文。</li>
+</ul>
+<p>GPT-2属于自回归语言模型，相比于手机app上的输入提示，GPT-2更加复杂，功能也更加强大。</p>
+<img src="/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210918203321168.png" srcset="/img/loading.gif" lazyload class="" title="多种GPT模型">
+<h2 id="基于transformer的语言模型">基于Transformer的语言模型</h2>
+<p>原始的Transformer模型是由
+Encoder部分和Decoder部分组成的，它们都是由多层transformer堆叠而成的。原始Transformer的seq2seq结构很适合机器翻译，因为机器翻译正是将一个文本序列翻译为另一种语言的文本序列。</p>
+<img src="/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210918203439661.png" srcset="/img/loading.gif" lazyload class="" title="原始Transformer结构">
+<p>但如果要使用Transformer来解决语言模型任务，并不需要完整的Encoder部分和Decoder部分，于是在原始Transformer之后的许多研究工作中，人们尝试只使用Transformer
+Encoder或者Decoder，并且将它们堆得层数尽可能高，然后使用大量的训练语料和大量的计算资源（数十万美元用于训练这些模型）进行预训练。比如BERT只使用了Encoder部分进行masked
+language
+model（自编码）训练，GPT-2便是只使用了Decoder部分进行自回归（auto
+regressive）语言模型训练。</p>
+<img src="/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210918203607920.png" srcset="/img/loading.gif" lazyload class="" title="GPT,BERT,Transformer-XL">
+<h2 id="transformer进化">Transformer进化</h2>
+<p>Transformer的Encoder进化成了BERT，Decoder进化成了GPT2。</p>
+<p>首先是Encoder部分。</p>
+<img src="/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210918203756070.png" srcset="/img/loading.gif" lazyload class="" title="encoder">
+<p>原始的Transformer论文中的Encoder部分接受特定长度的输入（如 512 个
+token）。如果一个输入序列比这个限制短，我们可以使用pad填充序列的其余部分。</p>
+<p>再回顾下Decoder部分 与Encoder相比，Decoder部分多了一个Encoder-Decoder
+self-attention层，使Decoder可以attention到Encoder编码的特定的信息。</p>
+<img src="/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210918203859377.png" srcset="/img/loading.gif" lazyload class="" title="decoder">
+<p>Decoder中的的 Masked
+Self-Attention会屏蔽未来的token。具体来说，它不像
+BERT那样直接将输入的单词随机改为mask，而是通过改变Self-Attention的计算，来屏蔽未来的单词信息。</p>
+<p>例如，我们想要计算位置4的attention，我们只允许看到位置4以前和位置4的token。</p>
+<img src="/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210918204007767.png" srcset="/img/loading.gif" lazyload class="" title="attention">
+<p>由于BERT是基于Encoder构建的，BERT使用是Self
+Attention层，而GPT2基于Decoder构建，GPT-2 使用masked Self
+Attention。一个正常的 Self
+Attention允许一个位置关注到它两边的信息，而masked Self
+Attention只让模型看到左边的信息：</p>
+<img src="/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210918204045901.png" srcset="/img/loading.gif" lazyload class="" title="self attention and mask self attention">
+<p>OpenAI的GPT2中Transformer-Decoder结构。基于Transformer-Decoder部分进行语言模型训练。由于去掉了Encoder部分，于是Encoder-Decoder
+self attention也不再需要。</p>
+<img src="/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210918204214467.png" srcset="/img/loading.gif" lazyload class="" title="transformer-decoder">
+<h2 id="gpt2概述">GPT2概述</h2>
+<img src="/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210918204327430.png" srcset="/img/loading.gif" lazyload class="" title="GPT2">
+<p>GPT-2能够处理1024
+个token。每个token沿着自己的路径经过所有的Decoder层。试用一个训练好的GPT-2模型的最简单方法是让它自己生成文本（这在技术上称为：生成无条件文本）。或者，我们可以给它一个提示，让它谈论某个主题（即生成交互式条件样本）。</p>
+<p>在漫无目的情况下，我们可以简单地给它输入一个特殊的s初始token，让它开始生成单词。</p>
+<img src="/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210918204752948.png" srcset="/img/loading.gif" lazyload class="" title="GPT2初始token">
+<p>由于模型只有一个输入，因此只有一条活跃路径。s
+token在所有Decoder层中依次被处理，然后沿着该路径生成一个向量。根据这个向量和模型的词汇表给所有可能的词计算出一个分数。在下图的例子中，我们选择了概率最高的
+the。下一步，我们把第一步的输出添加到我们的输入序列，然后让模型做下一个预测。</p>
+<p>第二条路径是此计算中唯一活动的路径。GPT-2 的每一层都保留了它对第一个
+token所编码的信息，而且会在处理第二个 token 时直接使用它：GPT-2
+不会根据第2个 token 重新计算第一个 token。</p>
+<h2 id="gpt2详解">GPT2详解</h2>
+<p>与之前我们讨论的其他 NLP 模型一样，GPT-2
+在嵌入矩阵中查找输入的单词的对应的 embedding
+向量。如下图所示：每一行都是词的
+embedding：这是一个数值向量，可以表示一个词并捕获一些含义。这个向量的大小在不同的
+GPT-2 模型中是不同的。最小的模型使用的 embedding 大小是 768。</p>
+<img src="/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210918205045809.png" srcset="/img/loading.gif" lazyload class="" title="token embedding">
+<p>于是在开始时，我们会在嵌入矩阵查找第一个 token s 的
+embedding。在把这个 embedding
+传给模型的第一个模块之前，我们还需要融入位置编码，这个位置编码能够指示单词在序列中的顺序。</p>
+<img src="/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210918205349065.png" srcset="/img/loading.gif" lazyload class="" title="位置编码">
+<img src="/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210918205418308.png" srcset="/img/loading.gif" lazyload class="" title="token+position">
+<p>输入的处理：得到词向量+位置编码</p>
+<h3 id="多层decoder">多层Decoder</h3>
+<p>第一层Decoder现在可以处理 s token所对应的向量了：首先通过 Self
+Attention 层，然后通过全连接神经网络。一旦Transformer
+的第1个Decoder处理了s
+token，依旧可以得到一个向量，这个结果向量会再次被发送到下一层Decoder。</p>
+<img src="/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210918205515342.png" srcset="/img/loading.gif" lazyload class="" title="多层编码">
+<h3 id="decoder中的self-attention">Decoder中的self-attention</h3>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs">机器人第2定律：机器人必须服从人给予 它 的命令，当 该命令 与 第一定律 冲突时例外。<br></code></pre></td></tr></table></figure>
+<p>例句中包含了多个代词。如果不结合它们所指的上下文，就无法理解或者处理这些词。当一个模型处理这个句子，它必须能够知道：</p>
+<ul>
+<li>它 指的是机器人</li>
+<li>该命令 指的是这个定律的前面部分，也就是 人给予 它 的命令</li>
+<li>第一定律 指的是机器人第一定律</li>
+</ul>
+<p>self-attention所做的事情是：它通过对句子片段中每个词的相关性打分，并将这些词的表示向量根据相关性加权求和，从而让模型能够将词和其他相关词向量的信息融合起来。</p>
+<h4 id="self-attention过程">self-attention过程</h4>
+<p>Self-Attention 沿着句子中每个 token 进行处理，主要组成部分包括 3
+个向量。</p>
+<ul>
+<li>Query：Query
+向量是由当前词的向量表示获得，用于对其他所有单词（使用这些单词的 key
+向量）进行评分。</li>
+<li>Key：Key
+向量由句子中的所有单词的向量表示获得，可以看作一个标识向量。</li>
+<li>Value：Value 向量在self-attention中与Key向量其实是相同的。</li>
+</ul>
+<img src="/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919144732335.png" srcset="/img/loading.gif" lazyload class="" title="query">
+<p>一个粗略的类比是把它看作是在一个文件柜里面搜索，Query
+向量是一个便签，上面写着你正在研究的主题，而 Key
+向量就像是柜子里的文件夹的标签。当你将便签与标签匹配时，我们取出匹配的那些文件夹的内容，这些内容就是
+Value 向量。但是你不仅仅是寻找一个 Value 向量，而是找到一系列Value
+向量。</p>
+<p>将 Query 向量与每个文件夹的 Key
+向量相乘，会为每个文件夹产生一个分数（从技术上来讲：点积后面跟着
+softmax）。</p>
+<img src="/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919144829495.png" srcset="/img/loading.gif" lazyload class="" title="score">
+<p>我们将每个 Value 向量乘以对应的分数，然后求和，就得到了 Self
+Attention 的输出。</p>
+<img src="/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919144912368.png" srcset="/img/loading.gif" lazyload class="" title="self-attention的输出">
+<p>这些加权的 Value 向量会得到一个向量，比如上图，它将 50%
+的注意力放到单词 robot 上，将 30% 的注意力放到单词 a，将 19%
+的注意力放到单词 it。</p>
+<p>而所谓的Masked self attention指的的是：将mask位置对应的的attention
+score变成一个非常小的数字或者0，让其他单词再self
+attention的时候（加权求和的时候）不考虑这些单词。</p>
+<h4 id="模型输出">模型输出</h4>
+<p>当模型顶部的Decoder层产生输出向量时（这个向量是经过 Self Attention
+层和神经网络层得到的），模型会将这个向量乘以一个巨大的嵌入矩阵（vocab
+size x embedding
+size）来计算该向量和所有单词embedding向量的相关得分。</p>
+<img src="/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919145019792.png" srcset="/img/loading.gif" lazyload class="" title="顶部的模块产生输出">
+<p>嵌入矩阵中的每一行都对应于模型词汇表中的一个词。这个相乘的结果，被解释为模型词汇表中每个词的分数，经过softmax之后被转换成概率。</p>
+<img src="/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919145122628.png" srcset="/img/loading.gif" lazyload class="" title="token概率">
+<p>我们可以选择最高分数的 token（top_k=1），也可以同时考虑其他词（top
+k）。假设每个位置输出k个token，假设总共输出n个token，那么基于n个单词的联合概率选择的输出序列会更好。</p>
+<img src="/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919145319228.png" srcset="/img/loading.gif" lazyload class="" title="选择输出">
+<p>这样，模型就完成了一次迭代，输出一个单词。模型会继续迭代，直到所有的单词都已经生成，或者直到输出了表示句子末尾的
+token。</p>
+<h2 id="详解self-attention">详解Self-Attention</h2>
+<p>在这里指出文中一些过于简化的说法：</p>
+<ul>
+<li>在文中交替使用token和词。但实际上，GPT-2使用Byte Pair
+Encoding在词汇表中创建token，这意味着token通常是词的一部分</li>
+<li>展示的例子实在推理模式下运行，这就是它为什么一次只处理一个token。在训练时，模型将会针对更长的文本序列进行训练，并且会同时处理多个token，同样，在训练时，模型会处理更大的batch
+size，而不是使用推理时使用的大小为1的batch size。</li>
+<li>本文图中一般使用行向量，但是有些实际上是列向量。</li>
+</ul>
+<h3 id="可视化self-attention">可视化Self-Attention</h3>
+<p>一个简单的Transformer，假设它一次只能处理 4 个 token。</p>
+<p>Self-Attention 主要通过 3 个步骤来实现：</p>
+<ul>
+<li>为每个路径创建 Query、Key、Value 矩阵。</li>
+<li>对于每个输入的 token，使用它的 Query 向量为所有其他的 Key
+向量进行打分。</li>
+<li>将 Value 向量乘以它们对应的分数后求和。</li>
+</ul>
+<img src="/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919150025822.png" srcset="/img/loading.gif" lazyload class="" title="self-attention的三个步骤">
+<p>（1）创建Query，Key，Value向量</p>
+<p>让我们关注第一条路径。我们会使用它的 Query 向量，并比较所有的 Key
+向量。这会为每个 Key 向量产生一个分数。Self Attention 的第一步是为每个
+token 的路径计算 3 个向量。</p>
+<img src="/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919150217882.png" srcset="/img/loading.gif" lazyload class="" title="第一步">
+<p>（2）计算分数</p>
+<p>现在我们有了这些向量，我们只对步骤 2 使用 Query 向量和 Value
+向量。因为我们关注的是第一个 token 的向量，我们将第一个 token 的 Query
+向量和其他所有的 token 的 Key 向量相乘，得到 4 个 token 的分数。</p>
+<img src="/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919150304519.png" srcset="/img/loading.gif" lazyload class="" title="第二步">
+<p>（3）计算和</p>
+<p>我们现在可以将这些分数和 Value
+向量相乘。在我们将它们相加后，一个具有高分数的 Value
+向量会占据结果向量的很大一部分。</p>
+<img src="/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919150404684.png" srcset="/img/loading.gif" lazyload class="" title="第三步">
+<p>分数越低，Value 向量就越透明。这是为了说明，乘以一个小的数值会稀释
+Value 向量。</p>
+<p>如果我们对每个路径都执行相同的操作，我们会得到一个向量，可以表示每个
+token，其中包含每个 token 合适的上下文信息。这些向量会输入到 Transformer
+模块的下一个子层（前馈神经网络）。</p>
+<img src="/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919150520109.png" srcset="/img/loading.gif" lazyload class="" title="汇总">
+<h3 id="图解masked-self-attention">图解Masked Self-attention</h3>
+<p>Masked Self Attention 和 Self Attention 是相同的，除了第 2
+个步骤。</p>
+<p>现在假设模型有2个 token 作为输入，我们正在观察（处理）第二个
+token。在这种情况下，最后 2 个 token
+是被屏蔽（masked）的。所以模型会干扰评分的步骤。它总是把未来的 token
+评分设置为0，因此模型不能看到未来的词，如下图所示：</p>
+<img src="/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919150900082.png" srcset="/img/loading.gif" lazyload class="" title="maksed self-attention">
+<p>这个屏蔽（masking）经常用一个矩阵来实现，称为 attention
+mask矩阵。依旧以4个单词的序列为例（例如：robot must obay
+orders）。在一个语言建模场景中，这个序列会分为 4
+个步骤处理：每个步骤处理一个词（假设现在每个词就是是一个token）。另外，由于模型是以
+batch size 的形式工作的，我们可以假设这个简单模型的 batch size
+为4，它会将4个序列生成任务作为一个 batch
+处理，如下图所示，左边是输入，右边是label。</p>
+<img src="/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919151034459.png" srcset="/img/loading.gif" lazyload class="" title="batch形式的输入和输出">
+<p>在矩阵的形式中，我们使用Query 矩阵和 Key
+矩阵相乘来计算分数。将其可视化如下。但注意，单词无法直接进行矩阵运算，所以下图的单词还需要对应成一个向量。</p>
+<img src="/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919151448489.png" srcset="/img/loading.gif" lazyload class="" title="Quert和Keys的相关矩阵">
+<p>在做完乘法之后，我们加上三角形的 attention
+mask。它将我们想要屏蔽的单元格设置为负无穷大或者一个非常大的负数（例如
+GPT-2 中的 负十亿）：</p>
+<img src="/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919151532858.png" srcset="/img/loading.gif" lazyload class="" title="mask-attention">
+<p>然后对每一行应用 softmax，会产生实际的分数，我们会将这些分数用于 Self
+Attention。</p>
+<img src="/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919151620605.png" srcset="/img/loading.gif" lazyload class="" title="softmax">
+<ul>
+<li>当模型处理数据集中的第 1 个数据（第 1 行），其中只包含着一个单词
+（robot），它将 100% 的注意力集中在这个单词上。</li>
+<li>当模型处理数据集中的第 2 个数据（第 2 行），其中包含着单词（robot
+must）。当模型处理单词 must，它将 48% 的注意力集中在 robot，将 52%
+的注意力集中在 must。</li>
+<li>诸如此类，继续处理后面的单词。</li>
+</ul>
+<h3 id="gpt2中的self-attention">GPT2中的Self-Attention</h3>
+<p>模型预测的时候：每次处理一个 token</p>
+<p>先处理第一个token a。</p>
+<img src="/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919151823316.png" srcset="/img/loading.gif" lazyload class="" title="gpt2的第一个token">
+<p>GPT-2 保存 token <code>a</code> 的 Key 向量和 Value 向量。每个 Self
+Attention 层都持有这个 token 对应的 Key 向量和 Value 向量：</p>
+<img src="/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919151859377.png" srcset="/img/loading.gif" lazyload class="" title="gpt2中的词a">
+<p>现在在下一个迭代，当模型处理单词 robot，它不需要生成 token a 的
+Query、Value 以及 Key
+向量。它只需要重新使用第一次迭代中保存的对应向量：</p>
+<img src="/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919151953906.png" srcset="/img/loading.gif" lazyload class="" title="词robot">
+<ol type="1">
+<li><p>创建Query，Key，Value矩阵</p>
+<p>让我们假设模型正在处理单词 <code>it</code>。进入Decoder之前，这个
+token 对应的输入就是 <code>it</code> 的 embedding 加上第 9
+个位置的位置编码：</p>
+<img src="/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919153337472.png" srcset="/img/loading.gif" lazyload class="" title="处理it">
+<p>Transformer
+中每个层都有它自己的参数矩阵。embedding向量我们首先遇到的权重矩阵是用于创建
+Query、Key、和 Value 向量的。</p>
+<img src="/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919153412973.png" srcset="/img/loading.gif" lazyload class="" title="处理it">
+<p>Self-Attention 将它的输入乘以权重矩阵（并添加一个 bias
+向量，此处没有画出)</p>
+<p>这个相乘会得到一个向量，这个向量是 Query、Key 和 Value
+向量的拼接。</p>
+<img src="/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919153441073.png" srcset="/img/loading.gif" lazyload class="" title="query，key，value">
+<p>得到Query、Key和Value向量之后，我们将其拆分multi-head，如下图所示。其实本质上就是将一个大向量拆分为多个小向量。</p>
+<img src="/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919153531362.png" srcset="/img/loading.gif" lazyload class="" title="multi head">
+<img src="/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919153601375.png" srcset="/img/loading.gif" lazyload class="" title="multi head"></li>
+<li><p>评分</p>
+<p>我们现在可以继续进行评分，假设我们只关注一个 attention head（其他的
+attention head 也是在进行类似的操作）。</p>
+<img src="/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919153746482.png" srcset="/img/loading.gif" lazyload class="" title="打分">
+<p>现在，这个 token 可以根据其他所有 token 的 Key 向量进行评分（这些 Key
+向量是在前面一个迭代中的第一个 attention head 计算得到的）：</p>
+<img src="/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919153827272.png" srcset="/img/loading.gif" lazyload class="" title="加权和"></li>
+<li><p>求和</p>
+<p>正如我们之前所看的那样，我们现在将每个 Value
+向量乘以对应的分数，然后加起来求和，得到第一个 attention head 的 Self
+Attention 结果：</p>
+<img src="/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919153923491.png" srcset="/img/loading.gif" lazyload class="" title="合并attentions heads">
+<p>multi head对应得到多个加权和向量，我们将他们都再次拼接起来：</p>
+<img src="/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919154053712.png" srcset="/img/loading.gif" lazyload class="" title="拼接">
+<p>再将得到的向量经过一个线性映射得到想要的维度，随后输入全连接网络。</p></li>
+<li><p>映射</p>
+<p>我们将让模型学习如何将拼接好的 Self Attention
+结果转换为前馈神经网络能够处理的输入。在这里，我们使用第二个巨大的权重矩阵，将
+attention heads 的结果映射到 Self Attention 子层的输出向量：</p>
+<img src="/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919154239317.png" srcset="/img/loading.gif" lazyload class="" title="映射"></li>
+</ol>
+<p>通过以上步骤，我们产生了一个向量，我们可以把这个向量传给下一层。</p>
+<h3 id="gpt2全连接神经网络">GPT2全连接神经网络</h3>
+<p><strong><em>第一层</em></strong></p>
+<p>全连接神经网络是用于处理 Self Attention
+层的输出，这个输出的表示包含了合适的上下文。全连接神经网络由两层组成。第一层是模型大小的
+4 倍（由于 GPT-2 small 是 768，因此这个网络会有3072个神经元）。</p>
+<img src="/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919154503863.png" srcset="/img/loading.gif" lazyload class="" title="全连接层">
+<p><strong><em>第二层，把向量映射到模型的维度</em></strong></p>
+<p>第 2 层把第一层得到的结果映射回模型的维度（在 GPT-2 small 中是
+768）。这个相乘的结果是 Transformer 对这个 token 的输出。</p>
+<img src="/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919154605387.png" srcset="/img/loading.gif" lazyload class="" title="全连接层">
+<h2 id="语言模型应用">语言模型应用</h2>
+<h3 id="机器翻译">机器翻译</h3>
+<p>进行机器翻译时，Encoder 不是必须的。我们可以用只有 Decoder 的
+Transformer 来解决同样的任务：</p>
+<img src="/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919154759298.png" srcset="/img/loading.gif" lazyload class="" title="翻译">
+<h3 id="生成摘要">生成摘要</h3>
+<p>这是第一个只使用 Decoder 的 Transformer
+来训练的任务。它被训练用于阅读一篇维基百科的文章（目录前面去掉了开头部分），然后生成摘要。文章的实际开头部分用作训练数据的标签：</p>
+<img src="/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919154829762.png" srcset="/img/loading.gif" lazyload class="" title="生成摘要">
+<h3 id="迁移学习">迁移学习</h3>
+<p>在 Sample Efficient Text Summarization Using a Single Pre-Trained
+Transformer(https://arxiv.org/abs/1905.08836) 中，一个只有 Decoder 的
+Transformer
+首先在语言模型上进行预训练，然后微调进行生成摘要。结果表明，在数据量有限制时，它比预训练的
+Encoder-Decoder Transformer 能够获得更好的结果。</p>
+<h3 id="音乐生成">音乐生成</h3>
+<p>Music Transformer(https://magenta.tensorflow.org/music-transformer)
+论文使用了只有 Decoder 的 Transformer
+来生成具有表现力的时序和动态性的音乐。音乐建模
+就像语言建模一样，只需要让模型以无监督的方式学习音乐，然后让它采样输出（前面我们称这个为
+漫步）。</p>
+<p>你可能会好奇在这个场景中，音乐是如何表现的。请记住，语言建模可以把字符、单词、或者单词的一部分（token），表示为向量。在音乐表演中（让我们考虑一下钢琴），我们不仅要表示音符，还要表示速度--衡量钢琴键被按下的力度。</p>
+<img src="/2021/09/18/nlp-transformer/nlp-transformer-3/image-20210919154944710.png" srcset="/img/loading.gif" lazyload class="" title="音乐生成">
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" class="category-chain-item">深度学习</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%87%AA%E7%84%B6%E8%AF%AD%E8%A8%80%E5%A4%84%E7%90%86/" class="category-chain-item">自然语言处理</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Datawhale%E7%BB%84%E9%98%9F%E5%AD%A6%E4%B9%A0/">#Datawhale组队学习</a>
+      
+        <a href="/tags/NLP%E5%85%A5%E9%97%A8/">#NLP入门</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>基于Transformers的自然语言处理(NLP)入门(三)</div>
+      <div>https://www.spacezxy.top/2021/09/18/nlp-transformer/nlp-transformer-3/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Xavier ZXY</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年9月18日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/09/21/practical-machine-learning/practical-machine-learning-1/" title="实用机器学习(一)">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">实用机器学习(一)</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/09/16/nlp-transformer/nlp-transformer-2/" title="基于Transformers的自然语言处理(NLP)入门(二)">
+                        <span class="hidden-mobile">基于Transformers的自然语言处理(NLP)入门(二)</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a>
+    </div>
+  
+  
+  
+    <!-- 备案信息 ICP for China -->
+    <div class="beian">
+  <span>
+    <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+      湘ICP备  2021018889
+    </a>
+  </span>
+  
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

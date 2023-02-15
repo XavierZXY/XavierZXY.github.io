@@ -1,0 +1,805 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/logo16.svg">
+  <link rel="icon" href="/img/logo32.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Xavier ZXY">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="特征工程 “机器学习的本质上还是特征工程，数据和特征决定了机器学习的上限，而模型和算法知识逼近这个上限而已。”特征工程主要分为数据预处理，特征变换，特征提取，特征选择这四个部分。 数据预处理 数据质量直接决定了模型的准确性和泛化能力的高低，同时在构造特征时也会影响其顺畅性。 缺失值处理  区分缺失值 缺失值的表现出了None，NA和NaN这些，还包括用于表示数值缺失的特殊数值。在具体">
+<meta property="og:type" content="article">
+<meta property="og:title" content="机器学习算法竞赛实战(二)">
+<meta property="og:url" content="https://www.spacezxy.top/2021/10/14/ML-Pratice/ML-Algorithm-pratice-2/index.html">
+<meta property="og:site_name" content="Xavier ZXY">
+<meta property="og:description" content="特征工程 “机器学习的本质上还是特征工程，数据和特征决定了机器学习的上限，而模型和算法知识逼近这个上限而已。”特征工程主要分为数据预处理，特征变换，特征提取，特征选择这四个部分。 数据预处理 数据质量直接决定了模型的准确性和泛化能力的高低，同时在构造特征时也会影响其顺畅性。 缺失值处理  区分缺失值 缺失值的表现出了None，NA和NaN这些，还包括用于表示数值缺失的特殊数值。在具体">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-10-14T06:59:55.000Z">
+<meta property="article:modified_time" content="2021-10-23T08:48:14.979Z">
+<meta property="article:author" content="Xavier ZXY">
+<meta property="article:tag" content="竞赛实战">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>机器学习算法竞赛实战(二) - Xavier ZXY</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.spacezxy.top","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>SapceZXY</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="机器学习算法竞赛实战(二)"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-10-14 14:59" pubdate>
+          2021年10月14日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          7.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          63 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">机器学习算法竞赛实战(二)</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="特征工程">特征工程</h1>
+<p>“机器学习的本质上还是特征工程，数据和特征决定了机器学习的上限，而模型和算法知识逼近这个上限而已。”特征工程主要分为数据预处理，特征变换，特征提取，特征选择这四个部分。</p>
+<h2 id="数据预处理">数据预处理</h2>
+<p>数据质量直接决定了模型的准确性和泛化能力的高低，同时在构造特征时也会影响其顺畅性。</p>
+<h3 id="缺失值处理">缺失值处理</h3>
+<ul>
+<li><p>区分缺失值</p>
+<p>缺失值的表现出了None，NA和NaN这些，还包括用于表示数值缺失的特殊数值。在具体业务之中有些数值没有意义也应作缺失值处理。</p></li>
+<li><p>处理方法</p>
+<ul>
+<li>对于类别特征：填充众数，或者直接填充一个新类别</li>
+<li>对于数值特征：可以填充平均数，中位数，众数等</li>
+<li>对于有序数据：可以填充相邻值</li>
+<li>模型预测填充：可以对含有缺失值的那一列进行建模并预测其中缺失值的结果。</li>
+</ul></li>
+</ul>
+<span id="more"></span>
+<h3 id="异常值处理">异常值处理</h3>
+<ul>
+<li><h4 id="寻找异常值">寻找异常值</h4>
+<ul>
+<li>可视化分析来寻找异常值</li>
+<li>通过简单的统计分析来发现异常值</li>
+</ul></li>
+<li><p>处理异常值</p>
+<ul>
+<li>删除含有异常值的记录</li>
+<li>视为缺失值</li>
+<li>平均值(中位数修正)</li>
+<li>不处理</li>
+</ul></li>
+</ul>
+<h3 id="优化内存">优化内存</h3>
+<ul>
+<li><p>内存回收机制，在我们删除一些变量时，使用gc.collect()来释放内存</p></li>
+<li><p>数值类型优化</p>
+<p>我们可以用<strong><em>np.iinfo</em></strong>来确认每一个int型子类型的最小值和最大值</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np<br>np.iinfo(np.int8).<span class="hljs-built_in">min</span><br>np.iinfo(np.int8).<span class="hljs-built_in">max</span><br></code></pre></td></tr></table></figure>
+<p>此外，在不影响模型泛化能力的情况下，对于类别型的变量，若其编码ID的数字较大，极不连续而且种类较少，则可以重新从0开始编码，这样也能减少变量的内存占用，而对于数值型的变量，常常由于存在浮点数使得内存占用过多，可以考虑详见最小值和最大值归一化，然后乘以100，1000等，之后取整，这样不仅可以保留同一变量之间的大小关系，还极大地减少了内存占用。</p></li>
+</ul>
+<h2 id="特征变换">特征变换</h2>
+<h3 id="连续变量无量纲化">连续变量无量纲化</h3>
+<ul>
+<li>标准化<span
+class="math inline">\(x&#39;=\frac{x-\mu}{\sigma}\)</span></li>
+<li>区间缩放，常见的一种是利用两个最值进行缩放。</li>
+</ul>
+<h3 id="连续变量数据变换">连续变量数据变换</h3>
+<ul>
+<li><p>log变换</p>
+<p>进行log变换可以将倾斜数据变得接近正态分布，这是因为大多数机器学习模型不能很好地处理非正态分布的数据。</p>
+<p>cbox-cox变换，自动寻找最佳正态分布变换函数地方法。</p></li>
+<li><p>连续变量离散化</p>
+<p>离散化后地特征对异常数据有很强地健壮性，更便于探索数据的相关性。</p>
+<ul>
+<li>无监督的离散化。分桶操作可以将连续变量离散化，同时使数据平滑，即降低噪声的影响，一般分为等频和等距两种分桶方式。
+<ul>
+<li><strong>等频</strong>。区间的边界值要经过选择，使得每个区间包含数量大致相等的变量实例。</li>
+<li><strong>等距</strong>。将实例从最小值到最大值，均分为N等份，每份的距离是相等的。</li>
+</ul></li>
+<li>有监督的离散化。这类方法对目标有很好的区分能力，常用的是使用树模型返回叶子节点来进行离散化。</li>
+</ul></li>
+</ul>
+<h3 id="类别特征转换">类别特征转换</h3>
+<ul>
+<li><p>自然数编码。一列有意义的类别特征(即有顺序关系)可以用自然数进行编码，利用自然数的大小关系可以保留其顺序关系。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 调用sklearn中的函数</span><br><span class="hljs-keyword">from</span> sklearn <span class="hljs-keyword">import</span> preprocessing<br><span class="hljs-keyword">for</span> f <span class="hljs-keyword">in</span> columns:<br>	le = preprocessing.LabelEncoder()<br>	le.fit(data[f])<br>    <br><br><span class="hljs-comment"># 自定义实现</span><br><span class="hljs-keyword">for</span> f <span class="hljs-keyword">in</span> columns:<br>    data[f] = data[f].fillna(-<span class="hljs-number">999</span>)<br>    data[f] = data[f].<span class="hljs-built_in">map</span>(<span class="hljs-built_in">dict</span>(<span class="hljs-built_in">zip</span>(data[f].unique(), <span class="hljs-built_in">range</span>(<span class="hljs-number">0</span>, data[f].nunique()))))<br></code></pre></td></tr></table></figure></li>
+<li><p>独热编码。当前类别特征没有意义(即没有顺序关系)时，需要使用独热编码。</p></li>
+</ul>
+<h2 id="特征提取">特征提取</h2>
+<h3 id="类别相关的统计特征">类别相关的统计特征</h3>
+<ul>
+<li><p>目标编码</p>
+<p>目标编码可以理解为用目标变量(标签)的统计量来对类别特征进行编码，即根据目标变量进行有监督的特征构造。目标编码可能对于基数较低的类别特征通常很有效，但对于基数较高的类别特征，可能会有过拟合的风险。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python">folds = KFold(n_split=<span class="hljs-number">5</span>, shuffle=<span class="hljs-literal">True</span>,random_state=<span class="hljs-number">2020</span>)<br><span class="hljs-keyword">for</span> col <span class="hljs-keyword">in</span> columns:<br>	colname = col + <span class="hljs-string">&#x27;_kfold&#x27;</span><br>    <span class="hljs-keyword">for</span> fold_, (trn_idx, val_idx) <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(folds.split(train, train)):<br>        tmp = train.iloc[trn.idx]<br>        order_label = tmp.groupby([col])[<span class="hljs-string">&#x27;label&#x27;</span>].mean()<br>        train[colname] = train[col].<span class="hljs-built_in">map</span>(order_label)<br>	order_label = train.groupby([col])[<span class="hljs-string">&#x27;label&#x27;</span>].mean()<br>    test[colname] = test[col].<span class="hljs-built_in">map</span>(order_label)<br></code></pre></td></tr></table></figure></li>
+<li><p>count, nunique, ratio</p></li>
+<li><p>类别特征之间交叉组合</p>
+<p>交叉组合能够描述更细粒度的内容。对类别特征进行交叉组合在竞赛中是一项非常重要的工作，这样可以进行很好的非线性特征拟合。</p></li>
+</ul>
+<h3 id="数值相关的统计特征">数值相关的统计特征</h3>
+<ul>
+<li>数值特征之间的交叉组合</li>
+<li>类别特征和数值特征之间的交叉组合</li>
+<li>按行统计相关特征</li>
+</ul>
+<h2 id="特征选择">特征选择</h2>
+<h3 id="特征关联性分析">特征关联性分析</h3>
+<p>特征关联性分析时使用统计量来为特征之间的相关性进行评分，特征按照分数进行排序，要么保留，要么从数据中删除。</p>
+<ul>
+<li><p>皮尔逊相关系数。这种方法不仅可以衡量变量之间的线性相关性，解决共线变量问题，还可以衡量特征与标签的相关性。<strong>共享变量</strong>是指变量之间存在高度相关关系，这会降低模型的学习可用性，可解释性以及测试集的泛化性能。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 根据皮尔逊相关系数的计算提取top300的相似特征</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">feature_select_person</span>(<span class="hljs-params">train, features</span>):<br>	featureSelect = features[:]<br>    <span class="hljs-comment"># 进行皮尔逊相关性计算</span><br>    corr = []<br>    <span class="hljs-keyword">for</span> feat <span class="hljs-keyword">in</span> featureSelect:<br>        corr.append(<span class="hljs-built_in">abs</span>(train[[feat, <span class="hljs-string">&#x27;target&#x27;</span>]].fillna(<span class="hljs-number">0</span>).corr().values[<span class="hljs-number">0</span>][<span class="hljs-number">1</span>]))<br>        <br>	se = pd.Series(corr, index=featuresSelect).sort_values(ascending=<span class="hljs-literal">False</span>)<br>    feature_select = se[:<span class="hljs-number">300</span>].index.toilst()<br>    <span class="hljs-keyword">return</span> train[feature_select]<br></code></pre></td></tr></table></figure></li>
+<li><p>卡方检验。它用于检验特征变量与因变量之间的相关性。<span
+class="math inline">\(\chi^2=\sum{\frac{(A-E)^2}{E}}\)</span></p></li>
+<li><p>互信息法。互信息是一个联合分布中两个变量之间相互影响关系的度量，也可以用来评价两个变量之间的相关性。</p></li>
+</ul>
+<h3 id="特征重要性分析">特征重要性分析</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python">params = &#123;<br>    <span class="hljs-string">&#x27;max_depth&#x27;</span>: <span class="hljs-number">10</span>,<br>    <span class="hljs-string">&#x27;subsample&#x27;</span>: <span class="hljs-number">1</span>,<br>    <span class="hljs-string">&#x27;verbose&#x27;</span>: <span class="hljs-literal">True</span>,<br>    <span class="hljs-string">&#x27;seed&#x27;</span>: <span class="hljs-number">12</span>,<br>    <span class="hljs-string">&#x27;objective&#x27;</span>: <span class="hljs-string">&#x27;binary:logistic&#x27;</span><br>&#125;<br><br>xgtrain = xgb.DMartix(x, label=y)<br>bst = xgb.train(params, xgtrain, num_boost_round=<span class="hljs-number">10</span>)<br></code></pre></td></tr></table></figure>
+<ul>
+<li><p>weight计算方式。计算特征在所有树中被选为分裂特征的次数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">importtance = bst.get_score(fmap=<span class="hljs-string">&#x27;&#x27;</span>, importance_type=<span class="hljs-string">&#x27;weight&#x27;</span>)<br></code></pre></td></tr></table></figure></li>
+<li><p>gain计算方式。gain表示平均增益。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">importtance = bst.get_score(fmap=<span class="hljs-string">&#x27;&#x27;</span>, importance_type=<span class="hljs-string">&#x27;gain&#x27;</span>)<br></code></pre></td></tr></table></figure></li>
+<li><p>cover计算方式。cover具体含义是特征对每棵树的覆盖率，即特征被分到该节点的样本的二阶导数之和。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">importtance = bst.get_score(fmap=<span class="hljs-string">&#x27;&#x27;</span>, importance_type=<span class="hljs-string">&#x27;cover&#x27;</span>)<br></code></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="封装方法">封装方法</h3>
+<p>封装方法是一个比较耗时的特征选择方法。可以将对一组特征的选择视作一个搜索问题，在这个问题中，通过准备，评估不同的组合并对这些组合进行比较，从而找出最优的特征子集。</p>
+<ul>
+<li><p>启发式方法</p>
+<ul>
+<li>前向搜索。每次增量的从剩余未选中的特征中选出一个并将其加入到特征集中。</li>
+<li>后向搜索。从特征全集开始，每次删除其中的一个特征并评价。</li>
+</ul></li>
+<li><p>递归消除特征法。递归消除特征法使用一个基模型来进行多轮训练，每轮模型都会先消除若干权值系数的特征在基于新特征集进行下一轮训练。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> sklearn.feature_selection <span class="hljs-keyword">import</span> RFE<br><span class="hljs-keyword">from</span> sklearn.linear_model <span class="hljs-keyword">import</span> LogisticRegression<br><span class="hljs-comment"># 递归消除特征法，返回特征选择后的数据</span><br><span class="hljs-comment"># 参数estimator为基模型</span><br><span class="hljs-comment"># 参数n_features_to_select为选择的特征个数</span><br>RFE(estimator=LogisticRegression(), n_features_to_select=<span class="hljs-number">2</span>).fit_transform(data, target)<br></code></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="实战案例">实战案例</h2>
+<h3 id="数据预处理-1">数据预处理</h3>
+<p>执行下面的代码进行数据读取，删除缺失值比例大于50%的特征列，并对object型的缺失特征进行填充。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs python">test = pd.read_csv(<span class="hljs-string">&quot;test.csv&quot;</span>)<br>train = pd.read_csv(<span class="hljs-string">&quot;train.csv&quot;</span>)<br>ntrain = train.shape[<span class="hljs-number">0</span>]<br>ntest = test.shape[<span class="hljs-number">0</span>]<br> <br>data = pd.concat([train, test], axis=<span class="hljs-number">0</span>, sort=<span class="hljs-literal">False</span>)<br><span class="hljs-comment"># 删除缺失值比例大于50%的特征列</span><br>missing_cols = [c <span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> data <span class="hljs-keyword">if</span> data[c].isna().mean()*<span class="hljs-number">100</span> &gt; <span class="hljs-number">50</span>]<br>data = data.drop(missing_cols, axis=<span class="hljs-number">1</span>)<br> <br><span class="hljs-comment"># 对object型的缺失特征进行填充</span><br>object_df = data.select_dtypes(include=[<span class="hljs-string">&#x27;object&#x27;</span>])<br>numerical_df = data.select_dtypes(exclude=[<span class="hljs-string">&#x27;object&#x27;</span>])<br> <br>object_df = object_df.fillna(<span class="hljs-string">&#x27;unknow&#x27;</span>)<br></code></pre></td></tr></table></figure>
+<p>对数值型特征用中位数进行填充</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python">missing_cols = [c <span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> numerical_df <span class="hljs-keyword">if</span> numerical_df[c].isna().<span class="hljs-built_in">sum</span>() &gt; <span class="hljs-number">0</span>]<br><span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> missing_cols:<br>    numerical_df[c] = numerical_df[c].fillna(numerical_df[c].median())<br></code></pre></td></tr></table></figure>
+<p>删除未选定的特征</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">object_df = object_df.drop([<span class="hljs-string">&#x27;Heating&#x27;</span>,<span class="hljs-string">&#x27;RoofMatl&#x27;</span>,<span class="hljs-string">&#x27;Condition2&#x27;</span>,<span class="hljs-string">&#x27;Street&#x27;</span>,<span class="hljs-string">&#x27;Utilities&#x27;</span>],axis=<span class="hljs-number">1</span>)<br></code></pre></td></tr></table></figure>
+<h3 id="特征提取-1">特征提取</h3>
+<ul>
+<li><p>基础特征构造</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python">numerical_df.loc[numerical_df[<span class="hljs-string">&#x27;YrSold&#x27;</span>] &lt; numerical_df[<span class="hljs-string">&#x27;YearBuilt&#x27;</span>], <span class="hljs-string">&#x27;YrSold&#x27;</span> ] = <span class="hljs-number">2009</span><br>numerical_df[<span class="hljs-string">&#x27;Age_House&#x27;</span>]= (numerical_df[<span class="hljs-string">&#x27;YrSold&#x27;</span>] - numerical_df[<span class="hljs-string">&#x27;YearBuilt&#x27;</span>])<br>numerical_df[<span class="hljs-string">&#x27;TotalBsmtBath&#x27;</span>] = numerical_df[<span class="hljs-string">&#x27;BsmtFullBath&#x27;</span>] +<br>    numerical_df[<span class="hljs-string">&#x27;BsmtHalfBath&#x27;</span>]*<span class="hljs-number">0.5</span><br>numerical_df[<span class="hljs-string">&#x27;TotalBath&#x27;</span>] = numerical_df[<span class="hljs-string">&#x27;FullBath&#x27;</span>] + numerical_df[<span class="hljs-string">&#x27;HalfBath&#x27;</span>]*<span class="hljs-number">0.5</span> <br>numerical_df[<span class="hljs-string">&#x27;TotalSA&#x27;</span>] = numerical_df[<span class="hljs-string">&#x27;TotalBsmtSF&#x27;</span>] + numerical_df[<span class="hljs-string">&#x27;1stFlrSF&#x27;</span>] +\<br>numerical_df[<span class="hljs-string">&#x27;2ndFlrSF&#x27;</span>]<br></code></pre></td></tr></table></figure></li>
+<li><p>特征编码</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs python">bin_map  = &#123;<span class="hljs-string">&#x27;TA&#x27;</span>:<span class="hljs-number">2</span>,<span class="hljs-string">&#x27;Gd&#x27;</span>:<span class="hljs-number">3</span>, <span class="hljs-string">&#x27;Fa&#x27;</span>:<span class="hljs-number">1</span>,<span class="hljs-string">&#x27;Ex&#x27;</span>:<span class="hljs-number">4</span>,<span class="hljs-string">&#x27;Po&#x27;</span>:<span class="hljs-number">1</span>,<span class="hljs-string">&#x27;None&#x27;</span>:<span class="hljs-number">0</span>,<br><span class="hljs-string">&#x27;Y&#x27;</span>:<span class="hljs-number">1</span>,<span class="hljs-string">&#x27;N&#x27;</span>:<span class="hljs-number">0</span>,<span class="hljs-string">&#x27;Reg&#x27;</span>:<span class="hljs-number">3</span>,<span class="hljs-string">&#x27;IR1&#x27;</span>:<span class="hljs-number">2</span>,<span class="hljs-string">&#x27;IR2&#x27;</span>:<span class="hljs-number">1</span>, \<br><span class="hljs-string">&#x27;IR3&#x27;</span>:<span class="hljs-number">0</span>,<span class="hljs-string">&quot;None&quot;</span> : <span class="hljs-number">0</span>,<span class="hljs-string">&quot;No&quot;</span> : <span class="hljs-number">2</span>, <span class="hljs-string">&quot;Mn&quot;</span> : <span class="hljs-number">2</span>, <br><span class="hljs-string">&quot;Av&quot;</span>: <span class="hljs-number">3</span>,<span class="hljs-string">&quot;Gd&quot;</span> : <span class="hljs-number">4</span>,<span class="hljs-string">&quot;Unf&quot;</span> : <span class="hljs-number">1</span>, <span class="hljs-string">&quot;LwQ&quot;</span>: <span class="hljs-number">2</span>, \<br><span class="hljs-string">&quot;Rec&quot;</span> : <span class="hljs-number">3</span>,<span class="hljs-string">&quot;BLQ&quot;</span> : <span class="hljs-number">4</span>, <span class="hljs-string">&quot;ALQ&quot;</span> : <span class="hljs-number">5</span>, <span class="hljs-string">&quot;GLQ&quot;</span> : <span class="hljs-number">6</span>&#125;<br>object_df[<span class="hljs-string">&#x27;ExterQual&#x27;</span>] = object_df[<span class="hljs-string">&#x27;ExterQual&#x27;</span>].<span class="hljs-built_in">map</span>(bin_map)<br>object_df[<span class="hljs-string">&#x27;ExterCond&#x27;</span>] = object_df[<span class="hljs-string">&#x27;ExterCond&#x27;</span>].<span class="hljs-built_in">map</span>(bin_map)<br>object_df[<span class="hljs-string">&#x27;BsmtCond&#x27;</span>] = object_df[<span class="hljs-string">&#x27;BsmtCond&#x27;</span>].<span class="hljs-built_in">map</span>(bin_map)<br>object_df[<span class="hljs-string">&#x27;BsmtQual&#x27;</span>] = object_df[<span class="hljs-string">&#x27;BsmtQual&#x27;</span>].<span class="hljs-built_in">map</span>(bin_map)<br>object_df[<span class="hljs-string">&#x27;HeatingQC&#x27;</span>] = object_df[<span class="hljs-string">&#x27;HeatingQC&#x27;</span>].<span class="hljs-built_in">map</span>(bin_map)<br>object_df[<span class="hljs-string">&#x27;KitchenQual&#x27;</span>] = object_df[<span class="hljs-string">&#x27;KitchenQual&#x27;</span>].<span class="hljs-built_in">map</span>(bin_map)<br>object_df[<span class="hljs-string">&#x27;FireplaceQu&#x27;</span>] = object_df[<span class="hljs-string">&#x27;FireplaceQu&#x27;</span>].<span class="hljs-built_in">map</span>(bin_map)<br>object_df[<span class="hljs-string">&#x27;GarageQual&#x27;</span>] = object_df[<span class="hljs-string">&#x27;GarageQual&#x27;</span>].<span class="hljs-built_in">map</span>(bin_map)<br>object_df[<span class="hljs-string">&#x27;GarageCond&#x27;</span>] = object_df[<span class="hljs-string">&#x27;GarageCond&#x27;</span>].<span class="hljs-built_in">map</span>(bin_map)<br>object_df[<span class="hljs-string">&#x27;CentralAir&#x27;</span>] = object_df[<span class="hljs-string">&#x27;CentralAir&#x27;</span>].<span class="hljs-built_in">map</span>(bin_map)<br>object_df[<span class="hljs-string">&#x27;LotShape&#x27;</span>] = object_df[<span class="hljs-string">&#x27;LotShape&#x27;</span>].<span class="hljs-built_in">map</span>(bin_map)<br>object_df[<span class="hljs-string">&#x27;BsmtExposure&#x27;</span>] = object_df[<span class="hljs-string">&#x27;BsmtExposure&#x27;</span>].<span class="hljs-built_in">map</span>(bin_map)<br>object_df[<span class="hljs-string">&#x27;BsmtFinType1&#x27;</span>] = object_df[<span class="hljs-string">&#x27;BsmtFinType1&#x27;</span>].<span class="hljs-built_in">map</span>(bin_map)<br>object_df[<span class="hljs-string">&#x27;BsmtFinType2&#x27;</span>] = object_df[<span class="hljs-string">&#x27;BsmtFinType2&#x27;</span>].<span class="hljs-built_in">map</span>(bin_map)<br> <br>PavedDrive = &#123;<span class="hljs-string">&quot;N&quot;</span> : <span class="hljs-number">0</span>, <span class="hljs-string">&quot;P&quot;</span> : <span class="hljs-number">1</span>, <span class="hljs-string">&quot;Y&quot;</span> : <span class="hljs-number">2</span>&#125;<br><br>object_df[<span class="hljs-string">&#x27;PavedDrive&#x27;</span>] = object_df[<span class="hljs-string">&#x27;PavedDrive&#x27;</span>].<span class="hljs-built_in">map</span>(PavedDrive)<br><span class="hljs-comment"># 选择剩余的object特征</span><br>rest_object_columns = object_df.select_dtypes(include = [<span class="hljs-string">&#x27;object&#x27;</span>])<br><span class="hljs-comment"># 进行one-hot编码</span><br>object_df = pd.get_dummies(object_df, columns = rest_object_columns.columns) <br> <br>data = pd.concat([object_df, numerical_df], axis=<span class="hljs-number">1</span>, sort=<span class="hljs-literal">False</span>)<br></code></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="特征选择-1">特征选择</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">correlation</span>(<span class="hljs-params">data, threshold</span>):<br>    col_corr = <span class="hljs-built_in">set</span>() <br>    corr_matrix = data.corr()<br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(corr_matrix.columns)):<br>        <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(i):<br>            <span class="hljs-keyword">if</span> <span class="hljs-built_in">abs</span>(corr_matrix.iloc[i, j]) &gt; threshold:  <span class="hljs-comment"># 相似性分数与阈值对比</span><br>                colname = corr_matrix.columns[i]  <span class="hljs-comment"># 获取列名</span><br>                col_corr.add(colname)<br><span class="hljs-keyword">return</span> col_corr<br><br><br>all_cols = [c <span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> data.columns <span class="hljs-keyword">if</span> c <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> [<span class="hljs-string">&#x27;SalePrice&#x27;</span>]]<br>corr_features = correlation(data[all_cols], <span class="hljs-number">0.9</span>)<br></code></pre></td></tr></table></figure>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" class="category-chain-item">机器学习</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E7%AB%9E%E8%B5%9B%E5%AE%9E%E6%88%98/">#竞赛实战</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>机器学习算法竞赛实战(二)</div>
+      <div>https://www.spacezxy.top/2021/10/14/ML-Pratice/ML-Algorithm-pratice-2/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Xavier ZXY</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年10月14日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/10/22/ML-Pratice/ML-Algorithm-pratice-3/" title="机器学习算法竞赛实战(三)">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">机器学习算法竞赛实战(三)</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/10/10/ML-Pratice/ML-Algorithm-pratice-1/" title="机器学习算法竞赛实战(一)">
+                        <span class="hidden-mobile">机器学习算法竞赛实战(一)</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a>
+    </div>
+  
+  
+  
+    <!-- 备案信息 ICP for China -->
+    <div class="beian">
+  <span>
+    <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+      湘ICP备  2021018889
+    </a>
+  </span>
+  
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,838 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/logo16.svg">
+  <link rel="icon" href="/img/logo32.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Xavier ZXY">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="本文为学习代码随想录时所做的笔记，仅供学习参考，不做任何商业用途，若有侵权，请联系删除。 反转字符串 344. 反转字符串 - 力扣（LeetCode） 12345678class Solution &amp;#123;public:    void reverseString(vector&lt;char&gt;&amp; s) &amp;#123;        for (int i &#x3D; 0, j &#x3D;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="字符串">
+<meta property="og:url" content="https://www.spacezxy.top/2022/09/21/Algorithm/algorithm-4/index.html">
+<meta property="og:site_name" content="Xavier ZXY">
+<meta property="og:description" content="本文为学习代码随想录时所做的笔记，仅供学习参考，不做任何商业用途，若有侵权，请联系删除。 反转字符串 344. 反转字符串 - 力扣（LeetCode） 12345678class Solution &amp;#123;public:    void reverseString(vector&lt;char&gt;&amp; s) &amp;#123;        for (int i &#x3D; 0, j &#x3D;">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-09-21T04:53:25.000Z">
+<meta property="article:modified_time" content="2022-09-28T04:32:08.269Z">
+<meta property="article:author" content="Xavier ZXY">
+<meta property="article:tag" content="数据结构">
+<meta property="article:tag" content="字符串">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>字符串 - Xavier ZXY</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.spacezxy.top","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>SapceZXY</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="字符串"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-09-21 12:53" pubdate>
+          2022年9月21日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          9.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          78 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">字符串</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>本文为学习<a
+target="_blank" rel="noopener" href="https://programmercarl.com/">代码随想录</a>时所做的笔记，仅供学习参考，不做任何商业用途，若有侵权，请联系删除。</p>
+<h1 id="反转字符串">反转字符串</h1>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/reverse-string/">344.
+反转字符串 - 力扣（LeetCode）</a></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">reverseString</span><span class="hljs-params">(vector&lt;<span class="hljs-type">char</span>&gt;&amp; s)</span> </span>&#123;<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>, j = s.<span class="hljs-built_in">size</span>() - <span class="hljs-number">1</span>; i &lt; s.<span class="hljs-built_in">size</span>()/<span class="hljs-number">2</span>; i++, j--) &#123;<br>            <span class="hljs-built_in">swap</span>(s[i],s[j]);<br>        &#125;<br>    &#125;<br>&#125;;<br></code></pre></td></tr></table></figure>
+<span id="more"></span>
+<h1 id="反转字符串ii">反转字符串II</h1>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/reverse-string-ii/">541.
+反转字符串 II - 力扣（LeetCode）</a></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-function">string <span class="hljs-title">reverseStr</span><span class="hljs-params">(string s, <span class="hljs-type">int</span> k)</span> </span>&#123;<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; s.<span class="hljs-built_in">size</span>(); i += (<span class="hljs-number">2</span> * k)) &#123;<br>            <span class="hljs-comment">// 1. 每隔 2k 个字符的前 k 个字符进行反转</span><br>            <span class="hljs-comment">// 2. 剩余字符小于 2k 但大于或等于 k 个，则反转前 k 个字符</span><br>            <span class="hljs-keyword">if</span> (i + k &lt;= s.<span class="hljs-built_in">size</span>()) &#123;<br>                <span class="hljs-built_in">reverse</span>(s.<span class="hljs-built_in">begin</span>() + i, s.<span class="hljs-built_in">begin</span>() + i + k );<br>            &#125; <span class="hljs-keyword">else</span> &#123;<br>                <span class="hljs-comment">// 3. 剩余字符少于 k 个，则将剩余字符全部反转。</span><br>                <span class="hljs-built_in">reverse</span>(s.<span class="hljs-built_in">begin</span>() + i, s.<span class="hljs-built_in">end</span>());<br>            &#125;<br>        &#125;<br>        <span class="hljs-keyword">return</span> s;<br>    &#125;<br>&#125;;<br></code></pre></td></tr></table></figure>
+<h1 id="剑指offer-05.替换空格">剑指Offer 05.替换空格</h1>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/ti-huan-kong-ge-lcof/">剑指
+Offer 05. 替换空格 - 力扣（LeetCode）</a></p>
+<p>首先扩充数组到每个空格替换成"%20"之后的大小。</p>
+<p>然后从后向前替换空格，也就是双指针法，过程如下：</p>
+<p>i指向新长度的末尾，j指向旧长度的末尾。</p>
+
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-function">string <span class="hljs-title">replaceSpace</span><span class="hljs-params">(string s)</span> </span>&#123;<br>        <span class="hljs-type">int</span> count = <span class="hljs-number">0</span>; <span class="hljs-comment">// 统计空格的个数</span><br>        <span class="hljs-type">int</span> sOldSize = s.<span class="hljs-built_in">size</span>();<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; s.<span class="hljs-built_in">size</span>(); i++) &#123;<br>            <span class="hljs-keyword">if</span> (s[i] == <span class="hljs-string">&#x27; &#x27;</span>) &#123;<br>                count++;<br>            &#125;<br>        &#125;<br>        <span class="hljs-comment">// 扩充字符串s的大小，也就是每个空格替换成&quot;%20&quot;之后的大小</span><br>        s.<span class="hljs-built_in">resize</span>(s.<span class="hljs-built_in">size</span>() + count * <span class="hljs-number">2</span>);<br>        <span class="hljs-type">int</span> sNewSize = s.<span class="hljs-built_in">size</span>();<br>        <span class="hljs-comment">// 从后先前将空格替换为&quot;%20&quot;</span><br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = sNewSize - <span class="hljs-number">1</span>, j = sOldSize - <span class="hljs-number">1</span>; j &lt; i; i--, j--) &#123;<br>            <span class="hljs-keyword">if</span> (s[j] != <span class="hljs-string">&#x27; &#x27;</span>) &#123;<br>                s[i] = s[j];<br>            &#125; <span class="hljs-keyword">else</span> &#123;<br>                s[i] = <span class="hljs-string">&#x27;0&#x27;</span>;<br>                s[i - <span class="hljs-number">1</span>] = <span class="hljs-string">&#x27;2&#x27;</span>;<br>                s[i - <span class="hljs-number">2</span>] = <span class="hljs-string">&#x27;%&#x27;</span>;<br>                i -= <span class="hljs-number">2</span>;<br>            &#125;<br>        &#125;<br>        <span class="hljs-keyword">return</span> s;<br>    &#125;<br>&#125;;<br></code></pre></td></tr></table></figure>
+<h1 id="翻转字符串里的单词">翻转字符串里的单词</h1>
+<p><a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/reverse-words-in-a-string/">151.
+反转字符串中的单词 - 力扣（LeetCode）</a></p>
+<ul>
+<li>移除多余空格</li>
+<li>将整个字符串反转</li>
+<li>将每个单词反转</li>
+</ul>
+<p>举个例子，源字符串为："the sky is blue "</p>
+<ul>
+<li>移除多余空格 : "the sky is blue"</li>
+<li>字符串反转："eulb si yks eht"</li>
+<li>单词反转："blue is sky the"</li>
+</ul>
+<h2 id="移除空格">移除空格</h2>
+<p>普通解法，时间复杂度高</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">removeExtraSpaces</span><span class="hljs-params">(string&amp; s)</span> </span>&#123;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = s.<span class="hljs-built_in">size</span>() - <span class="hljs-number">1</span>; i &gt; <span class="hljs-number">0</span>; i--) &#123;<br>        <span class="hljs-keyword">if</span> (s[i] == s[i - <span class="hljs-number">1</span>] &amp;&amp; s[i] == <span class="hljs-string">&#x27; &#x27;</span>) &#123;<br>            s.<span class="hljs-built_in">erase</span>(s.<span class="hljs-built_in">begin</span>() + i);<br>        &#125;<br>    &#125;<br>    <span class="hljs-comment">// 删除字符串最后面的空格</span><br>    <span class="hljs-keyword">if</span> (s.<span class="hljs-built_in">size</span>() &gt; <span class="hljs-number">0</span> &amp;&amp; s[s.<span class="hljs-built_in">size</span>() - <span class="hljs-number">1</span>] == <span class="hljs-string">&#x27; &#x27;</span>) &#123;<br>        s.<span class="hljs-built_in">erase</span>(s.<span class="hljs-built_in">begin</span>() + s.<span class="hljs-built_in">size</span>() - <span class="hljs-number">1</span>);<br>    &#125;<br>    <span class="hljs-comment">// 删除字符串最前面的空格</span><br>    <span class="hljs-keyword">if</span> (s.<span class="hljs-built_in">size</span>() &gt; <span class="hljs-number">0</span> &amp;&amp; s[<span class="hljs-number">0</span>] == <span class="hljs-string">&#x27; &#x27;</span>) &#123;<br>        s.<span class="hljs-built_in">erase</span>(s.<span class="hljs-built_in">begin</span>());<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>双指针</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-comment">//版本一 </span><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">removeExtraSpaces</span><span class="hljs-params">(string&amp; s)</span> </span>&#123;<br>    <span class="hljs-type">int</span> slowIndex = <span class="hljs-number">0</span>, fastIndex = <span class="hljs-number">0</span>; <span class="hljs-comment">// 定义快指针，慢指针</span><br>    <span class="hljs-comment">// 去掉字符串前面的空格</span><br>    <span class="hljs-keyword">while</span> (s.<span class="hljs-built_in">size</span>() &gt; <span class="hljs-number">0</span> &amp;&amp; fastIndex &lt; s.<span class="hljs-built_in">size</span>() &amp;&amp; s[fastIndex] == <span class="hljs-string">&#x27; &#x27;</span>) &#123;<br>        fastIndex++;<br>    &#125;<br>    <span class="hljs-keyword">for</span> (; fastIndex &lt; s.<span class="hljs-built_in">size</span>(); fastIndex++) &#123;<br>        <span class="hljs-comment">// 去掉字符串中间部分的冗余空格</span><br>        <span class="hljs-keyword">if</span> (fastIndex - <span class="hljs-number">1</span> &gt; <span class="hljs-number">0</span><br>                &amp;&amp; s[fastIndex - <span class="hljs-number">1</span>] == s[fastIndex]<br>                &amp;&amp; s[fastIndex] == <span class="hljs-string">&#x27; &#x27;</span>) &#123;<br>            <span class="hljs-keyword">continue</span>;<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            s[slowIndex++] = s[fastIndex];<br>        &#125;<br>    &#125;<br>    <span class="hljs-keyword">if</span> (slowIndex - <span class="hljs-number">1</span> &gt; <span class="hljs-number">0</span> &amp;&amp; s[slowIndex - <span class="hljs-number">1</span>] == <span class="hljs-string">&#x27; &#x27;</span>) &#123; <span class="hljs-comment">// 去掉字符串末尾的空格</span><br>        s.<span class="hljs-built_in">resize</span>(slowIndex - <span class="hljs-number">1</span>);<br>    &#125; <span class="hljs-keyword">else</span> &#123;<br>        s.<span class="hljs-built_in">resize</span>(slowIndex); <span class="hljs-comment">// 重新设置字符串大小</span><br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-comment">// 版本二 </span><br><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">removeExtraSpaces</span><span class="hljs-params">(string&amp; s)</span> </span>&#123;<span class="hljs-comment">//去除所有空格并在相邻单词之间添加空格, 快慢指针。</span><br>    <span class="hljs-type">int</span> slow = <span class="hljs-number">0</span>;   <span class="hljs-comment">//整体思想参考https://programmercarl.com/0027.移除元素.html</span><br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; s.<span class="hljs-built_in">size</span>(); ++i) &#123; <span class="hljs-comment">//</span><br>        <span class="hljs-keyword">if</span> (s[i] != <span class="hljs-string">&#x27; &#x27;</span>) &#123; <span class="hljs-comment">//遇到非空格就处理，即删除所有空格。</span><br>            <span class="hljs-keyword">if</span> (slow != <span class="hljs-number">0</span>) s[slow++] = <span class="hljs-string">&#x27; &#x27;</span>; <span class="hljs-comment">//手动控制空格，给单词之间添加空格。slow != 0说明不是第一个单词，需要在单词前添加空格。</span><br>            <span class="hljs-keyword">while</span> (i &lt; s.<span class="hljs-built_in">size</span>() &amp;&amp; s[i] != <span class="hljs-string">&#x27; &#x27;</span>) &#123; <span class="hljs-comment">//补上该单词，遇到空格说明单词结束。</span><br>                s[slow++] = s[i++];<br>            &#125;<br>        &#125;<br>    &#125;<br>    s.<span class="hljs-built_in">resize</span>(slow); <span class="hljs-comment">//slow的大小即为去除多余空格后的大小。</span><br>&#125;<br></code></pre></td></tr></table></figure>
+<h2 id="整体代码">整体代码</h2>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">reverse</span><span class="hljs-params">(string&amp; s, <span class="hljs-type">int</span> start, <span class="hljs-type">int</span> end)</span></span>&#123; <span class="hljs-comment">//翻转，区间写法：左闭又闭 []</span><br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = start, j = end; i &lt; j; i++, j--) &#123;<br>            <span class="hljs-built_in">swap</span>(s[i], s[j]);<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">removeExtraSpaces</span><span class="hljs-params">(string&amp; s)</span> </span>&#123;<span class="hljs-comment">//去除所有空格并在相邻单词之间添加空格, 快慢指针。</span><br>        <span class="hljs-type">int</span> slow = <span class="hljs-number">0</span>;   <span class="hljs-comment">//整体思想参考https://programmercarl.com/0027.移除元素.html</span><br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; s.<span class="hljs-built_in">size</span>(); ++i) &#123; <span class="hljs-comment">//</span><br>            <span class="hljs-keyword">if</span> (s[i] != <span class="hljs-string">&#x27; &#x27;</span>) &#123; <span class="hljs-comment">//遇到非空格就处理，即删除所有空格。</span><br>                <span class="hljs-keyword">if</span> (slow != <span class="hljs-number">0</span>) s[slow++] = <span class="hljs-string">&#x27; &#x27;</span>; <span class="hljs-comment">//手动控制空格，给单词之间添加空格。slow != 0说明不是第一个单词，需要在单词前添加空格。</span><br>                <span class="hljs-keyword">while</span> (i &lt; s.<span class="hljs-built_in">size</span>() &amp;&amp; s[i] != <span class="hljs-string">&#x27; &#x27;</span>) &#123; <span class="hljs-comment">//补上该单词，遇到空格说明单词结束。</span><br>                    s[slow++] = s[i++];<br>                &#125;<br>            &#125;<br>        &#125;<br>        s.<span class="hljs-built_in">resize</span>(slow); <span class="hljs-comment">//slow的大小即为去除多余空格后的大小。</span><br>    &#125;<br><br>    <span class="hljs-function">string <span class="hljs-title">reverseWords</span><span class="hljs-params">(string s)</span> </span>&#123;<br>        <span class="hljs-built_in">removeExtraSpaces</span>(s); <span class="hljs-comment">//去除多余空格，保证单词之间之只有一个空格，且字符串首尾没空格。</span><br>        <span class="hljs-built_in">reverse</span>(s, <span class="hljs-number">0</span>, s.<span class="hljs-built_in">size</span>() - <span class="hljs-number">1</span>);<br>        <span class="hljs-type">int</span> start = <span class="hljs-number">0</span>; <span class="hljs-comment">//removeExtraSpaces后保证第一个单词的开始下标一定是0。</span><br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt;= s.<span class="hljs-built_in">size</span>(); ++i) &#123;<br>            <span class="hljs-keyword">if</span> (i == s.<span class="hljs-built_in">size</span>() || s[i] == <span class="hljs-string">&#x27; &#x27;</span>) &#123; <span class="hljs-comment">//到达空格或者串尾，说明一个单词结束。进行翻转。</span><br>                <span class="hljs-built_in">reverse</span>(s, start, i - <span class="hljs-number">1</span>); <span class="hljs-comment">//翻转，注意是左闭右闭 []的翻转。</span><br>                start = i + <span class="hljs-number">1</span>; <span class="hljs-comment">//更新下一个单词的开始下标start</span><br>            &#125;<br>        &#125;<br>        <span class="hljs-keyword">return</span> s;<br>    &#125;<br>&#125;;<br></code></pre></td></tr></table></figure>
+<h1 id="左旋转字符串">左旋转字符串</h1>
+<p><a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/zuo-xuan-zhuan-zi-fu-chuan-lcof/">剑指
+Offer 58 - II. 左旋转字符串 - 力扣（LeetCode）</a></p>
+<ol type="1">
+<li>反转区间为前n的子串</li>
+<li>反转区间为n到末尾的子串</li>
+<li>反转整个字符串</li>
+</ol>
+
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-function">string <span class="hljs-title">reverseLeftWords</span><span class="hljs-params">(string s, <span class="hljs-type">int</span> n)</span> </span>&#123;<br>        <span class="hljs-built_in">reverse</span>(s.<span class="hljs-built_in">begin</span>(), s.<span class="hljs-built_in">begin</span>() + n);<br>        <span class="hljs-built_in">reverse</span>(s.<span class="hljs-built_in">begin</span>() + n, s.<span class="hljs-built_in">end</span>());<br>        <span class="hljs-built_in">reverse</span>(s.<span class="hljs-built_in">begin</span>(), s.<span class="hljs-built_in">end</span>());<br>        <span class="hljs-keyword">return</span> s;<br>    &#125;<br>&#125;;<br></code></pre></td></tr></table></figure>
+<h1 id="实现strstr">实现strStr()</h1>
+<p><a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/find-the-index-of-the-first-occurrence-in-a-string/">28.
+找出字符串中第一个匹配项的下标 - 力扣（LeetCode）</a></p>
+<h2 id="什么是kmp">什么是KMP</h2>
+<p>因为是由这三位学者发明的：Knuth，Morris和Pratt，所以取了三位学者名字的首字母。所以叫做KMP</p>
+<h2 id="什么是前缀表">什么是前缀表</h2>
+<p><strong>前缀表是用来回退的，它记录了模式串与主串(文本串)不匹配的时候，模式串应该从哪里开始重新匹配</strong></p>
+<p>首先要知道前缀表的任务是当前位置匹配失败，找到之前已经匹配上的位置，再重新匹配，此也意味着在某个字符失配时，前缀表会告诉你下一步匹配中，模式串应该跳到哪个位置。</p>
+<p>那么什么是前缀表：<strong>记录下标i之前（包括i）的字符串中，有多大长度的相同前缀后缀。</strong></p>
+<h2 id="最长公共前后缀">最长公共前后缀</h2>
+<p><strong>前缀是指不包含最后一个字符的所有以第一个字符开头的连续子串。</strong></p>
+<p><strong>后缀是指不包含第一个字符的所有以最后一个字符结尾的连续子串。</strong></p>
+<p><strong>前缀表要求的就是相同前后缀的长度。</strong></p>
+<h2 id="如何计算前缀表">如何计算前缀表</h2>
+
+<p>长度为前1个字符的子串<code>a</code>，最长相同前后缀的长度为0。（注意字符串的<strong>前缀是指不包含最后一个字符的所有以第一个字符开头的连续子串</strong>；<strong>后缀是指不包含第一个字符的所有以最后一个字符结尾的连续子串</strong>。）</p>
+
+<p>子串<code>aa</code>，最长相同前后缀的长度为1</p>
+
+<p>子串<code>aab</code>，最长相同前后缀的长度为0。</p>
+<p>可以看出模式串与前缀表对应位置的数字表示的就是：<strong>下标i之前（包括i）的字符串中，有多大长度的相同前缀后缀。</strong></p>
+
+<h2 id="为什么一定要用前缀表">为什么一定要用前缀表</h2>
+
+<p><strong>下标5之前这部分的字符串（也就是字符串aabaa）的最长相等的前缀
+和 后缀字符串是 子字符串aa
+，因为找到了最长相等的前缀和后缀，匹配失败的位置是后缀子串的后面，那么我们找到与其相同的前缀的后面从新匹配就可以了。</strong></p>
+<h2 id="前缀表与next数组">前缀表与next数组</h2>
+<p>next数组就可以是前缀表，但是很多实现都是把前缀表统一减一（右移一位，初始位置为-1）之后作为next数组。</p>
+<h2 id="使用next数组来匹配">使用next数组来匹配</h2>
+
+<h2 id="构造next数组">构造next数组</h2>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">getNext</span><span class="hljs-params">(<span class="hljs-type">int</span>* next, <span class="hljs-type">const</span> string&amp; s)</span></span><br></code></pre></td></tr></table></figure>
+<ol type="1">
+<li>初始化</li>
+<li>处理前后缀不相同的情况</li>
+<li>处理前后缀相同的情况</li>
+</ol>
+<h3 id="初始化">初始化</h3>
+<p>定义两个指针i和j，j指向前缀末尾位置，i指向后缀末尾位置。</p>
+<p>然后还要对next数组进行初始化赋值，如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-type">int</span> j = <span class="hljs-number">-1</span>;<br>next[<span class="hljs-number">0</span>] = j;<br></code></pre></td></tr></table></figure>
+<p>next[i] 表示 i（包括i）之前最长相等的前后缀长度（其实就是j）</p>
+<h3 id="处理前后缀不相同的情况">处理前后缀不相同的情况</h3>
+<p>因为j初始化为-1，那么i就从1开始，进行s[i] 与 s[j+1]的比较。</p>
+<p>所以遍历模式串s的循环下标i 要从 1开始，代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">1</span>; i &lt; s.<span class="hljs-built_in">size</span>(); i++) &#123;<br></code></pre></td></tr></table></figure>
+<p>如果 s[i] 与 s[j+1]不相同，也就是遇到
+前后缀末尾不相同的情况，就要向前回退。</p>
+<p>next[j]就是记录着j（包括j）之前的子串的相同前后缀的长度。</p>
+<p>那么 s[i] 与 s[j+1] 不相同，就要找
+j+1前一个元素在next数组里的值（就是next[j]）。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">while</span> (j &gt;= <span class="hljs-number">0</span> &amp;&amp; s[i] != s[j + <span class="hljs-number">1</span>]) &#123; <span class="hljs-comment">// 前后缀不相同了</span><br>    j = next[j]; <span class="hljs-comment">// 向前回退</span><br>&#125;<br></code></pre></td></tr></table></figure>
+<h3 id="处理前后缀相同的情况">处理前后缀相同的情况</h3>
+<p>如果 s[i] 与 s[j + 1] 相同，那么就同时向后移动i 和j
+说明找到了相同的前后缀，同时还要将j（前缀的长度）赋给next[i],
+因为next[i]要记录相同前后缀的长度。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">if</span> (s[i] == s[j + <span class="hljs-number">1</span>]) &#123; <span class="hljs-comment">// 找到相同的前后缀</span><br>    j++;<br>&#125;<br>next[i] = j;<br></code></pre></td></tr></table></figure>
+<p>整体函数代码</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">getNext</span><span class="hljs-params">(<span class="hljs-type">int</span>* next, <span class="hljs-type">const</span> string&amp; s)</span></span>&#123;<br>    <span class="hljs-type">int</span> j = <span class="hljs-number">-1</span>;<br>    next[<span class="hljs-number">0</span>] = j;<br>    <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> i = <span class="hljs-number">1</span>; i &lt; s.<span class="hljs-built_in">size</span>(); i++) &#123; <span class="hljs-comment">// 注意i从1开始</span><br>        <span class="hljs-keyword">while</span> (j &gt;= <span class="hljs-number">0</span> &amp;&amp; s[i] != s[j + <span class="hljs-number">1</span>]) &#123; <span class="hljs-comment">// 前后缀不相同了</span><br>            j = next[j]; <span class="hljs-comment">// 向前回退</span><br>        &#125;<br>        <span class="hljs-keyword">if</span> (s[i] == s[j + <span class="hljs-number">1</span>]) &#123; <span class="hljs-comment">// 找到相同的前后缀</span><br>            j++;<br>        &#125;<br>        next[i] = j; <span class="hljs-comment">// 将j（前缀的长度）赋给next[i]</span><br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="使用next数组来做匹配">使用next数组来做匹配</h2>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-type">int</span> j = <span class="hljs-number">-1</span>; <span class="hljs-comment">// 因为next数组里记录的起始位置为-1</span><br><span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; s.<span class="hljs-built_in">size</span>(); i++) &#123; <span class="hljs-comment">// 注意i就从0开始</span><br>    <span class="hljs-keyword">while</span>(j &gt;= <span class="hljs-number">0</span> &amp;&amp; s[i] != t[j + <span class="hljs-number">1</span>]) &#123; <span class="hljs-comment">// 不匹配</span><br>        j = next[j]; <span class="hljs-comment">// j 寻找之前匹配的位置</span><br>    &#125;<br>    <span class="hljs-keyword">if</span> (s[i] == t[j + <span class="hljs-number">1</span>]) &#123; <span class="hljs-comment">// 匹配，j和i同时向后移动</span><br>        j++; <span class="hljs-comment">// i的增加在for循环里</span><br>    &#125;<br>    <span class="hljs-keyword">if</span> (j == (t.<span class="hljs-built_in">size</span>() - <span class="hljs-number">1</span>) ) &#123; <span class="hljs-comment">// 文本串s里出现了模式串t</span><br>        <span class="hljs-keyword">return</span> (i - t.<span class="hljs-built_in">size</span>() + <span class="hljs-number">1</span>);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h2 id="前缀表统一减一实现">前缀表统一减一实现</h2>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">getNext</span><span class="hljs-params">(<span class="hljs-type">int</span>* next, <span class="hljs-type">const</span> string&amp; s)</span> </span>&#123;<br>        <span class="hljs-type">int</span> j = <span class="hljs-number">-1</span>;<br>        next[<span class="hljs-number">0</span>] = j;<br>        <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> i = <span class="hljs-number">1</span>; i &lt; s.<span class="hljs-built_in">size</span>(); i++) &#123; <span class="hljs-comment">// 注意i从1开始</span><br>            <span class="hljs-keyword">while</span> (j &gt;= <span class="hljs-number">0</span> &amp;&amp; s[i] != s[j + <span class="hljs-number">1</span>]) &#123; <span class="hljs-comment">// 前后缀不相同了</span><br>                j = next[j]; <span class="hljs-comment">// 向前回退</span><br>            &#125;<br>            <span class="hljs-keyword">if</span> (s[i] == s[j + <span class="hljs-number">1</span>]) &#123; <span class="hljs-comment">// 找到相同的前后缀</span><br>                j++;<br>            &#125;<br>            next[i] = j; <span class="hljs-comment">// 将j（前缀的长度）赋给next[i]</span><br>        &#125;<br>    &#125;<br>    <span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">strStr</span><span class="hljs-params">(string haystack, string needle)</span> </span>&#123;<br>        <span class="hljs-keyword">if</span> (needle.<span class="hljs-built_in">size</span>() == <span class="hljs-number">0</span>) &#123;<br>            <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>        &#125;<br>        <span class="hljs-type">int</span> next[needle.<span class="hljs-built_in">size</span>()];<br>        <span class="hljs-built_in">getNext</span>(next, needle);<br>        <span class="hljs-type">int</span> j = <span class="hljs-number">-1</span>; <span class="hljs-comment">// // 因为next数组里记录的起始位置为-1</span><br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; haystack.<span class="hljs-built_in">size</span>(); i++) &#123; <span class="hljs-comment">// 注意i就从0开始</span><br>            <span class="hljs-keyword">while</span>(j &gt;= <span class="hljs-number">0</span> &amp;&amp; haystack[i] != needle[j + <span class="hljs-number">1</span>]) &#123; <span class="hljs-comment">// 不匹配</span><br>                j = next[j]; <span class="hljs-comment">// j 寻找之前匹配的位置</span><br>            &#125;<br>            <span class="hljs-keyword">if</span> (haystack[i] == needle[j + <span class="hljs-number">1</span>]) &#123; <span class="hljs-comment">// 匹配，j和i同时向后移动</span><br>                j++; <span class="hljs-comment">// i的增加在for循环里</span><br>            &#125;<br>            <span class="hljs-keyword">if</span> (j == (needle.<span class="hljs-built_in">size</span>() - <span class="hljs-number">1</span>) ) &#123; <span class="hljs-comment">// 文本串s里出现了模式串t</span><br>                <span class="hljs-keyword">return</span> (i - needle.<span class="hljs-built_in">size</span>() + <span class="hljs-number">1</span>);<br>            &#125;<br>        &#125;<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;<br>    &#125;<br>&#125;;<br></code></pre></td></tr></table></figure>
+<h2 id="前缀表不减一实现">前缀表不减一实现</h2>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">getNext</span><span class="hljs-params">(<span class="hljs-type">int</span>* next, <span class="hljs-type">const</span> string&amp; s)</span> </span>&#123;<br>        <span class="hljs-type">int</span> j = <span class="hljs-number">0</span>;<br>        next[<span class="hljs-number">0</span>] = <span class="hljs-number">0</span>;<br>        <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> i = <span class="hljs-number">1</span>; i &lt; s.<span class="hljs-built_in">size</span>(); i++) &#123;<br>            <span class="hljs-keyword">while</span> (j &gt; <span class="hljs-number">0</span> &amp;&amp; s[i] != s[j]) &#123;<br>                j = next[j - <span class="hljs-number">1</span>];<br>            &#125;<br>            <span class="hljs-keyword">if</span> (s[i] == s[j]) &#123;<br>                j++;<br>            &#125;<br>            next[i] = j;<br>        &#125;<br>    &#125;<br>    <span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">strStr</span><span class="hljs-params">(string haystack, string needle)</span> </span>&#123;<br>        <span class="hljs-keyword">if</span> (needle.<span class="hljs-built_in">size</span>() == <span class="hljs-number">0</span>) &#123;<br>            <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>        &#125;<br>        <span class="hljs-type">int</span> next[needle.<span class="hljs-built_in">size</span>()];<br>        <span class="hljs-built_in">getNext</span>(next, needle);<br>        <span class="hljs-type">int</span> j = <span class="hljs-number">0</span>;<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; haystack.<span class="hljs-built_in">size</span>(); i++) &#123;<br>            <span class="hljs-keyword">while</span>(j &gt; <span class="hljs-number">0</span> &amp;&amp; haystack[i] != needle[j]) &#123;<br>                j = next[j - <span class="hljs-number">1</span>];<br>            &#125;<br>            <span class="hljs-keyword">if</span> (haystack[i] == needle[j]) &#123;<br>                j++;<br>            &#125;<br>            <span class="hljs-keyword">if</span> (j == needle.<span class="hljs-built_in">size</span>() ) &#123;<br>                <span class="hljs-keyword">return</span> (i - needle.<span class="hljs-built_in">size</span>() + <span class="hljs-number">1</span>);<br>            &#125;<br>        &#125;<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;<br>    &#125;<br>&#125;;<br></code></pre></td></tr></table></figure>
+<h1 id="重复的子字符串">重复的子字符串</h1>
+<p><a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/repeated-substring-pattern/">459.
+重复的子字符串 - 力扣（LeetCode）</a></p>
+<h2 id="移动匹配">移动匹配</h2>
+<p>当一个字符串s：abcabc，内部又重复的子串组成，那么这个字符串的结构一定是这样的：</p>
+
+<p>也就是由前后又相同的子串组成。</p>
+<p>那么既然前面有相同的子串，后面有相同的子串，用 s +
+s，这样组成的字符串中，后面的子串做前串，前后的子串做后串，就一定还能组成一个s，如图：</p>
+
+<p>所以判断字符串s是否有重复子串组成，只要两个s拼接在一起，里面还出现一个s的话，就说明是又重复子串组成。</p>
+<p>当然，我们在判断 s + s
+拼接的字符串里是否出现一个s的的时候，<strong>要刨除 s + s
+的首字符和尾字符</strong>，这样避免在s+s中搜索出原来的s，我们要搜索的是中间拼接出来的s。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">repeatedSubstringPattern</span><span class="hljs-params">(string s)</span> </span>&#123;<br>        string t = s + s;<br>        t.<span class="hljs-built_in">erase</span>(t.<span class="hljs-built_in">begin</span>()); t.<span class="hljs-built_in">erase</span>(t.<span class="hljs-built_in">end</span>() - <span class="hljs-number">1</span>); <span class="hljs-comment">// 掐头去尾</span><br>        <span class="hljs-keyword">if</span> (t.<span class="hljs-built_in">find</span>(s) != std::string::npos) <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>; <span class="hljs-comment">// r</span><br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>    &#125;<br>&#125;;<br></code></pre></td></tr></table></figure>
+<h2 id="kmp">KMP</h2>
+
+<h3 id="简单推理">简单推理</h3>
+<p>假设字符串s使用多个重复子串构成（这个子串是最小重复单位），重复出现的子字符串长度是x，所以s是由n
+* x组成。</p>
+<p>因为字符串s的最长相同前后缀的的长度一定是不包含s本身，所以
+最长相同前后缀长度必然是m * x，而且 n - m =
+1，（这里如果不懂，看上面的推理）</p>
+<p>所以如果 nx % (n - m)x = 0，就可以判定有重复出现的子字符串。</p>
+<p>next 数组记录的就是最长相同前后缀 <a
+target="_blank" rel="noopener" href="https://programmercarl.com/0028.实现strStr.html">字符串：KMP算法精讲
+(opens new
+window)</a>这里介绍了什么是前缀，什么是后缀，什么又是最长相同前后缀)，
+如果 next[len - 1] !=
+-1，则说明字符串有最长相同的前后缀（就是字符串里的前缀子串和后缀子串相同的最长长度）。</p>
+<p>最长相等前后缀的长度为：next[len - 1] +
+1。(这里的next数组是以统一减一的方式计算的，因此需要+1，两种计算next数组的具体区别看这里：<a
+target="_blank" rel="noopener" href="https://programmercarl.com/0028.实现strStr.html">字符串：KMP算法精讲
+(opens new window)</a>)</p>
+<p>数组长度为：len。</p>
+<p>如果len % (len - (next[len - 1] + 1)) == 0
+，则说明数组的长度正好可以被 (数组长度-最长相等前后缀的长度) 整除
+，说明该字符串有重复的子字符串。</p>
+<p><strong>数组长度减去最长相同前后缀的长度相当于是第一个周期的长度，也就是一个周期的长度，如果这个周期可以被整除，就说明整个数组就是这个周期的循环。</strong></p>
+
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">getNext</span> <span class="hljs-params">(<span class="hljs-type">int</span>* next, <span class="hljs-type">const</span> string&amp; s)</span></span>&#123;<br>        next[<span class="hljs-number">0</span>] = <span class="hljs-number">-1</span>;<br>        <span class="hljs-type">int</span> j = <span class="hljs-number">-1</span>;<br>        <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> i = <span class="hljs-number">1</span>;i &lt; s.<span class="hljs-built_in">size</span>(); i++)&#123;<br>            <span class="hljs-keyword">while</span>(j &gt;= <span class="hljs-number">0</span> &amp;&amp; s[i] != s[j + <span class="hljs-number">1</span>]) &#123;<br>                j = next[j];<br>            &#125;<br>            <span class="hljs-keyword">if</span>(s[i] == s[j + <span class="hljs-number">1</span>]) &#123;<br>                j++;<br>            &#125;<br>            next[i] = j;<br>        &#125;<br>    &#125;<br>    <span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">repeatedSubstringPattern</span> <span class="hljs-params">(string s)</span> </span>&#123;<br>        <span class="hljs-keyword">if</span> (s.<span class="hljs-built_in">size</span>() == <span class="hljs-number">0</span>) &#123;<br>            <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>        &#125;<br>        <span class="hljs-type">int</span> next[s.<span class="hljs-built_in">size</span>()];<br>        <span class="hljs-built_in">getNext</span>(next, s);<br>        <span class="hljs-type">int</span> len = s.<span class="hljs-built_in">size</span>();<br>        <span class="hljs-keyword">if</span> (next[len - <span class="hljs-number">1</span>] != <span class="hljs-number">-1</span> &amp;&amp; len % (len - (next[len - <span class="hljs-number">1</span>] + <span class="hljs-number">1</span>)) == <span class="hljs-number">0</span>) &#123;<br>            <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>        &#125;<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>    &#125;<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E7%AE%97%E6%B3%95/" class="category-chain-item">算法</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">#数据结构</a>
+      
+        <a href="/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/">#字符串</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>字符串</div>
+      <div>https://www.spacezxy.top/2022/09/21/Algorithm/algorithm-4/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Xavier ZXY</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年9月21日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/09/28/Algorithm/algorithm-5/" title="栈与队列">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">栈与队列</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/09/11/Algorithm/algorithm-3/" title="哈希表">
+                        <span class="hidden-mobile">哈希表</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a>
+    </div>
+  
+  
+  
+    <!-- 备案信息 ICP for China -->
+    <div class="beian">
+  <span>
+    <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+      湘ICP备  2021018889
+    </a>
+  </span>
+  
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

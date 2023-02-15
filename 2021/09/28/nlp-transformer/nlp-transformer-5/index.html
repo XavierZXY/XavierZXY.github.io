@@ -1,0 +1,797 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/logo16.svg">
+  <link rel="icon" href="/img/logo32.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Xavier ZXY">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="本文为参加Datawhale组队学习时所写，如若需了解细致内容，请去到Datawhale官方开源课程基于transformers的自然语言处理(NLP)入门 (datawhalechina.github.io) 抽取式问答任务 抽取式问答任务：给定一个问题和一段文本，从这段文本中找出能够回答该问题的文本片段(span), 通过使用Tranier API和dataset包，我们可以轻松加载">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于Transformers的自然语言处理(NLP)入门(五)">
+<meta property="og:url" content="https://www.spacezxy.top/2021/09/28/nlp-transformer/nlp-transformer-5/index.html">
+<meta property="og:site_name" content="Xavier ZXY">
+<meta property="og:description" content="本文为参加Datawhale组队学习时所写，如若需了解细致内容，请去到Datawhale官方开源课程基于transformers的自然语言处理(NLP)入门 (datawhalechina.github.io) 抽取式问答任务 抽取式问答任务：给定一个问题和一段文本，从这段文本中找出能够回答该问题的文本片段(span), 通过使用Tranier API和dataset包，我们可以轻松加载">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/28/nlp-transformer/nlp-transformer-5/image-20210928150458790.png">
+<meta property="article:published_time" content="2021-09-28T06:19:32.000Z">
+<meta property="article:modified_time" content="2021-09-28T08:23:52.490Z">
+<meta property="article:author" content="Xavier ZXY">
+<meta property="article:tag" content="Datawhale组队学习">
+<meta property="article:tag" content="NLP入门">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.spacezxy.top/2021/09/28/nlp-transformer/nlp-transformer-5/image-20210928150458790.png">
+  
+  
+  
+  <title>基于Transformers的自然语言处理(NLP)入门(五) - Xavier ZXY</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.spacezxy.top","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>SapceZXY</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="基于Transformers的自然语言处理(NLP)入门(五)"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-09-28 14:19" pubdate>
+          2021年9月28日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          24k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          200 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">基于Transformers的自然语言处理(NLP)入门(五)</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>本文为参加Datawhale组队学习时所写，如若需了解细致内容，请去到Datawhale官方开源课程<a
+target="_blank" rel="noopener" href="https://datawhalechina.github.io/learn-nlp-with-transformers/#/">基于transformers的自然语言处理(NLP)入门
+(datawhalechina.github.io)</a></p>
+<h1 id="抽取式问答任务">抽取式问答任务</h1>
+<p>抽取式问答任务：给定一个问题和一段文本，从这段文本中找出能够回答该问题的文本片段(span),
+通过使用Tranier
+API和dataset包，我们可以轻松加载数据，然后微调transformers。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># squad_v2等于True或者False分别代表使用SQUAD v1 或者 SQUAD v2。</span><br><span class="hljs-comment"># 如果您使用的是其他数据集，那么True代表的是：模型可以回答“不可回答”问题，也就是部分问题不给出答案，而False则代表所有问题必须回答。</span><br>squad_v2 = <span class="hljs-literal">False</span><br>model_checkpoint = <span class="hljs-string">&quot;distilbert-base-uncased&quot;</span><br>batch_size = <span class="hljs-number">16</span><br></code></pre></td></tr></table></figure>
+<h2 id="加载数据集">加载数据集</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> datasets <span class="hljs-keyword">import</span> load_datasets, load_metric<br><br><br><span class="hljs-comment">#  下载数据</span><br>datasets = load_dataset(<span class="hljs-string">&quot;squad_v2&quot;</span> <span class="hljs-keyword">if</span> squad_v2 <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;squad&quot;</span>)<br></code></pre></td></tr></table></figure>
+<span id="more"></span>
+<p>datasets的属性结构</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python">DatasetDict(&#123;<br>    train: Dataset(&#123;<br>        features: [<span class="hljs-string">&#x27;id&#x27;</span>, <span class="hljs-string">&#x27;title&#x27;</span>, <span class="hljs-string">&#x27;context&#x27;</span>, <span class="hljs-string">&#x27;question&#x27;</span>, <span class="hljs-string">&#x27;answers&#x27;</span>],<br>        num_rows: <span class="hljs-number">87599</span><br>    &#125;)<br>    validation: Dataset(&#123;<br>        features: [<span class="hljs-string">&#x27;id&#x27;</span>, <span class="hljs-string">&#x27;title&#x27;</span>, <span class="hljs-string">&#x27;context&#x27;</span>, <span class="hljs-string">&#x27;question&#x27;</span>, <span class="hljs-string">&#x27;answers&#x27;</span>],<br>        num_rows: <span class="hljs-number">10570</span><br>    &#125;)<br>&#125;)<br></code></pre></td></tr></table></figure>
+<p>无论是训练集、验证集还是测试集，对于每一个问答数据样本都会有“context",
+"question"和“answers”三个key。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python">datasets[<span class="hljs-string">&quot;train&quot;</span>][<span class="hljs-number">0</span>]<br><span class="hljs-comment"># answers代表答案</span><br><span class="hljs-comment"># context代表文本片段</span><br><span class="hljs-comment"># question代表问题</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python">&#123;<span class="hljs-string">&#x27;answers&#x27;</span>: &#123;<span class="hljs-string">&#x27;answer_start&#x27;</span>: [<span class="hljs-number">515</span>], <span class="hljs-string">&#x27;text&#x27;</span>: [<span class="hljs-string">&#x27;Saint Bernadette Soubirous&#x27;</span>]&#125;,<br> <span class="hljs-string">&#x27;context&#x27;</span>: <span class="hljs-string">&#x27;Architecturally, the school has a Catholic character. Atop the Main Building\&#x27;s gold dome is a golden statue of the Virgin Mary. Immediately in front of the Main Building and facing it, is a copper statue of Christ with arms upraised with the legend &quot;Venite Ad Me Omnes&quot;. Next to the Main Building is the Basilica of the Sacred Heart. Immediately behind the basilica is the Grotto, a Marian place of prayer and reflection. It is a replica of the grotto at Lourdes, France where the Virgin Mary reputedly appeared to Saint Bernadette Soubirous in 1858. At the end of the main drive (and in a direct line that connects through 3 statues and the Gold Dome), is a simple, modern stone statue of Mary.&#x27;</span>,<br> <span class="hljs-string">&#x27;id&#x27;</span>: <span class="hljs-string">&#x27;5733be284776f41900661182&#x27;</span>,<br> <span class="hljs-string">&#x27;question&#x27;</span>: <span class="hljs-string">&#x27;To whom did the Virgin Mary allegedly appear in 1858 in Lourdes France?&#x27;</span>,<br> <span class="hljs-string">&#x27;title&#x27;</span>: <span class="hljs-string">&#x27;University_of_Notre_Dame&#x27;</span>&#125;<br></code></pre></td></tr></table></figure>
+<p>answers除了给出了文本片段里的答案文本之外，还给出了该answer所在位置（以character开始计算，上面的例子是第515位）。</p>
+<p>随机抽取数据，进行展示。</p>
+<img src="/2021/09/28/nlp-transformer/nlp-transformer-5/image-20210928150458790.png" srcset="/img/loading.gif" lazyload class="" title="data">
+<h2 id="数据预处理">数据预处理</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> transformers <span class="hljs-keyword">import</span> AutoTokenizer<br>    <br>tokenizer = AutoTokenizer.from_pretrained(model_checkpoint)<br><br><span class="hljs-keyword">import</span> transformers<br><span class="hljs-keyword">assert</span> <span class="hljs-built_in">isinstance</span>(tokenizer, transformers.PreTrainedTokenizerFast)<br></code></pre></td></tr></table></figure>
+<p>现在我们还需要思考预训练机器问答模型们是如何处理非常长的文本的。一般来说预训练模型输入有最大长度要求，所以我们通常将超长的输入进行截断。但是，如果我们将问答数据三元组&lt;question,
+context,
+answer&gt;中的超长context截断，那么我们可能丢掉答案（因为我们是从context中抽取出一个小片段作为答案）。</p>
+<p>为了解决这个问题，下面的代码找到一个超过长度的例子，然后向您演示如何进行处理。我们把超长的输入切片为多个较短的输入，每个输入都要满足模型最大长度输入要求。由于答案可能存在与切片的地方，因此我们需要允许相邻切片之间有交集，代码中通过<code>doc_stride</code>参数控制。</p>
+<p>机器问答预训练模型通常将question和context拼接之后作为输入，然后让模型从context里寻找答案。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python">max_length = <span class="hljs-number">384</span>  <span class="hljs-comment"># 输入feature的最大长度，question和context拼接之后</span><br>doc_stride = <span class="hljs-number">128</span>  <span class="hljs-comment"># 2个切片之间的重合token数量。</span><br></code></pre></td></tr></table></figure>
+<p>for循环遍历数据集，寻找一个超长样本，本notebook例子模型所要求的最大输入是384（经常使用的还有512）</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">for</span> i, example <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(datasets[<span class="hljs-string">&quot;train&quot;</span>]):<br>    <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(tokenizer(example[<span class="hljs-string">&quot;question&quot;</span>], example[<span class="hljs-string">&quot;context&quot;</span>])[<span class="hljs-string">&quot;input_ids&quot;</span>]) &gt; <span class="hljs-number">384</span>:<br>        <span class="hljs-keyword">break</span><br>example = datasets[<span class="hljs-string">&quot;train&quot;</span>][i]<br></code></pre></td></tr></table></figure>
+<p>如果不截断的话，那么输入的长度是396</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-built_in">len</span>(tokenizer(example[<span class="hljs-string">&quot;question&quot;</span>], example[<span class="hljs-string">&quot;context&quot;</span>])[<span class="hljs-string">&quot;input_ids&quot;</span>])<br><span class="hljs-number">396</span><br></code></pre></td></tr></table></figure>
+<p>现在如果我们截断成最大长度384，将会丢失超长部分的信息</p>
+<p>注意，一般来说，我们只对context进行切片，不会对问题进行切片，由于context是拼接在question后面的，对应着第2个文本，所以使用<code>only_second</code>控制.tokenizer使用<code>doc_stride</code>控制切片之间的重合长度。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python">tokenized_example = tokenizer(<br>    example[<span class="hljs-string">&quot;question&quot;</span>],<br>    example[<span class="hljs-string">&quot;context&quot;</span>],<br>    max_length=max_length,<br>    truncation=<span class="hljs-string">&quot;only_second&quot;</span>,<br>    return_overflowing_tokens=<span class="hljs-literal">True</span>,<br>    stride=doc_stride<br>)<br></code></pre></td></tr></table></figure>
+<p>由于对超长输入进行了切片，我们得到了多个输入，这些输入input_ids对应的长度是</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python">[<span class="hljs-built_in">len</span>(x) <span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> tokenized_example[<span class="hljs-string">&quot;input_ids&quot;</span>]]<br><br>[<span class="hljs-number">384</span>, <span class="hljs-number">157</span>]<br></code></pre></td></tr></table></figure>
+<p>我们可以将预处理后的token IDs，input_ids还原为文本格式：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">for</span> i, x <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(tokenized_example[<span class="hljs-string">&quot;input_ids&quot;</span>][:<span class="hljs-number">2</span>]):<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;切片: &#123;&#125;&quot;</span>.<span class="hljs-built_in">format</span>(i))<br>    <span class="hljs-built_in">print</span>(tokenizer.decode(x))<br></code></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python">切片: <span class="hljs-number">0</span><br>[CLS] how many wins does the notre dame men<span class="hljs-string">&#x27;s basketball team have? [SEP] the men&#x27;</span>s basketball team has over <span class="hljs-number">1</span>, <span class="hljs-number">600</span> wins, one of only <span class="hljs-number">12</span> schools who have reached that ....<br>championship. the <span class="hljs-number">2010</span> – <span class="hljs-number">11</span> team concluded its regular season ranked number seven <span class="hljs-keyword">in</span> the country, <span class="hljs-keyword">with</span> a record of <span class="hljs-number">25</span> – <span class="hljs-number">5</span>, brey<span class="hljs-string">&#x27;s fifth straight 20 - win season, and a second - place finish in the big east. during the 2014 - 15 season, the team went 32 - 6 and won the acc conference tournament, later advancing to the elite 8, where the fighting irish lost on a missed buzzer - beater against then undefeated kentucky. led by nba draft picks jerian grant and pat connaughton, the fighting irish beat the eventual national champion duke blue devils twice during the season. the 32 wins were [SEP]</span><br><span class="hljs-string">切片: 1</span><br><span class="hljs-string">[CLS] how many wins does the notre dame men&#x27;</span>s basketball team have? [SEP] championship. the <span class="hljs-number">2010</span> – <span class="hljs-number">11</span> team concluded its regular season ranked number seven <span class="hljs-keyword">in</span> the country, <span class="hljs-keyword">with</span> a record of <span class="hljs-number">25</span> – <span class="hljs-number">5</span>, brey<span class="hljs-string">&#x27;s fifth straight 20 - win season, and a second - place finish in the big east. during the 2014 - 15 season, the team went 32 - 6 and won the acc conference tournament, later advancing to the elite 8, where the fighting irish lost on a missed buzzer - beater against then undefeated kentucky. led by nba draft picks jerian grant and pat connaughton, the fighting irish beat the eventual national champion duke blue devils twice during the season. the 32 wins were the most by the fighting irish team since 1908 - 09. [SEP]</span><br></code></pre></td></tr></table></figure>
+<p>由于我们对超长文本进行了切片，我们需要重新寻找答案所在位置（相对于每一片context开头的相对位置）。机器问答模型将使用答案的位置（答案的起始位置和结束位置，start和end）作为训练标签（而不是答案的token
+IDS）。所以切片需要和原始输入有一个对应关系，每个token在切片后context的位置和原始超长context里位置的对应关系。在tokenizer里可以使用<code>return_offsets_mapping</code>参数得到这个对应关系的map：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs python">tokenized_example = tokenizer(<br>    example[<span class="hljs-string">&quot;question&quot;</span>],<br>    example[<span class="hljs-string">&quot;context&quot;</span>],<br>    max_length=max_length,<br>    truncation=<span class="hljs-string">&quot;only_second&quot;</span>,<br>    return_overflowing_tokens=<span class="hljs-literal">True</span>,<br>    return_offsets_mapping=<span class="hljs-literal">True</span>,<br>    stride=doc_stride<br>)<br><span class="hljs-comment"># 打印切片前后位置下标的对应关系</span><br><span class="hljs-built_in">print</span>(tokenized_example[<span class="hljs-string">&quot;offset_mapping&quot;</span>][<span class="hljs-number">0</span>][:<span class="hljs-number">100</span>])<br></code></pre></td></tr></table></figure>
+<figure class="highlight scheme"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs scheme">[(<span class="hljs-name">0</span>, <span class="hljs-number">0</span>), (<span class="hljs-name">0</span>, <span class="hljs-number">3</span>), (<span class="hljs-name">4</span>, <span class="hljs-number">8</span>), (<span class="hljs-name">9</span>, <span class="hljs-number">13</span>), (<span class="hljs-name">14</span>, <span class="hljs-number">18</span>), (<span class="hljs-name">19</span>, <span class="hljs-number">22</span>), (<span class="hljs-name">23</span>, <span class="hljs-number">28</span>), (<span class="hljs-name">29</span>, <span class="hljs-number">33</span>), (<span class="hljs-name">34</span>, <span class="hljs-number">37</span>), (<span class="hljs-name">37</span>, <span class="hljs-number">38</span>), (<span class="hljs-name">38</span>, <span class="hljs-number">39</span>), (<span class="hljs-name">40</span>, <span class="hljs-number">50</span>), (<span class="hljs-name">51</span>, <span class="hljs-number">55</span>), (<span class="hljs-name">56</span>, <span class="hljs-number">60</span>), (<span class="hljs-name">60</span>, <span class="hljs-number">61</span>), (<span class="hljs-name">0</span>, <span class="hljs-number">0</span>), (<span class="hljs-name">0</span>, <span class="hljs-number">3</span>), (<span class="hljs-name">4</span>, <span class="hljs-number">7</span>), (<span class="hljs-name">7</span>, <span class="hljs-number">8</span>), (<span class="hljs-name">8</span>, <span class="hljs-number">9</span>), (<span class="hljs-name">10</span>, <span class="hljs-number">20</span>), (<span class="hljs-name">21</span>, <span class="hljs-number">25</span>), (<span class="hljs-name">26</span>, <span class="hljs-number">29</span>), (<span class="hljs-name">30</span>, <span class="hljs-number">34</span>), (<span class="hljs-name">35</span>, <span class="hljs-number">36</span>), (<span class="hljs-name">36</span>, <span class="hljs-number">37</span>), (<span class="hljs-name">37</span>, <span class="hljs-number">40</span>), (<span class="hljs-name">41</span>, <span class="hljs-number">45</span>), (<span class="hljs-name">45</span>, <span class="hljs-number">46</span>), (<span class="hljs-name">47</span>, <span class="hljs-number">50</span>), (<span class="hljs-name">51</span>, <span class="hljs-number">53</span>), (<span class="hljs-name">54</span>, <span class="hljs-number">58</span>), (<span class="hljs-name">59</span>, <span class="hljs-number">61</span>), (<span class="hljs-name">62</span>, <span class="hljs-number">69</span>), (<span class="hljs-name">70</span>, <span class="hljs-number">73</span>), (<span class="hljs-name">74</span>, <span class="hljs-number">78</span>), (<span class="hljs-name">79</span>, <span class="hljs-number">86</span>), (<span class="hljs-name">87</span>, <span class="hljs-number">91</span>), (<span class="hljs-name">92</span>, <span class="hljs-number">96</span>), (<span class="hljs-name">96</span>, <span class="hljs-number">97</span>), (<span class="hljs-name">98</span>, <span class="hljs-number">101</span>), (<span class="hljs-name">102</span>, <span class="hljs-number">106</span>), (<span class="hljs-name">107</span>, <span class="hljs-number">115</span>), (<span class="hljs-name">116</span>, <span class="hljs-number">118</span>), (<span class="hljs-name">119</span>, <span class="hljs-number">121</span>), (<span class="hljs-name">122</span>, <span class="hljs-number">126</span>), (<span class="hljs-name">127</span>, <span class="hljs-number">138</span>), (<span class="hljs-name">138</span>, <span class="hljs-number">139</span>), (<span class="hljs-name">140</span>, <span class="hljs-number">146</span>), (<span class="hljs-name">147</span>, <span class="hljs-number">153</span>), (<span class="hljs-name">154</span>, <span class="hljs-number">160</span>), (<span class="hljs-name">161</span>, <span class="hljs-number">165</span>), (<span class="hljs-name">166</span>, <span class="hljs-number">171</span>), (<span class="hljs-name">172</span>, <span class="hljs-number">175</span>), (<span class="hljs-name">176</span>, <span class="hljs-number">182</span>), (<span class="hljs-name">183</span>, <span class="hljs-number">186</span>), (<span class="hljs-name">187</span>, <span class="hljs-number">191</span>), (<span class="hljs-name">192</span>, <span class="hljs-number">198</span>), (<span class="hljs-name">199</span>, <span class="hljs-number">205</span>), (<span class="hljs-name">206</span>, <span class="hljs-number">208</span>), (<span class="hljs-name">209</span>, <span class="hljs-number">210</span>), (<span class="hljs-name">211</span>, <span class="hljs-number">217</span>), (<span class="hljs-name">218</span>, <span class="hljs-number">222</span>), (<span class="hljs-name">223</span>, <span class="hljs-number">225</span>), (<span class="hljs-name">226</span>, <span class="hljs-number">229</span>), (<span class="hljs-name">230</span>, <span class="hljs-number">240</span>), (<span class="hljs-name">241</span>, <span class="hljs-number">245</span>), (<span class="hljs-name">246</span>, <span class="hljs-number">248</span>), (<span class="hljs-name">248</span>, <span class="hljs-number">249</span>), (<span class="hljs-name">250</span>, <span class="hljs-number">258</span>), (<span class="hljs-name">259</span>, <span class="hljs-number">262</span>), (<span class="hljs-name">263</span>, <span class="hljs-number">267</span>), (<span class="hljs-name">268</span>, <span class="hljs-number">271</span>), (<span class="hljs-name">272</span>, <span class="hljs-number">277</span>), (<span class="hljs-name">278</span>, <span class="hljs-number">281</span>), (<span class="hljs-name">282</span>, <span class="hljs-number">285</span>), (<span class="hljs-name">286</span>, <span class="hljs-number">290</span>), (<span class="hljs-name">291</span>, <span class="hljs-number">301</span>), (<span class="hljs-name">301</span>, <span class="hljs-number">302</span>), (<span class="hljs-name">303</span>, <span class="hljs-number">307</span>), (<span class="hljs-name">308</span>, <span class="hljs-number">312</span>), (<span class="hljs-name">313</span>, <span class="hljs-number">318</span>), (<span class="hljs-name">319</span>, <span class="hljs-number">321</span>), (<span class="hljs-name">322</span>, <span class="hljs-number">325</span>), (<span class="hljs-name">326</span>, <span class="hljs-number">330</span>), (<span class="hljs-name">330</span>, <span class="hljs-number">331</span>), (<span class="hljs-name">332</span>, <span class="hljs-number">340</span>), (<span class="hljs-name">341</span>, <span class="hljs-number">351</span>), (<span class="hljs-name">352</span>, <span class="hljs-number">354</span>), (<span class="hljs-name">355</span>, <span class="hljs-number">363</span>), (<span class="hljs-name">364</span>, <span class="hljs-number">373</span>), (<span class="hljs-name">374</span>, <span class="hljs-number">379</span>), (<span class="hljs-name">379</span>, <span class="hljs-number">380</span>), (<span class="hljs-name">381</span>, <span class="hljs-number">384</span>), (<span class="hljs-name">385</span>, <span class="hljs-number">389</span>), (<span class="hljs-name">390</span>, <span class="hljs-number">393</span>), (<span class="hljs-name">394</span>, <span class="hljs-number">406</span>), (<span class="hljs-name">407</span>, <span class="hljs-number">408</span>), (<span class="hljs-name">409</span>, <span class="hljs-number">415</span>), (<span class="hljs-name">416</span>, <span class="hljs-number">418</span>)]<br>[<span class="hljs-name">0</span>, <span class="hljs-number">0</span>]<br></code></pre></td></tr></table></figure>
+<p>上面打印的是tokenized_example第0片的前100个tokens在原始context片里的位置。注意第一个token是<code>[CLS]</code>设定为(0,
+0)是因为这个token不属于qeustion或者answer的一部分。第2个token对应的起始和结束位置是0和3。我们可以根据切片后的token
+id转化对应的token；然后使用<code>offset_mapping</code>参数映射回切片前的token位置，找到原始位置的tokens。由于question拼接在context前面，所以直接从question里根据下标找就行了。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python">first_token_id = tokenized_example[<span class="hljs-string">&quot;input_ids&quot;</span>][<span class="hljs-number">0</span>][<span class="hljs-number">1</span>]<br>offsets = tokenized_example[<span class="hljs-string">&quot;offset_mapping&quot;</span>][<span class="hljs-number">0</span>][<span class="hljs-number">1</span>]<br><span class="hljs-built_in">print</span>(tokenizer.convert_ids_to_tokens([first_token_id])[<span class="hljs-number">0</span>], example[<span class="hljs-string">&quot;question&quot;</span>][offsets[<span class="hljs-number">0</span>]:offsets[<span class="hljs-number">1</span>]])<br></code></pre></td></tr></table></figure>
+<figure class="highlight ebnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ebnf"><span class="hljs-attribute">how How</span><br></code></pre></td></tr></table></figure>
+<p>因此，我们得到了切片前后的位置对应关系。我们还需要使用<code>sequence_ids</code>参数来区分question和context。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">sequence_ids = tokenized_example.sequence_ids()<br></code></pre></td></tr></table></figure>
+<figure class="highlight arcade"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs arcade">[<span class="hljs-built_in">None</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-built_in">None</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-built_in">None</span>]<br></code></pre></td></tr></table></figure>
+<p><code>None</code>对应了special
+tokens，然后0或者1分表代表第1个文本和第2个文本，由于我们qeustin第1个传入，context第2个传入，所以分别对应question和context。最终我们可以找到标注的答案在预处理之后的features里的位置:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs python">answers = example[<span class="hljs-string">&quot;answers&quot;</span>]<br>start_char = answers[<span class="hljs-string">&quot;answer_start&quot;</span>][<span class="hljs-number">0</span>]<br>end_char = start_char + <span class="hljs-built_in">len</span>(answers[<span class="hljs-string">&quot;text&quot;</span>][<span class="hljs-number">0</span>])<br><br><span class="hljs-comment"># 找到当前文本的Start token index.</span><br>token_start_index = <span class="hljs-number">0</span><br><span class="hljs-keyword">while</span> sequence_ids[token_start_index] != <span class="hljs-number">1</span>:<br>    token_start_index += <span class="hljs-number">1</span><br><br><span class="hljs-comment"># 找到当前文本的End token idnex.</span><br>token_end_index = <span class="hljs-built_in">len</span>(tokenized_example[<span class="hljs-string">&quot;input_ids&quot;</span>][<span class="hljs-number">0</span>]) - <span class="hljs-number">1</span><br><span class="hljs-keyword">while</span> sequence_ids[token_end_index] != <span class="hljs-number">1</span>:<br>    token_end_index -= <span class="hljs-number">1</span><br><br><span class="hljs-comment"># 检测答案是否在文本区间的外部，这种情况下意味着该样本的数据标注在CLS token位置。</span><br>offsets = tokenized_example[<span class="hljs-string">&quot;offset_mapping&quot;</span>][<span class="hljs-number">0</span>]<br><span class="hljs-keyword">if</span> (offsets[token_start_index][<span class="hljs-number">0</span>] &lt;= start_char <span class="hljs-keyword">and</span> offsets[token_end_index][<span class="hljs-number">1</span>] &gt;= end_char):<br>    <span class="hljs-comment"># 将token_start_index和token_end_index移动到answer所在位置的两侧.</span><br>    <span class="hljs-comment"># 注意：答案在最末尾的边界条件.</span><br>    <span class="hljs-keyword">while</span> token_start_index &lt; <span class="hljs-built_in">len</span>(offsets) <span class="hljs-keyword">and</span> offsets[token_start_index][<span class="hljs-number">0</span>] &lt;= start_char:<br>        token_start_index += <span class="hljs-number">1</span><br>    start_position = token_start_index - <span class="hljs-number">1</span><br>    <span class="hljs-keyword">while</span> offsets[token_end_index][<span class="hljs-number">1</span>] &gt;= end_char:<br>        token_end_index -= <span class="hljs-number">1</span><br>    end_position = token_end_index + <span class="hljs-number">1</span><br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;start_position: &#123;&#125;, end_position: &#123;&#125;&quot;</span>.<span class="hljs-built_in">format</span>(start_position, end_position))<br><span class="hljs-keyword">else</span>:<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;The answer is not in this feature.&quot;</span>)<br></code></pre></td></tr></table></figure>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">start_position</span>: <span class="hljs-number">23</span>, end_position: <span class="hljs-number">26</span><br></code></pre></td></tr></table></figure>
+<p>我们需要对答案的位置进行验证，验证方式是：使用答案所在位置下标，取到对应的token
+ID，然后转化为文本，然后和原始答案进行但对比。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-built_in">print</span>(tokenizer.decode(tokenized_example[<span class="hljs-string">&quot;input_ids&quot;</span>][<span class="hljs-number">0</span>][start_position: end_position+<span class="hljs-number">1</span>]))<br><span class="hljs-built_in">print</span>(answers[<span class="hljs-string">&quot;text&quot;</span>][<span class="hljs-number">0</span>])<br></code></pre></td></tr></table></figure>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">over</span> <span class="hljs-number">1</span>, <span class="hljs-number">600</span><br><span class="hljs-attribute">over</span> <span class="hljs-number">1</span>,<span class="hljs-number">600</span><br></code></pre></td></tr></table></figure>
+<p>有时候question拼接context，而有时候是context拼接question，不同的模型有不同的要求，因此我们需要使用<code>padding_side</code>参数来指定。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">pad_on_right = tokenizer.padding_side == <span class="hljs-string">&quot;right&quot;</span>  <span class="hljs-comment"># context在右边</span><br></code></pre></td></tr></table></figure>
+<p>现在，把所有步骤合并到一起。对于context中无答案的情况，我们直接将标注的答案起始位置和结束位置放置在CLS的下标处。如果<code>allow_impossible_answers</code>这个参数是<code>False</code>的化，那这些无答案的样本都会被扔掉。现在，把所有步骤合并到一起。对于context中无答案的情况，我们直接将标注的答案起始位置和结束位置放置在CLS的下标处。如果<code>allow_impossible_answers</code>这个参数是<code>False</code>的化，那这些无答案的样本都会被扔掉。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">prepare_train_features</span>(<span class="hljs-params">examples</span>):<br>    <span class="hljs-comment"># 既要对examples进行truncation（截断）和padding（补全）还要还要保留所有信息，所以要用的切片的方法。</span><br>    <span class="hljs-comment"># 每一个一个超长文本example会被切片成多个输入，相邻两个输入之间会有交集。</span><br>    tokenized_examples = tokenizer(<br>        examples[<span class="hljs-string">&quot;question&quot;</span> <span class="hljs-keyword">if</span> pad_on_right <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;context&quot;</span>],<br>        examples[<span class="hljs-string">&quot;context&quot;</span> <span class="hljs-keyword">if</span> pad_on_right <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;question&quot;</span>],<br>        truncation=<span class="hljs-string">&quot;only_second&quot;</span> <span class="hljs-keyword">if</span> pad_on_right <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;only_first&quot;</span>,<br>        max_length=max_length,<br>        stride=doc_stride,<br>        return_overflowing_tokens=<span class="hljs-literal">True</span>,<br>        return_offsets_mapping=<span class="hljs-literal">True</span>,<br>        padding=<span class="hljs-string">&quot;max_length&quot;</span>,<br>    )<br><br>    <span class="hljs-comment"># 我们使用overflow_to_sample_mapping参数来映射切片片ID到原始ID。</span><br>    <span class="hljs-comment"># 比如有2个expamples被切成4片，那么对应是[0, 0, 1, 1]，前两片对应原来的第一个example。</span><br>    sample_mapping = tokenized_examples.pop(<span class="hljs-string">&quot;overflow_to_sample_mapping&quot;</span>)<br>    <span class="hljs-comment"># offset_mapping也对应4片</span><br>    <span class="hljs-comment"># offset_mapping参数帮助我们映射到原始输入，由于答案标注在原始输入上，所以有助于我们找到答案的起始和结束位置。</span><br>    offset_mapping = tokenized_examples.pop(<span class="hljs-string">&quot;offset_mapping&quot;</span>)<br><br>    <span class="hljs-comment"># 重新标注数据</span><br>    tokenized_examples[<span class="hljs-string">&quot;start_positions&quot;</span>] = []<br>    tokenized_examples[<span class="hljs-string">&quot;end_positions&quot;</span>] = []<br><br>    <span class="hljs-keyword">for</span> i, offsets <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(offset_mapping):<br>        <span class="hljs-comment"># 对每一片进行处理</span><br>        <span class="hljs-comment"># 将无答案的样本标注到CLS上</span><br>        input_ids = tokenized_examples[<span class="hljs-string">&quot;input_ids&quot;</span>][i]<br>        cls_index = input_ids.index(tokenizer.cls_token_id)<br><br>        <span class="hljs-comment"># 区分question和context</span><br>        sequence_ids = tokenized_examples.sequence_ids(i)<br><br>        <span class="hljs-comment"># 拿到原始的example 下标.</span><br>        sample_index = sample_mapping[i]<br>        answers = examples[<span class="hljs-string">&quot;answers&quot;</span>][sample_index]<br>        <span class="hljs-comment"># 如果没有答案，则使用CLS所在的位置为答案.</span><br>        <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(answers[<span class="hljs-string">&quot;answer_start&quot;</span>]) == <span class="hljs-number">0</span>:<br>            tokenized_examples[<span class="hljs-string">&quot;start_positions&quot;</span>].append(cls_index)<br>            tokenized_examples[<span class="hljs-string">&quot;end_positions&quot;</span>].append(cls_index)<br>        <span class="hljs-keyword">else</span>:<br>            <span class="hljs-comment"># 答案的character级别Start/end位置.</span><br>            start_char = answers[<span class="hljs-string">&quot;answer_start&quot;</span>][<span class="hljs-number">0</span>]<br>            end_char = start_char + <span class="hljs-built_in">len</span>(answers[<span class="hljs-string">&quot;text&quot;</span>][<span class="hljs-number">0</span>])<br><br>            <span class="hljs-comment"># 找到token级别的index start.</span><br>            token_start_index = <span class="hljs-number">0</span><br>            <span class="hljs-keyword">while</span> sequence_ids[token_start_index] != (<span class="hljs-number">1</span> <span class="hljs-keyword">if</span> pad_on_right <span class="hljs-keyword">else</span> <span class="hljs-number">0</span>):<br>                token_start_index += <span class="hljs-number">1</span><br><br>            <span class="hljs-comment"># 找到token级别的index end.</span><br>            token_end_index = <span class="hljs-built_in">len</span>(input_ids) - <span class="hljs-number">1</span><br>            <span class="hljs-keyword">while</span> sequence_ids[token_end_index] != (<span class="hljs-number">1</span> <span class="hljs-keyword">if</span> pad_on_right <span class="hljs-keyword">else</span> <span class="hljs-number">0</span>):<br>                token_end_index -= <span class="hljs-number">1</span><br><br>            <span class="hljs-comment"># 检测答案是否超出文本长度，超出的话也适用CLS index作为标注.</span><br>            <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> (offsets[token_start_index][<span class="hljs-number">0</span>] &lt;= start_char <span class="hljs-keyword">and</span> offsets[token_end_index][<span class="hljs-number">1</span>] &gt;= end_char):<br>                tokenized_examples[<span class="hljs-string">&quot;start_positions&quot;</span>].append(cls_index)<br>                tokenized_examples[<span class="hljs-string">&quot;end_positions&quot;</span>].append(cls_index)<br>            <span class="hljs-keyword">else</span>:<br>                <span class="hljs-comment"># 如果不超出则找到答案token的start和end位置。.</span><br>                <span class="hljs-comment"># Note: we could go after the last offset if the answer is the last word (edge case).</span><br>                <span class="hljs-keyword">while</span> token_start_index &lt; <span class="hljs-built_in">len</span>(offsets) <span class="hljs-keyword">and</span> offsets[token_start_index][<span class="hljs-number">0</span>] &lt;= start_char:<br>                    token_start_index += <span class="hljs-number">1</span><br>                tokenized_examples[<span class="hljs-string">&quot;start_positions&quot;</span>].append(token_start_index - <span class="hljs-number">1</span>)<br>                <span class="hljs-keyword">while</span> offsets[token_end_index][<span class="hljs-number">1</span>] &gt;= end_char:<br>                    token_end_index -= <span class="hljs-number">1</span><br>                tokenized_examples[<span class="hljs-string">&quot;end_positions&quot;</span>].append(token_end_index + <span class="hljs-number">1</span>)<br><br>    <span class="hljs-keyword">return</span> tokenized_examples<br></code></pre></td></tr></table></figure>
+<h2 id="fine-tuning微调模型">Fine-tuning微调模型</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> transformers <span class="hljs-keyword">import</span> AutoModelForQuestionAnswering, TrainingArguments, Trainer<br><br>model = AutoModelForQuestionAnswering.from_pretrained(model_checkpoint)<br></code></pre></td></tr></table></figure>
+<p>训练参数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python">args = TrainingArguments(<br>    <span class="hljs-string">f&quot;test-squad&quot;</span>,<br>    evaluation_strategy = <span class="hljs-string">&quot;epoch&quot;</span>,<br>    learning_rate=<span class="hljs-number">2e-5</span>, <span class="hljs-comment">#学习率</span><br>    per_device_train_batch_size=batch_size,<br>    per_device_eval_batch_size=batch_size,<br>    num_train_epochs=<span class="hljs-number">3</span>, <span class="hljs-comment"># 训练的论次</span><br>    weight_decay=<span class="hljs-number">0.01</span>,<br>)<br></code></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> transformers <span class="hljs-keyword">import</span> default_data_collator<br><br>data_collator = default_data_collator<br></code></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs python">trainer = Trainer(<br>    model,<br>    args,<br>    train_dataset=tokenized_datasets[<span class="hljs-string">&quot;train&quot;</span>],<br>    eval_dataset=tokenized_datasets[<span class="hljs-string">&quot;validation&quot;</span>],<br>    data_collator=data_collator,<br>    tokenizer=tokenizer,<br>)<br><br><span class="hljs-comment">#  开始训练</span><br>trainer.train()<br><br><span class="hljs-comment">#  保存模型</span><br>trainer.save_model(<span class="hljs-string">&quot;test-squad-trained&quot;</span>)<br></code></pre></td></tr></table></figure>
+<h2 id="evaluation评估">Evaluation评估</h2>
+<p>我们需要将模型的输出后处理成我们需要的文本格式。模型本身预测的是answer所在start/end位置的logits。如果我们评估时喂入模型的是一个batch，那么输出如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> torch<br><br><span class="hljs-keyword">for</span> batch <span class="hljs-keyword">in</span> trainer.get_eval_dataloader():<br>    <span class="hljs-keyword">break</span><br>batch = &#123;k: v.to(trainer.args.device) <span class="hljs-keyword">for</span> k, v <span class="hljs-keyword">in</span> batch.items()&#125;<br><span class="hljs-keyword">with</span> torch.no_grad():<br>    output = trainer.model(**batch)<br>output.keys()<br></code></pre></td></tr></table></figure>
+<p>模型的输出是一个像dict的数据结构，包含了loss（因为提供了label，所有有loss），answer
+start和end的logits。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python">output.start_logits.shape, output.end_logits.shape<br><br>(torch.Size([<span class="hljs-number">16</span>, <span class="hljs-number">384</span>]), torch.Size([<span class="hljs-number">16</span>, <span class="hljs-number">384</span>]))<br></code></pre></td></tr></table></figure>
+<p>每个feature里的每个token都会有一个logit。预测answer最简单的方法就是选择start的logits里最大的下标最为answer其实位置，end的logits里最大下标作为answer的结束位置。</p>
+<p>以上策略大部分情况下都是不错的。但是，如果我们的输入告诉我们找不到答案：比如start的位置比end的位置下标大，或者start和end的位置指向了question。</p>
+<p>这个时候，简单的方法是我们继续需要选择第2好的预测作为我们的答案了，实在不行看第3好的预测，以此类推。</p>
+<p>由于上面的方法不太容易找到可行的答案，我们需要思考更合理的方法。我们将start和end的logits相加得到新的打分，然后去看最好的<code>n_best_size</code>个start和end对。从<code>n_best_size</code>个start和end对里推出相应的答案，然后检查答案是否有效，最后将他们按照打分进行怕苦，选择得分最高的作为答案。由于上面的方法不太容易找到可行的答案，我们需要思考更合理的方法。我们将start和end的logits相加得到新的打分，然后去看最好的<code>n_best_size</code>个start和end对。从<code>n_best_size</code>个start和end对里推出相应的答案，然后检查答案是否有效，最后将他们按照打分进行怕苦，选择得分最高的作为答案。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs python">n_best_size = <span class="hljs-number">20</span><br><br><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np<br><br>start_logits = output.start_logits[<span class="hljs-number">0</span>].cpu().numpy()<br>end_logits = output.end_logits[<span class="hljs-number">0</span>].cpu().numpy()<br><span class="hljs-comment"># 收集最佳的start和end logits的位置:</span><br>start_indexes = np.argsort(start_logits)[-<span class="hljs-number">1</span> : -n_best_size - <span class="hljs-number">1</span> : -<span class="hljs-number">1</span>].tolist()<br>end_indexes = np.argsort(end_logits)[-<span class="hljs-number">1</span> : -n_best_size - <span class="hljs-number">1</span> : -<span class="hljs-number">1</span>].tolist()<br>valid_answers = []<br><span class="hljs-keyword">for</span> start_index <span class="hljs-keyword">in</span> start_indexes:<br>    <span class="hljs-keyword">for</span> end_index <span class="hljs-keyword">in</span> end_indexes:<br>        <span class="hljs-keyword">if</span> start_index &lt;= end_index: <span class="hljs-comment"># 如果start小雨end，那么合理的</span><br>            valid_answers.append(<br>                &#123;<br>                    <span class="hljs-string">&quot;score&quot;</span>: start_logits[start_index] + end_logits[end_index],<br>                    <span class="hljs-string">&quot;text&quot;</span>: <span class="hljs-string">&quot;&quot;</span> <span class="hljs-comment"># 后续需要根据token的下标将答案找出来</span><br>                &#125;<br>            )<br></code></pre></td></tr></table></figure>
+<p>随后我们对根据<code>score</code>对<code>valid_answers</code>进行排序，找到最好的那一个。最后还剩一步是：检查start和end位置对应的文本是否在context里面而不是在question里面。</p>
+<p>为了完成这件事情，我们需要添加以下两个信息到validation的features里面：</p>
+<ul>
+<li>产生feature的example的ID。由于每个example可能会产生多个feature，所以每个feature/切片的feature需要知道他们对应的example。</li>
+<li>offset mapping：
+将每个切片的tokens的位置映射会原始文本基于character的下标位置。</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">prepare_validation_features</span>(<span class="hljs-params">examples</span>):<br>    <span class="hljs-comment"># Tokenize our examples with truncation and maybe padding, but keep the overflows using a stride. This results</span><br>    <span class="hljs-comment"># in one example possible giving several features when a context is long, each of those features having a</span><br>    <span class="hljs-comment"># context that overlaps a bit the context of the previous feature.</span><br>    tokenized_examples = tokenizer(<br>        examples[<span class="hljs-string">&quot;question&quot;</span> <span class="hljs-keyword">if</span> pad_on_right <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;context&quot;</span>],<br>        examples[<span class="hljs-string">&quot;context&quot;</span> <span class="hljs-keyword">if</span> pad_on_right <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;question&quot;</span>],<br>        truncation=<span class="hljs-string">&quot;only_second&quot;</span> <span class="hljs-keyword">if</span> pad_on_right <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;only_first&quot;</span>,<br>        max_length=max_length,<br>        stride=doc_stride,<br>        return_overflowing_tokens=<span class="hljs-literal">True</span>,<br>        return_offsets_mapping=<span class="hljs-literal">True</span>,<br>        padding=<span class="hljs-string">&quot;max_length&quot;</span>,<br>    )<br><br>    <span class="hljs-comment"># Since one example might give us several features if it has a long context, we need a map from a feature to</span><br>    <span class="hljs-comment"># its corresponding example. This key gives us just that.</span><br>    sample_mapping = tokenized_examples.pop(<span class="hljs-string">&quot;overflow_to_sample_mapping&quot;</span>)<br><br>    <span class="hljs-comment"># We keep the example_id that gave us this feature and we will store the offset mappings.</span><br>    tokenized_examples[<span class="hljs-string">&quot;example_id&quot;</span>] = []<br><br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(tokenized_examples[<span class="hljs-string">&quot;input_ids&quot;</span>])):<br>        <span class="hljs-comment"># Grab the sequence corresponding to that example (to know what is the context and what is the question).</span><br>        sequence_ids = tokenized_examples.sequence_ids(i)<br>        context_index = <span class="hljs-number">1</span> <span class="hljs-keyword">if</span> pad_on_right <span class="hljs-keyword">else</span> <span class="hljs-number">0</span><br><br>        <span class="hljs-comment"># One example can give several spans, this is the index of the example containing this span of text.</span><br>        sample_index = sample_mapping[i]<br>        tokenized_examples[<span class="hljs-string">&quot;example_id&quot;</span>].append(examples[<span class="hljs-string">&quot;id&quot;</span>][sample_index])<br><br>        <span class="hljs-comment"># Set to None the offset_mapping that are not part of the context so it&#x27;s easy to determine if a token</span><br>        <span class="hljs-comment"># position is part of the context or not.</span><br>        tokenized_examples[<span class="hljs-string">&quot;offset_mapping&quot;</span>][i] = [<br>            (o <span class="hljs-keyword">if</span> sequence_ids[k] == context_index <span class="hljs-keyword">else</span> <span class="hljs-literal">None</span>)<br>            <span class="hljs-keyword">for</span> k, o <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(tokenized_examples[<span class="hljs-string">&quot;offset_mapping&quot;</span>][i])<br>        ]<br><br>    <span class="hljs-keyword">return</span> tokenized_examples<br></code></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python">validation_features = datasets[<span class="hljs-string">&quot;validation&quot;</span>].<span class="hljs-built_in">map</span>(<br>    prepare_validation_features,<br>    batched=<span class="hljs-literal">True</span>,<br>    remove_columns=datasets[<span class="hljs-string">&quot;validation&quot;</span>].column_names<br>)<br><br>HBox(children=(FloatProgress(value=<span class="hljs-number">0.0</span>, <span class="hljs-built_in">max</span>=<span class="hljs-number">11.0</span>), HTML(value=<span class="hljs-string">&#x27;&#x27;</span>)))<br></code></pre></td></tr></table></figure>
+<p>使用<code>Trainer.predict</code>方法获得所有预测结果</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-attr">raw_predictions</span> = trainer.predict(validation_features)<br></code></pre></td></tr></table></figure>
+<p>这个 <code>Trainer</code> <em>隐藏了</em>
+一些模型训练时候没有使用的属性(这里是
+<code>example_id</code>和<code>offset_mapping</code>，后处理的时候会用到),所以我们需要把这些设置回来:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">validation_features.set_format(<span class="hljs-built_in">type</span>=validation_features.<span class="hljs-built_in">format</span>[<span class="hljs-string">&quot;type&quot;</span>], columns=<span class="hljs-built_in">list</span>(validation_features.features.keys()))<br></code></pre></td></tr></table></figure>
+<p>当一个token位置对应着question部分时候，<code>prepare_validation_features</code>函数将offset
+mappings设定为<code>None</code>，所以我们根据offset
+mapping很容易可以鉴定token是否在context里面啦。我们同样也根绝扔掉了特别长的答案。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><code class="hljs python">max_answer_length = <span class="hljs-number">30</span><br><br>start_logits = output.start_logits[<span class="hljs-number">0</span>].cpu().numpy()<br>end_logits = output.end_logits[<span class="hljs-number">0</span>].cpu().numpy()<br>offset_mapping = validation_features[<span class="hljs-number">0</span>][<span class="hljs-string">&quot;offset_mapping&quot;</span>]<br><span class="hljs-comment"># The first feature comes from the first example. For the more general case, we will need to be match the example_id to</span><br><span class="hljs-comment"># an example index</span><br>context = datasets[<span class="hljs-string">&quot;validation&quot;</span>][<span class="hljs-number">0</span>][<span class="hljs-string">&quot;context&quot;</span>]<br><br><span class="hljs-comment"># Gather the indices the best start/end logits:</span><br>start_indexes = np.argsort(start_logits)[-<span class="hljs-number">1</span> : -n_best_size - <span class="hljs-number">1</span> : -<span class="hljs-number">1</span>].tolist()<br>end_indexes = np.argsort(end_logits)[-<span class="hljs-number">1</span> : -n_best_size - <span class="hljs-number">1</span> : -<span class="hljs-number">1</span>].tolist()<br>valid_answers = []<br><span class="hljs-keyword">for</span> start_index <span class="hljs-keyword">in</span> start_indexes:<br>    <span class="hljs-keyword">for</span> end_index <span class="hljs-keyword">in</span> end_indexes:<br>        <span class="hljs-comment"># Don&#x27;t consider out-of-scope answers, either because the indices are out of bounds or correspond</span><br>        <span class="hljs-comment"># to part of the input_ids that are not in the context.</span><br>        <span class="hljs-keyword">if</span> (<br>            start_index &gt;= <span class="hljs-built_in">len</span>(offset_mapping)<br>            <span class="hljs-keyword">or</span> end_index &gt;= <span class="hljs-built_in">len</span>(offset_mapping)<br>            <span class="hljs-keyword">or</span> offset_mapping[start_index] <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span><br>            <span class="hljs-keyword">or</span> offset_mapping[end_index] <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span><br>        ):<br>            <span class="hljs-keyword">continue</span><br>        <span class="hljs-comment"># Don&#x27;t consider answers with a length that is either &lt; 0 or &gt; max_answer_length.</span><br>        <span class="hljs-keyword">if</span> end_index &lt; start_index <span class="hljs-keyword">or</span> end_index - start_index + <span class="hljs-number">1</span> &gt; max_answer_length:<br>            <span class="hljs-keyword">continue</span><br>        <span class="hljs-keyword">if</span> start_index &lt;= end_index: <span class="hljs-comment"># We need to refine that test to check the answer is inside the context</span><br>            start_char = offset_mapping[start_index][<span class="hljs-number">0</span>]<br>            end_char = offset_mapping[end_index][<span class="hljs-number">1</span>]<br>            valid_answers.append(<br>                &#123;<br>                    <span class="hljs-string">&quot;score&quot;</span>: start_logits[start_index] + end_logits[end_index],<br>                    <span class="hljs-string">&quot;text&quot;</span>: context[start_char: end_char]<br>                &#125;<br>            )<br><br>valid_answers = <span class="hljs-built_in">sorted</span>(valid_answers, key=<span class="hljs-keyword">lambda</span> x: x[<span class="hljs-string">&quot;score&quot;</span>], reverse=<span class="hljs-literal">True</span>)[:n_best_size]<br>valid_answers<br></code></pre></td></tr></table></figure>
+<p>将预测答案和真实答案进行比较即可：</p>
+<figure class="highlight prolog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs prolog">datasets[<span class="hljs-string">&quot;validation&quot;</span>][<span class="hljs-number">0</span>][<span class="hljs-string">&quot;answers&quot;</span>]<br><br>&#123;<span class="hljs-string">&#x27;answer_start&#x27;</span>: [<span class="hljs-number">177</span>, <span class="hljs-number">177</span>, <span class="hljs-number">177</span>],<br> <span class="hljs-string">&#x27;text&#x27;</span>: [<span class="hljs-string">&#x27;Denver Broncos&#x27;</span>, <span class="hljs-string">&#x27;Denver Broncos&#x27;</span>, <span class="hljs-string">&#x27;Denver Broncos&#x27;</span>]&#125;<br></code></pre></td></tr></table></figure>
+<p>由于第1个feature一定是来自于第1个example，所以相对容易。对于其他的fearures来说，我们需要一个features和examples的一个映射map。同样，由于一个example可能被切片成多个features，所以我们也需要将所有features里的答案全部联系起来。以下的代码就将exmaple的下标和features的下标进行map映射。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> collections<br><br>examples = datasets[<span class="hljs-string">&quot;validation&quot;</span>]<br>features = validation_features<br><br>example_id_to_index = &#123;k: i <span class="hljs-keyword">for</span> i, k <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(examples[<span class="hljs-string">&quot;id&quot;</span>])&#125;<br>features_per_example = collections.defaultdict(<span class="hljs-built_in">list</span>)<br><span class="hljs-keyword">for</span> i, feature <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(features):<br>    features_per_example[example_id_to_index[feature[<span class="hljs-string">&quot;example_id&quot;</span>]]].append(i)<br></code></pre></td></tr></table></figure>
+<p>最后一点事情是如何解决无答案的情况（squad_v2=True的时候）。以上的代码都只考虑了context里面的asnwers，所以我们同样需要将无答案的预测得分进行搜集（无答案的预测对应的CLSt
+oken的start和end）。如果一个example样本又多个features，那么我们还需要在多个features里预测是不是都无答案。所以无答案的最终得分是所有features的无答案得分最小的那个。</p>
+<p>只要无答案的最终得分高于其他所有答案的得分，那么该问题就是无答案。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> tqdm.auto <span class="hljs-keyword">import</span> tqdm<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">postprocess_qa_predictions</span>(<span class="hljs-params">examples, features, raw_predictions, n_best_size = <span class="hljs-number">20</span>, max_answer_length = <span class="hljs-number">30</span></span>):<br>    all_start_logits, all_end_logits = raw_predictions<br>    <span class="hljs-comment"># Build a map example to its corresponding features.</span><br>    example_id_to_index = &#123;k: i <span class="hljs-keyword">for</span> i, k <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(examples[<span class="hljs-string">&quot;id&quot;</span>])&#125;<br>    features_per_example = collections.defaultdict(<span class="hljs-built_in">list</span>)<br>    <span class="hljs-keyword">for</span> i, feature <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(features):<br>        features_per_example[example_id_to_index[feature[<span class="hljs-string">&quot;example_id&quot;</span>]]].append(i)<br><br>    <span class="hljs-comment"># The dictionaries we have to fill.</span><br>    predictions = collections.OrderedDict()<br><br>    <span class="hljs-comment"># Logging.</span><br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Post-processing <span class="hljs-subst">&#123;<span class="hljs-built_in">len</span>(examples)&#125;</span> example predictions split into <span class="hljs-subst">&#123;<span class="hljs-built_in">len</span>(features)&#125;</span> features.&quot;</span>)<br><br>    <span class="hljs-comment"># Let&#x27;s loop over all the examples!</span><br>    <span class="hljs-keyword">for</span> example_index, example <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(tqdm(examples)):<br>        <span class="hljs-comment"># Those are the indices of the features associated to the current example.</span><br>        feature_indices = features_per_example[example_index]<br><br>        min_null_score = <span class="hljs-literal">None</span> <span class="hljs-comment"># Only used if squad_v2 is True.</span><br>        valid_answers = []<br>        <br>        context = example[<span class="hljs-string">&quot;context&quot;</span>]<br>        <span class="hljs-comment"># Looping through all the features associated to the current example.</span><br>        <span class="hljs-keyword">for</span> feature_index <span class="hljs-keyword">in</span> feature_indices:<br>            <span class="hljs-comment"># We grab the predictions of the model for this feature.</span><br>            start_logits = all_start_logits[feature_index]<br>            end_logits = all_end_logits[feature_index]<br>            <span class="hljs-comment"># This is what will allow us to map some the positions in our logits to span of texts in the original</span><br>            <span class="hljs-comment"># context.</span><br>            offset_mapping = features[feature_index][<span class="hljs-string">&quot;offset_mapping&quot;</span>]<br><br>            <span class="hljs-comment"># Update minimum null prediction.</span><br>            cls_index = features[feature_index][<span class="hljs-string">&quot;input_ids&quot;</span>].index(tokenizer.cls_token_id)<br>            feature_null_score = start_logits[cls_index] + end_logits[cls_index]<br>            <span class="hljs-keyword">if</span> min_null_score <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span> <span class="hljs-keyword">or</span> min_null_score &lt; feature_null_score:<br>                min_null_score = feature_null_score<br><br>            <span class="hljs-comment"># Go through all possibilities for the `n_best_size` greater start and end logits.</span><br>            start_indexes = np.argsort(start_logits)[-<span class="hljs-number">1</span> : -n_best_size - <span class="hljs-number">1</span> : -<span class="hljs-number">1</span>].tolist()<br>            end_indexes = np.argsort(end_logits)[-<span class="hljs-number">1</span> : -n_best_size - <span class="hljs-number">1</span> : -<span class="hljs-number">1</span>].tolist()<br>            <span class="hljs-keyword">for</span> start_index <span class="hljs-keyword">in</span> start_indexes:<br>                <span class="hljs-keyword">for</span> end_index <span class="hljs-keyword">in</span> end_indexes:<br>                    <span class="hljs-comment"># Don&#x27;t consider out-of-scope answers, either because the indices are out of bounds or correspond</span><br>                    <span class="hljs-comment"># to part of the input_ids that are not in the context.</span><br>                    <span class="hljs-keyword">if</span> (<br>                        start_index &gt;= <span class="hljs-built_in">len</span>(offset_mapping)<br>                        <span class="hljs-keyword">or</span> end_index &gt;= <span class="hljs-built_in">len</span>(offset_mapping)<br>                        <span class="hljs-keyword">or</span> offset_mapping[start_index] <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span><br>                        <span class="hljs-keyword">or</span> offset_mapping[end_index] <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span><br>                    ):<br>                        <span class="hljs-keyword">continue</span><br>                    <span class="hljs-comment"># Don&#x27;t consider answers with a length that is either &lt; 0 or &gt; max_answer_length.</span><br>                    <span class="hljs-keyword">if</span> end_index &lt; start_index <span class="hljs-keyword">or</span> end_index - start_index + <span class="hljs-number">1</span> &gt; max_answer_length:<br>                        <span class="hljs-keyword">continue</span><br><br>                    start_char = offset_mapping[start_index][<span class="hljs-number">0</span>]<br>                    end_char = offset_mapping[end_index][<span class="hljs-number">1</span>]<br>                    valid_answers.append(<br>                        &#123;<br>                            <span class="hljs-string">&quot;score&quot;</span>: start_logits[start_index] + end_logits[end_index],<br>                            <span class="hljs-string">&quot;text&quot;</span>: context[start_char: end_char]<br>                        &#125;<br>                    )<br>        <br>        <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(valid_answers) &gt; <span class="hljs-number">0</span>:<br>            best_answer = <span class="hljs-built_in">sorted</span>(valid_answers, key=<span class="hljs-keyword">lambda</span> x: x[<span class="hljs-string">&quot;score&quot;</span>], reverse=<span class="hljs-literal">True</span>)[<span class="hljs-number">0</span>]<br>        <span class="hljs-keyword">else</span>:<br>            <span class="hljs-comment"># In the very rare edge case we have not a single non-null prediction, we create a fake prediction to avoid</span><br>            <span class="hljs-comment"># failure.</span><br>            best_answer = &#123;<span class="hljs-string">&quot;text&quot;</span>: <span class="hljs-string">&quot;&quot;</span>, <span class="hljs-string">&quot;score&quot;</span>: <span class="hljs-number">0.0</span>&#125;<br>        <br>        <span class="hljs-comment"># Let&#x27;s pick our final answer: the best one or the null answer (only for squad_v2)</span><br>        <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> squad_v2:<br>            predictions[example[<span class="hljs-string">&quot;id&quot;</span>]] = best_answer[<span class="hljs-string">&quot;text&quot;</span>]<br>        <span class="hljs-keyword">else</span>:<br>            answer = best_answer[<span class="hljs-string">&quot;text&quot;</span>] <span class="hljs-keyword">if</span> best_answer[<span class="hljs-string">&quot;score&quot;</span>] &gt; min_null_score <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;&quot;</span><br>            predictions[example[<span class="hljs-string">&quot;id&quot;</span>]] = answer<br><br>    <span class="hljs-keyword">return</span> predictions<br></code></pre></td></tr></table></figure>
+<p>将后处理函数应用到原始预测上</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">final_predictions = postprocess_qa_predictions(datasets[<span class="hljs-string">&quot;validation&quot;</span>], validation_features, raw_predictions.predictions)<br></code></pre></td></tr></table></figure>
+<p>加载评价指标</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs reasonml">metric = load<span class="hljs-constructor">_metric(<span class="hljs-string">&quot;squad_v2&quot;</span> <span class="hljs-params">if</span> <span class="hljs-params">squad_v2</span> <span class="hljs-params">else</span> <span class="hljs-string">&quot;squad&quot;</span>)</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">if</span> squad_v2:<br>    formatted_predictions = [&#123;<span class="hljs-string">&quot;id&quot;</span>: k, <span class="hljs-string">&quot;prediction_text&quot;</span>: v, <span class="hljs-string">&quot;no_answer_probability&quot;</span>: <span class="hljs-number">0.0</span>&#125; <span class="hljs-keyword">for</span> k, v <span class="hljs-keyword">in</span> predictions.items()]<br><span class="hljs-keyword">else</span>:<br>    formatted_predictions = [&#123;<span class="hljs-string">&quot;id&quot;</span>: k, <span class="hljs-string">&quot;prediction_text&quot;</span>: v&#125; <span class="hljs-keyword">for</span> k, v <span class="hljs-keyword">in</span> final_predictions.items()]<br>references = [&#123;<span class="hljs-string">&quot;id&quot;</span>: ex[<span class="hljs-string">&quot;id&quot;</span>], <span class="hljs-string">&quot;answers&quot;</span>: ex[<span class="hljs-string">&quot;answers&quot;</span>]&#125; <span class="hljs-keyword">for</span> ex <span class="hljs-keyword">in</span> datasets[<span class="hljs-string">&quot;validation&quot;</span>]]<br>metric.compute(predictions=formatted_predictions, references=references)<br></code></pre></td></tr></table></figure>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" class="category-chain-item">深度学习</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%87%AA%E7%84%B6%E8%AF%AD%E8%A8%80%E5%A4%84%E7%90%86/" class="category-chain-item">自然语言处理</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Datawhale%E7%BB%84%E9%98%9F%E5%AD%A6%E4%B9%A0/">#Datawhale组队学习</a>
+      
+        <a href="/tags/NLP%E5%85%A5%E9%97%A8/">#NLP入门</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>基于Transformers的自然语言处理(NLP)入门(五)</div>
+      <div>https://www.spacezxy.top/2021/09/28/nlp-transformer/nlp-transformer-5/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Xavier ZXY</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年9月28日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/09/28/nlp-transformer/nlp-transformer-6/" title="基于Transformers的自然语言处理(NLP)入门(六)">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">基于Transformers的自然语言处理(NLP)入门(六)</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/09/25/nlp-transformer/nlp-transformer-4/" title="基于Transformers的自然语言处理(NLP)入门(四)">
+                        <span class="hidden-mobile">基于Transformers的自然语言处理(NLP)入门(四)</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a>
+    </div>
+  
+  
+  
+    <!-- 备案信息 ICP for China -->
+    <div class="beian">
+  <span>
+    <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+      湘ICP备  2021018889
+    </a>
+  </span>
+  
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,4 @@
+# welcome to : www.spacezxy.top
+User-agent: *
+Allow: /
+Sitemap: https://www.spacezxy.top/sitemap.xml

@@ -1,0 +1,896 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/logo16.svg">
+  <link rel="icon" href="/img/logo32.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Xavier ZXY">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="本文为参加Datawhale组队学习时所写，如若需了解细致内容，请去到Datawhale官方开源课程基于transformers的自然语言处理(NLP)入门 (datawhalechina.github.io) 使用Transoformer解决NLP问题 文本分类 GLUE榜单包含了9个句子级别的分类任务，分别是：  CoLA (Corpus of Linguistic Accept">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于Transformers的自然语言处理(NLP)入门(四)">
+<meta property="og:url" content="https://www.spacezxy.top/2021/09/25/nlp-transformer/nlp-transformer-4/index.html">
+<meta property="og:site_name" content="Xavier ZXY">
+<meta property="og:description" content="本文为参加Datawhale组队学习时所写，如若需了解细致内容，请去到Datawhale官方开源课程基于transformers的自然语言处理(NLP)入门 (datawhalechina.github.io) 使用Transoformer解决NLP问题 文本分类 GLUE榜单包含了9个句子级别的分类任务，分别是：  CoLA (Corpus of Linguistic Accept">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/25/nlp-transformer/nlp-transformer-4/image-20210925113158435.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/25/nlp-transformer/nlp-transformer-4/image-20210925160442953.png">
+<meta property="article:published_time" content="2021-09-25T01:55:35.000Z">
+<meta property="article:modified_time" content="2021-09-25T08:21:31.260Z">
+<meta property="article:author" content="Xavier ZXY">
+<meta property="article:tag" content="Datawhale组队学习">
+<meta property="article:tag" content="NLP入门">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.spacezxy.top/2021/09/25/nlp-transformer/nlp-transformer-4/image-20210925113158435.png">
+  
+  
+  
+  <title>基于Transformers的自然语言处理(NLP)入门(四) - Xavier ZXY</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.spacezxy.top","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>SapceZXY</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="基于Transformers的自然语言处理(NLP)入门(四)"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-09-25 09:55" pubdate>
+          2021年9月25日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          20k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          163 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">基于Transformers的自然语言处理(NLP)入门(四)</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>本文为参加Datawhale组队学习时所写，如若需了解细致内容，请去到Datawhale官方开源课程<a
+target="_blank" rel="noopener" href="https://datawhalechina.github.io/learn-nlp-with-transformers/#/">基于transformers的自然语言处理(NLP)入门
+(datawhalechina.github.io)</a></p>
+<h1 id="使用transoformer解决nlp问题">使用Transoformer解决NLP问题</h1>
+<h2 id="文本分类">文本分类</h2>
+<p>GLUE榜单包含了9个句子级别的分类任务，分别是：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://nyu-mll.github.io/CoLA/">CoLA</a> (Corpus of
+Linguistic Acceptability) 鉴别一个句子是否语法正确.</li>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1704.05426">MNLI</a> (Multi-Genre
+Natural Language Inference)
+给定一个假设，判断另一个句子与该假设的关系：entails, contradicts 或者
+unrelated。</li>
+<li><a
+target="_blank" rel="noopener" href="https://www.microsoft.com/en-us/download/details.aspx?id=52398">MRPC</a>
+(Microsoft Research Paraphrase Corpus)
+判断两个句子是否互为paraphrases.</li>
+<li><a target="_blank" rel="noopener" href="https://rajpurkar.github.io/SQuAD-explorer/">QNLI</a>
+(Question-answering Natural Language Inference)
+判断第2句是否包含第1句问题的答案。</li>
+<li><a
+target="_blank" rel="noopener" href="https://data.quora.com/First-Quora-Dataset-Release-Question-Pairs">QQP</a>
+(Quora Question Pairs2) 判断两个问句是否语义相同。</li>
+<li><a
+target="_blank" rel="noopener" href="https://aclweb.org/aclwiki/Recognizing_Textual_Entailment">RTE</a>
+(Recognizing Textual
+Entailment)判断一个句子是否与假设成entail关系。</li>
+<li><a target="_blank" rel="noopener" href="https://nlp.stanford.edu/sentiment/index.html">SST-2</a>
+(Stanford Sentiment Treebank) 判断一个句子的情感正负向.</li>
+<li><a
+target="_blank" rel="noopener" href="http://ixa2.si.ehu.es/stswiki/index.php/STSbenchmark">STS-B</a>
+(Semantic Textual Similarity Benchmark)
+判断两个句子的相似性（分数为1-5分）。</li>
+<li><a
+target="_blank" rel="noopener" href="https://cs.nyu.edu/faculty/davise/papers/WinogradSchemas/WS.html">WNLI</a>
+(Winograd Natural Language Inference) Determine if a sentence with an
+anonymous pronoun and a sentence with this pronoun replaced are entailed
+or not.</li>
+</ul>
+<span id="more"></span>
+<p>对于以上任务，我们将展示如何使用简单的Dataset库加载数据集，同时使用transformer中的<code>Trainer</code>接口对预训练模型进行微调。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment">#  glue数据集的人物列表</span><br>GLUE_TASKS = [<span class="hljs-string">&quot;cola&quot;</span>, <span class="hljs-string">&quot;mnli&quot;</span>, <span class="hljs-string">&quot;mnli-mm&quot;</span>, <span class="hljs-string">&quot;mrpc&quot;</span>, <span class="hljs-string">&quot;qnli&quot;</span>, <span class="hljs-string">&quot;qqp&quot;</span>, <span class="hljs-string">&quot;rte&quot;</span>, <span class="hljs-string">&quot;sst2&quot;</span>, <span class="hljs-string">&quot;stsb&quot;</span>, <span class="hljs-string">&quot;wnli&quot;</span>]<br></code></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python">task = <span class="hljs-string">&quot;cola&quot;</span><br>model_checkpoint = <span class="hljs-string">&quot;distilbert-base-uncased&quot;</span>  <span class="hljs-comment"># 模型权重检查点</span><br>batch_size = <span class="hljs-number">16</span><br></code></pre></td></tr></table></figure>
+<h3 id="加载数据">加载数据</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> datasets <span class="hljs-keyword">import</span> load_dataset, load_metric<br><span class="hljs-comment">#  除mnli-mm任务，其他任务都可以通过任务名直接加载</span><br>actual_task = <span class="hljs-string">&quot;mnli&quot;</span> <span class="hljs-keyword">if</span> task == <span class="hljs-string">&quot;mnli-mm&quot;</span> <span class="hljs-keyword">else</span> task<br>dataset = load_dataset(<span class="hljs-string">&quot;glue&quot;</span>, actual_task)  <span class="hljs-comment"># 加载数据集</span><br>metric = load_metric(<span class="hljs-string">&#x27;glue&#x27;</span>, actual_task)  <span class="hljs-comment"># 加载metric评估标准</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment">#  dataset结构</span><br>DatasetDict(&#123;<br>    train: Dataset(&#123;<br>        features: [<span class="hljs-string">&#x27;sentence&#x27;</span>, <span class="hljs-string">&#x27;label&#x27;</span>, <span class="hljs-string">&#x27;idx&#x27;</span>],<br>        num_rows: <span class="hljs-number">8551</span><br>    &#125;)<br>    validation: Dataset(&#123;<br>        features: [<span class="hljs-string">&#x27;sentence&#x27;</span>, <span class="hljs-string">&#x27;label&#x27;</span>, <span class="hljs-string">&#x27;idx&#x27;</span>],<br>        num_rows: <span class="hljs-number">1043</span><br>    &#125;)<br>    test: Dataset(&#123;<br>        features: [<span class="hljs-string">&#x27;sentence&#x27;</span>, <span class="hljs-string">&#x27;label&#x27;</span>, <span class="hljs-string">&#x27;idx&#x27;</span>],<br>        num_rows: <span class="hljs-number">1063</span><br>    &#125;)<br>&#125;)<br></code></pre></td></tr></table></figure>
+<p>随机选择数据集中的几个例子</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> datasets<br><span class="hljs-keyword">import</span> random<br><span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd<br><span class="hljs-keyword">from</span> IPython.display <span class="hljs-keyword">import</span> display, HTML<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">show_random_elements</span>(<span class="hljs-params">dataset, num_examples=<span class="hljs-number">10</span></span>):<br>    <span class="hljs-keyword">assert</span> num_examples &lt;= <span class="hljs-built_in">len</span>(dataset), <span class="hljs-string">&quot;Can&#x27;t pick more elements than there are in the dataset.&quot;</span><br>    picks = []<br>    <span class="hljs-keyword">for</span> _ <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(num_examples):<br>        pick = random.randint(<span class="hljs-number">0</span>, <span class="hljs-built_in">len</span>(dataset)-<span class="hljs-number">1</span>)<br>        <span class="hljs-keyword">while</span> pick <span class="hljs-keyword">in</span> picks:<br>            pick = random.randint(<span class="hljs-number">0</span>, <span class="hljs-built_in">len</span>(dataset)-<span class="hljs-number">1</span>)<br>        picks.append(pick)<br>    <br>    df = pd.DataFrame(dataset[picks])<br>    <span class="hljs-keyword">for</span> column, typ <span class="hljs-keyword">in</span> dataset.features.items():<br>        <span class="hljs-keyword">if</span> <span class="hljs-built_in">isinstance</span>(typ, datasets.ClassLabel):<br>            df[column] = df[column].transform(<span class="hljs-keyword">lambda</span> i: typ.names[i])<br>    display(HTML(df.to_html()))<br><span class="hljs-comment"># 查看数据集具体信息</span><br>show_random_elements(dataset[<span class="hljs-string">&quot;train&quot;</span>])<br></code></pre></td></tr></table></figure>
+<img src="/2021/09/25/nlp-transformer/nlp-transformer-4/image-20210925113158435.png" srcset="/img/loading.gif" lazyload class="" title="dataset">
+<p>评估metric时datasets.Metric的一个实例</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><code class="hljs python">Metric(name: <span class="hljs-string">&quot;glue&quot;</span>, features: &#123;<span class="hljs-string">&#x27;predictions&#x27;</span>: Value(dtype=<span class="hljs-string">&#x27;int64&#x27;</span>, <span class="hljs-built_in">id</span>=<span class="hljs-literal">None</span>), <span class="hljs-string">&#x27;references&#x27;</span>: Value(dtype=<span class="hljs-string">&#x27;int64&#x27;</span>, <span class="hljs-built_in">id</span>=<span class="hljs-literal">None</span>)&#125;, usage: <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">Compute GLUE evaluation metric associated to each GLUE dataset.</span><br><span class="hljs-string">Args:</span><br><span class="hljs-string">    predictions: list of predictions to score.</span><br><span class="hljs-string">        Each translation should be tokenized into a list of tokens.</span><br><span class="hljs-string">    references: list of lists of references for each translation.</span><br><span class="hljs-string">        Each reference should be tokenized into a list of tokens.</span><br><span class="hljs-string">Returns: depending on the GLUE subset, one or several of:</span><br><span class="hljs-string">    &quot;accuracy&quot;: Accuracy</span><br><span class="hljs-string">    &quot;f1&quot;: F1 score</span><br><span class="hljs-string">    &quot;pearson&quot;: Pearson Correlation</span><br><span class="hljs-string">    &quot;spearmanr&quot;: Spearman Correlation</span><br><span class="hljs-string">    &quot;matthews_correlation&quot;: Matthew Correlation</span><br><span class="hljs-string">Examples:</span><br><span class="hljs-string"></span><br><span class="hljs-string">    &gt;&gt;&gt; glue_metric = datasets.load_metric(&#x27;glue&#x27;, &#x27;sst2&#x27;)  # &#x27;sst2&#x27; or any of [&quot;mnli&quot;, &quot;mnli_mismatched&quot;, &quot;mnli_matched&quot;, &quot;qnli&quot;, &quot;rte&quot;, &quot;wnli&quot;, &quot;hans&quot;]</span><br><span class="hljs-string">    &gt;&gt;&gt; references = [0, 1]</span><br><span class="hljs-string">    &gt;&gt;&gt; predictions = [0, 1]</span><br><span class="hljs-string">    &gt;&gt;&gt; results = glue_metric.compute(predictions=predictions, references=references)</span><br><span class="hljs-string">    &gt;&gt;&gt; print(results)</span><br><span class="hljs-string">    &#123;&#x27;accuracy&#x27;: 1.0&#125;</span><br><span class="hljs-string"></span><br><span class="hljs-string">    &gt;&gt;&gt; glue_metric = datasets.load_metric(&#x27;glue&#x27;, &#x27;mrpc&#x27;)  # &#x27;mrpc&#x27; or &#x27;qqp&#x27;</span><br><span class="hljs-string">    &gt;&gt;&gt; references = [0, 1]</span><br><span class="hljs-string">    &gt;&gt;&gt; predictions = [0, 1]</span><br><span class="hljs-string">    &gt;&gt;&gt; results = glue_metric.compute(predictions=predictions, references=references)</span><br><span class="hljs-string">    &gt;&gt;&gt; print(results)</span><br><span class="hljs-string">    &#123;&#x27;accuracy&#x27;: 1.0, &#x27;f1&#x27;: 1.0&#125;</span><br><span class="hljs-string"></span><br><span class="hljs-string">    &gt;&gt;&gt; glue_metric = datasets.load_metric(&#x27;glue&#x27;, &#x27;stsb&#x27;)</span><br><span class="hljs-string">    &gt;&gt;&gt; references = [0., 1., 2., 3., 4., 5.]</span><br><span class="hljs-string">    &gt;&gt;&gt; predictions = [0., 1., 2., 3., 4., 5.]</span><br><span class="hljs-string">    &gt;&gt;&gt; results = glue_metric.compute(predictions=predictions, references=references)</span><br><span class="hljs-string">    &gt;&gt;&gt; print(&#123;&quot;pearson&quot;: round(results[&quot;pearson&quot;], 2), &quot;spearmanr&quot;: round(results[&quot;spearmanr&quot;], 2)&#125;)</span><br><span class="hljs-string">    &#123;&#x27;pearson&#x27;: 1.0, &#x27;spearmanr&#x27;: 1.0&#125;</span><br><span class="hljs-string"></span><br><span class="hljs-string">    &gt;&gt;&gt; glue_metric = datasets.load_metric(&#x27;glue&#x27;, &#x27;cola&#x27;)</span><br><span class="hljs-string">    &gt;&gt;&gt; references = [0, 1]</span><br><span class="hljs-string">    &gt;&gt;&gt; predictions = [0, 1]</span><br><span class="hljs-string">    &gt;&gt;&gt; results = glue_metric.compute(predictions=predictions, references=references)</span><br><span class="hljs-string">    &gt;&gt;&gt; print(results)</span><br><span class="hljs-string">    &#123;&#x27;matthews_correlation&#x27;: 1.0&#125;</span><br><span class="hljs-string">&quot;&quot;&quot;</span>, stored examples: <span class="hljs-number">0</span>)<br></code></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment">#  直接调用metric的compute方法，传入labels和predictions即可得到metric的值</span><br><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np<br><br>fake_preds = np.random.randint(<span class="hljs-number">0</span>, <span class="hljs-number">2</span>, size=(<span class="hljs-number">64</span>,))<br>fake_labels = np.random.randint(<span class="hljs-number">0</span>, <span class="hljs-number">2</span>, size=(<span class="hljs-number">64</span>,))<br>metric.compute(predictions=fake_preds, references=fake_labels)<br></code></pre></td></tr></table></figure>
+<p>每一个文本分类任务所对应的metic有所不同，具体如下:</p>
+<ul>
+<li>for CoLA: <a
+target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Matthews_correlation_coefficient">Matthews
+Correlation Coefficient</a></li>
+<li>for MNLI (matched or mismatched): Accuracy</li>
+<li>for MRPC: Accuracy and <a
+target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/F1_score">F1 score</a></li>
+<li>for QNLI: Accuracy</li>
+<li>for QQP: Accuracy and <a
+target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/F1_score">F1 score</a></li>
+<li>for RTE: Accuracy</li>
+<li>for SST-2: Accuracy</li>
+<li>for STS-B: <a
+target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Pearson_correlation_coefficient">Pearson
+Correlation Coefficient</a> and <a
+target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Spearman&#39;s_rank_correlation_coefficient">Spearman's_Rank_Correlation_Coefficient</a></li>
+<li>for WNLI: Accuracy</li>
+</ul>
+<h3 id="数据预处理">数据预处理</h3>
+<p>预处理的工具叫<code>Tokenizer</code>。<code>Tokenizer</code>首先对输入进行tokenize，然后将tokens转化为预模型中需要对应的token
+ID，再转化为模型需要的输入格式。</p>
+<p>为了达到数据预处理的目的，我们使用<code>AutoTokenizer.from_pretrained</code>方法实例化我们的tokenizer，这样可以确保：</p>
+<ul>
+<li>我们得到一个与预训练模型一一对应的tokenizer。</li>
+<li>使用指定的模型checkpoint对应的tokenizer的时候，我们也下载了模型需要的词表库vocabulary，准确来说是tokens
+vocabulary。</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> transformers <span class="hljs-keyword">import</span> AutoTokenizer<br>    <br>tokenizer = AutoTokenizer.from_pretrained(model_checkpoint, use_fast=<span class="hljs-literal">True</span>)<br><span class="hljs-comment">#  use_fast=True要求tokenizer必须是transformers.PreTrainedTokenizerFast类型，因为我们在预处理的时候需要用到fast tokenizer的一些特殊特性（比如多线程快速tokenizer）。如果对应的模型没有fast tokenizer，去掉这个选项即可</span><br></code></pre></td></tr></table></figure>
+<p>tokenizer既可以对单个文本进行预处理，也可以对一对文本进行预处理，tokenizer预处理后得到的数据满足预训练模型输入格式</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">tokenizer(<span class="hljs-string">&quot;Hello, this one sentence!&quot;</span>, <span class="hljs-string">&quot;And this sentence goes with it.&quot;</span>)<br></code></pre></td></tr></table></figure>
+<p>不同数据和对应的数据格式</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs python">task_to_keys = &#123;<br>    <span class="hljs-string">&quot;cola&quot;</span>: (<span class="hljs-string">&quot;sentence&quot;</span>, <span class="hljs-literal">None</span>),<br>    <span class="hljs-string">&quot;mnli&quot;</span>: (<span class="hljs-string">&quot;premise&quot;</span>, <span class="hljs-string">&quot;hypothesis&quot;</span>),<br>    <span class="hljs-string">&quot;mnli-mm&quot;</span>: (<span class="hljs-string">&quot;premise&quot;</span>, <span class="hljs-string">&quot;hypothesis&quot;</span>),<br>    <span class="hljs-string">&quot;mrpc&quot;</span>: (<span class="hljs-string">&quot;sentence1&quot;</span>, <span class="hljs-string">&quot;sentence2&quot;</span>),<br>    <span class="hljs-string">&quot;qnli&quot;</span>: (<span class="hljs-string">&quot;question&quot;</span>, <span class="hljs-string">&quot;sentence&quot;</span>),<br>    <span class="hljs-string">&quot;qqp&quot;</span>: (<span class="hljs-string">&quot;question1&quot;</span>, <span class="hljs-string">&quot;question2&quot;</span>),<br>    <span class="hljs-string">&quot;rte&quot;</span>: (<span class="hljs-string">&quot;sentence1&quot;</span>, <span class="hljs-string">&quot;sentence2&quot;</span>),<br>    <span class="hljs-string">&quot;sst2&quot;</span>: (<span class="hljs-string">&quot;sentence&quot;</span>, <span class="hljs-literal">None</span>),<br>    <span class="hljs-string">&quot;stsb&quot;</span>: (<span class="hljs-string">&quot;sentence1&quot;</span>, <span class="hljs-string">&quot;sentence2&quot;</span>),<br>    <span class="hljs-string">&quot;wnli&quot;</span>: (<span class="hljs-string">&quot;sentence1&quot;</span>, <span class="hljs-string">&quot;sentence2&quot;</span>),<br>&#125;<br></code></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment">#  对数据格式进行检查</span><br>sentence1_key, sentence2_key = task_to_keys[task]<br><span class="hljs-keyword">if</span> sentence2_key <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span>:<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Sentence: <span class="hljs-subst">&#123;dataset[<span class="hljs-string">&#x27;train&#x27;</span>][<span class="hljs-number">0</span>][sentence1_key]&#125;</span>&quot;</span>)<br><span class="hljs-keyword">else</span>:<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Sentence 1: <span class="hljs-subst">&#123;dataset[<span class="hljs-string">&#x27;train&#x27;</span>][<span class="hljs-number">0</span>][sentence1_key]&#125;</span>&quot;</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Sentence 2: <span class="hljs-subst">&#123;dataset[<span class="hljs-string">&#x27;train&#x27;</span>][<span class="hljs-number">0</span>][sentence2_key]&#125;</span>&quot;</span>)<br></code></pre></td></tr></table></figure>
+<p><strong>预处理函数</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">preprocess_function</span>(<span class="hljs-params">examples</span>):<br>    <span class="hljs-keyword">if</span> sentence2_key <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span>:<br>        <span class="hljs-keyword">return</span> tokenizer(examples[sentence1_key], truncation=<span class="hljs-literal">True</span>)<br>    <span class="hljs-keyword">return</span> tokenizer(examples[sentence1_key], examples[sentence2_key], truncation=<span class="hljs-literal">True</span>)<br></code></pre></td></tr></table></figure>
+<p>接下来对数据集datasets里面的所有样本进行预处理，处理的方式是使用map函数，将预处理函数prepare_train_features应用到（map)所有样本上。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">encoded_dataset = dataset.<span class="hljs-built_in">map</span>(preprocess_function, batched=<span class="hljs-literal">True</span>)<br></code></pre></td></tr></table></figure>
+<p>返回的结果会自动被缓存，避免下次处理的时候重新计算（但是也要注意，如果输入有改动，可能会被缓存影响！）。datasets库函数会对输入的参数进行检测，判断是否有变化，如果没有变化就使用缓存数据，如果有变化就重新处理。但如果输入参数不变，想改变输入的时候，最好清理调这个缓存。清理的方式是使用<code>load_from_cache_file=False</code>参数。另外，上面使用到的<code>batched=True</code>这个参数是tokenizer的特点，因为这会使用多线程同时并行对输入进行处理。</p>
+<h3 id="微调预训练模型">微调预训练模型</h3>
+<p>既然我们是做seq2seq任务，那么我们需要一个能解决这个任务的模型类。我们使用<code>AutoModelForSequenceClassification</code>
+这个类。和tokenizer相似，<code>from_pretrained</code>方法同样可以帮助我们下载并加载模型，同时也会对模型进行缓存，就不会重复下载模型啦。</p>
+<p>STS-B是一个回归问题，MNLI是一个3分类问题</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment">#  对sts，mnli问题进行处理</span><br><span class="hljs-keyword">from</span> transformers <span class="hljs-keyword">import</span> AutoModelForSequenceClassification, TrainingArguments, Trainer<br><br>num_labels = <span class="hljs-number">3</span> <span class="hljs-keyword">if</span> task.startswith(<span class="hljs-string">&quot;mnli&quot;</span>) <span class="hljs-keyword">else</span> <span class="hljs-number">1</span> <span class="hljs-keyword">if</span> task==<span class="hljs-string">&quot;stsb&quot;</span> <span class="hljs-keyword">else</span> <span class="hljs-number">2</span><br>model = AutoModelForSequenceClassification.from_pretrained(model_checkpoint, num_labels=num_labels)<br></code></pre></td></tr></table></figure>
+<p>为了能够得到一个<code>Trainer</code>训练工具，我们还需要3个要素，其中最重要的是训练的设定/参数
+<a
+target="_blank" rel="noopener" href="https://huggingface.co/transformers/main_classes/trainer.html#transformers.TrainingArguments"><code>TrainingArguments</code></a>。这个训练设定包含了能够定义训练过程的所有属性。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs python">metric_name = <span class="hljs-string">&quot;pearson&quot;</span> <span class="hljs-keyword">if</span> task == <span class="hljs-string">&quot;stsb&quot;</span> <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;matthews_correlation&quot;</span> <span class="hljs-keyword">if</span> task == <span class="hljs-string">&quot;cola&quot;</span> <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;accuracy&quot;</span><br><br>args = TrainingArguments(<br>    <span class="hljs-string">&quot;test-glue&quot;</span>,<br>    evaluation_strategy = <span class="hljs-string">&quot;epoch&quot;</span>,  <span class="hljs-comment"># 每个epcoh会做一次验证评估</span><br>    save_strategy = <span class="hljs-string">&quot;epoch&quot;</span>,<br>    learning_rate=<span class="hljs-number">2e-5</span>,<br>    per_device_train_batch_size=batch_size,<br>    per_device_eval_batch_size=batch_size,<br>    num_train_epochs=<span class="hljs-number">5</span>,<br>    weight_decay=<span class="hljs-number">0.01</span>,<br>    load_best_model_at_end=<span class="hljs-literal">True</span>,<br>    metric_for_best_model=metric_name,<br>)<br></code></pre></td></tr></table></figure>
+<p>由于不同的任务需要不同的评测指标，我们定一个函数来根据任务名字得到评价方法</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">compute_metrics</span>(<span class="hljs-params">eval_pred</span>):<br>    predictions, labels = eval_pred<br>    <span class="hljs-keyword">if</span> task != <span class="hljs-string">&quot;stsb&quot;</span>:<br>        predictions = np.argmax(predictions, axis=<span class="hljs-number">1</span>)<br>    <span class="hljs-keyword">else</span>:<br>        predictions = predictions[:, <span class="hljs-number">0</span>]<br>    <span class="hljs-keyword">return</span> metric.compute(predictions=predictions, references=labels)<br></code></pre></td></tr></table></figure>
+<p>全部传给 <code>Trainer</code></p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs routeros">validation_key = <span class="hljs-string">&quot;validation_mismatched&quot;</span> <span class="hljs-keyword">if</span> task == <span class="hljs-string">&quot;mnli-mm&quot;</span> <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;validation_matched&quot;</span> <span class="hljs-keyword">if</span> task == <span class="hljs-string">&quot;mnli&quot;</span> <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;validation&quot;</span><br>trainer = Trainer(<br>    model,<br>    args,<br>    <span class="hljs-attribute">train_dataset</span>=encoded_dataset[<span class="hljs-string">&quot;train&quot;</span>],<br>    <span class="hljs-attribute">eval_dataset</span>=encoded_dataset[validation_key],<br>    <span class="hljs-attribute">tokenizer</span>=tokenizer,<br>    <span class="hljs-attribute">compute_metrics</span>=compute_metrics<br>)<br></code></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment">#  开始训练</span><br>trainer.train()<br></code></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment">#  训练完成后进行评估</span><br>trainer.evaluate()<br></code></pre></td></tr></table></figure>
+<h3 id="超参数搜索">超参数搜索</h3>
+<p><code>Trainer</code>同样支持超参搜索，使用<a
+target="_blank" rel="noopener" href="https://optuna.org/">optuna</a> or <a
+target="_blank" rel="noopener" href="https://docs.ray.io/en/latest/tune/">Ray Tune</a>代码库。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash"> 安装相关依赖</span><br>! pip install optuna<br>! pip install ray[tune]<br></code></pre></td></tr></table></figure>
+<p>超参搜索时，<code>Trainer</code>将会返回多个训练好的模型，所以需要传入一个定义好的模型从而让<code>Trainer</code>可以不断重新初始化该传入的模型</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">model_init</span>():<br>    <span class="hljs-keyword">return</span> AutoModelForSequenceClassification.from_pretrained(model_checkpoint, num_labels=num_labels)<br></code></pre></td></tr></table></figure>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs routeros">trainer = Trainer(<br>    <span class="hljs-attribute">model_init</span>=model_init,<br>    <span class="hljs-attribute">args</span>=args,<br>    <span class="hljs-attribute">train_dataset</span>=encoded_dataset[<span class="hljs-string">&quot;train&quot;</span>],<br>    <span class="hljs-attribute">eval_dataset</span>=encoded_dataset[validation_key],<br>    <span class="hljs-attribute">tokenizer</span>=tokenizer,<br>    <span class="hljs-attribute">compute_metrics</span>=compute_metrics<br>)<br></code></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment">#  调用方法hyperparameter_search,hyperparameter_search会返回效果最好的模型相关的参数,这个过程需要很久，我们可以先用部分数据集进行超参搜索，再进行全量训练。 这里使用1/10的数据进行搜索。</span><br>best_run = trainer.hyperparameter_search(n_trials=<span class="hljs-number">10</span>, direction=<span class="hljs-string">&quot;maximize&quot;</span>)<br><br></code></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment">#  将Trainner设置为搜索到的最好的参数，进行训练</span><br><span class="hljs-keyword">for</span> n, v <span class="hljs-keyword">in</span> best_run.hyperparameters.items():<br>    <span class="hljs-built_in">setattr</span>(trainer.args, n, v)<br><br>trainer.train()<br></code></pre></td></tr></table></figure>
+<h2 id="序列标注">序列标注</h2>
+<p>序列标注，通常也可以看作是token级别的分类问题：对每一个token进行分类。在这个notebook中，我们将展示如何使用<a
+target="_blank" rel="noopener" href="https://github.com/huggingface/transformers">🤗
+Transformers</a>中的transformer模型去做token级别的分类问题。</p>
+<p>最常见的token级别分类任务:</p>
+<ul>
+<li>NER (Named-entity recognition 名词-实体识别)
+分辨出文本中的名词和实体 (person人名, organization组织机构名,
+location地点名...).</li>
+<li>POS (Part-of-speech tagging词性标注) 根据语法对token进行词性标注
+(noun名词, verb动词, adjective形容词...)</li>
+<li>Chunk (Chunking短语组块) 将同一个短语的tokens组块放在一起。</li>
+</ul>
+<p>对于以上任务，我们将展示如何使用简单的Dataset库加载数据集，同时使用transformer中的<code>Trainer</code>接口对预训练模型进行微调。</p>
+<p>只要预训练的transformer模型最顶层有一个token分类的神经网络层（比如上一篇章提到的<code>BertForTokenClassification</code>）（另外，由于transformer库的tokenizer新特性，可能还需要对应的预训练模型有fast
+tokenizer这个功能，参考<a
+target="_blank" rel="noopener" href="https://huggingface.co/transformers/index.html#bigtable">这个表</a>），那么本notebook理论上可以使用各种各样的transformer模型（<a
+target="_blank" rel="noopener" href="https://huggingface.co/models">模型面板</a>），解决任何token级别的分类任务。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python">task = <span class="hljs-string">&quot;ner&quot;</span> <span class="hljs-comment">#需要是&quot;ner&quot;, &quot;pos&quot; 或者 &quot;chunk&quot;</span><br>model_checkpoint = <span class="hljs-string">&quot;distilbert-base-uncased&quot;</span><br>batch_size = <span class="hljs-number">16</span><br></code></pre></td></tr></table></figure>
+<h3 id="加载数据-1">加载数据</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> datasets <span class="hljs-keyword">import</span> load_dataset, load_metric<br>datasets = load_dataset(<span class="hljs-string">&#x27;conll2003&#x27;</span>)<br></code></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment">#  Dataset结构</span><br>DatasetDict(&#123;<br>    train: Dataset(&#123;<br>        features: [<span class="hljs-string">&#x27;id&#x27;</span>, <span class="hljs-string">&#x27;tokens&#x27;</span>, <span class="hljs-string">&#x27;pos_tags&#x27;</span>, <span class="hljs-string">&#x27;chunk_tags&#x27;</span>, <span class="hljs-string">&#x27;ner_tags&#x27;</span>],<br>        num_rows: <span class="hljs-number">14041</span><br>    &#125;)<br>    validation: Dataset(&#123;<br>        features: [<span class="hljs-string">&#x27;id&#x27;</span>, <span class="hljs-string">&#x27;tokens&#x27;</span>, <span class="hljs-string">&#x27;pos_tags&#x27;</span>, <span class="hljs-string">&#x27;chunk_tags&#x27;</span>, <span class="hljs-string">&#x27;ner_tags&#x27;</span>],<br>        num_rows: <span class="hljs-number">3250</span><br>    &#125;)<br>    test: Dataset(&#123;<br>        features: [<span class="hljs-string">&#x27;id&#x27;</span>, <span class="hljs-string">&#x27;tokens&#x27;</span>, <span class="hljs-string">&#x27;pos_tags&#x27;</span>, <span class="hljs-string">&#x27;chunk_tags&#x27;</span>, <span class="hljs-string">&#x27;ner_tags&#x27;</span>],<br>        num_rows: <span class="hljs-number">3453</span><br>    &#125;)<br>&#125;)<br></code></pre></td></tr></table></figure>
+<p>无论是在训练集、验证机还是测试集中，datasets都包含了一个名为tokens的列（一般来说是将文本切分成了很多词），还包含一个名为label的列，这一列对应这tokens的标注。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">datasets[<span class="hljs-string">&quot;train&quot;</span>][<span class="hljs-number">0</span>]<br></code></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs python">&#123;<span class="hljs-string">&#x27;chunk_tags&#x27;</span>: [<span class="hljs-number">11</span>, <span class="hljs-number">21</span>, <span class="hljs-number">11</span>, <span class="hljs-number">12</span>, <span class="hljs-number">21</span>, <span class="hljs-number">22</span>, <span class="hljs-number">11</span>, <span class="hljs-number">12</span>, <span class="hljs-number">0</span>],<br> <span class="hljs-string">&#x27;id&#x27;</span>: <span class="hljs-string">&#x27;0&#x27;</span>,<br> <span class="hljs-string">&#x27;ner_tags&#x27;</span>: [<span class="hljs-number">3</span>, <span class="hljs-number">0</span>, <span class="hljs-number">7</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>, <span class="hljs-number">7</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>],<br> <span class="hljs-string">&#x27;pos_tags&#x27;</span>: [<span class="hljs-number">22</span>, <span class="hljs-number">42</span>, <span class="hljs-number">16</span>, <span class="hljs-number">21</span>, <span class="hljs-number">35</span>, <span class="hljs-number">37</span>, <span class="hljs-number">16</span>, <span class="hljs-number">21</span>, <span class="hljs-number">7</span>],<br> <span class="hljs-string">&#x27;tokens&#x27;</span>: [<span class="hljs-string">&#x27;EU&#x27;</span>,<br>  <span class="hljs-string">&#x27;rejects&#x27;</span>,<br>  <span class="hljs-string">&#x27;German&#x27;</span>,<br>  <span class="hljs-string">&#x27;call&#x27;</span>,<br>  <span class="hljs-string">&#x27;to&#x27;</span>,<br>  <span class="hljs-string">&#x27;boycott&#x27;</span>,<br>  <span class="hljs-string">&#x27;British&#x27;</span>,<br>  <span class="hljs-string">&#x27;lamb&#x27;</span>,<br>  <span class="hljs-string">&#x27;.&#x27;</span>]&#125;<br></code></pre></td></tr></table></figure>
+<p>所有的数据标签labels都已经被编码成了整数，可以直接被预训练transformer模型使用。这些整数的编码所对应的实际类别储存在<code>features</code>中。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python">datasets[<span class="hljs-string">&quot;train&quot;</span>].features[<span class="hljs-string">f&quot;ner_tags&quot;</span>]<br><span class="hljs-type">Sequence</span>(feature=ClassLabel(num_classes=<span class="hljs-number">9</span>, names=[<span class="hljs-string">&#x27;O&#x27;</span>, <span class="hljs-string">&#x27;B-PER&#x27;</span>, <span class="hljs-string">&#x27;I-PER&#x27;</span>, <span class="hljs-string">&#x27;B-ORG&#x27;</span>, <span class="hljs-string">&#x27;I-ORG&#x27;</span>, <span class="hljs-string">&#x27;B-LOC&#x27;</span>, <span class="hljs-string">&#x27;I-LOC&#x27;</span>, <span class="hljs-string">&#x27;B-MISC&#x27;</span>, <span class="hljs-string">&#x27;I-MISC&#x27;</span>], names_file=<span class="hljs-literal">None</span>, <span class="hljs-built_in">id</span>=<span class="hljs-literal">None</span>), length=-<span class="hljs-number">1</span>, <span class="hljs-built_in">id</span>=<span class="hljs-literal">None</span>)<br><br></code></pre></td></tr></table></figure>
+<p>所以以NER为例，0对应的标签类别是”O“，
+1对应的是”B-PER“等等。”O“的意思是没有特别实体（no special
+entity）。本例包含4种实体类别分别是（PER、ORG、LOC，MISC），每一种实体类别又分别有B-（实体开始的token）前缀和I-（实体中间的token）前缀。</p>
+<ul>
+<li>'PER' for person</li>
+<li>'ORG' for organization</li>
+<li>'LOC' for location</li>
+<li>'MISC' for miscellaneous</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python">label_list = datasets[<span class="hljs-string">&quot;train&quot;</span>].features[<span class="hljs-string">f&quot;<span class="hljs-subst">&#123;task&#125;</span>_tags&quot;</span>].feature.names<br>label_list<br></code></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python">[<span class="hljs-string">&#x27;O&#x27;</span>, <span class="hljs-string">&#x27;B-PER&#x27;</span>, <span class="hljs-string">&#x27;I-PER&#x27;</span>, <span class="hljs-string">&#x27;B-ORG&#x27;</span>, <span class="hljs-string">&#x27;I-ORG&#x27;</span>, <span class="hljs-string">&#x27;B-LOC&#x27;</span>, <span class="hljs-string">&#x27;I-LOC&#x27;</span>, <span class="hljs-string">&#x27;B-MISC&#x27;</span>, <span class="hljs-string">&#x27;I-MISC&#x27;</span>]<br><br></code></pre></td></tr></table></figure>
+<p>从数据集里随机选择几个例子进行展示。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> datasets <span class="hljs-keyword">import</span> ClassLabel, <span class="hljs-type">Sequence</span><br><span class="hljs-keyword">import</span> random<br><span class="hljs-keyword">import</span> pandas <span class="hljs-keyword">as</span> pd<br><span class="hljs-keyword">from</span> IPython.display <span class="hljs-keyword">import</span> display, HTML<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">show_random_elements</span>(<span class="hljs-params">dataset, num_examples=<span class="hljs-number">10</span></span>):<br>    <span class="hljs-keyword">assert</span> num_examples &lt;= <span class="hljs-built_in">len</span>(dataset), <span class="hljs-string">&quot;Can&#x27;t pick more elements than there are in the dataset.&quot;</span><br>    picks = []<br>    <span class="hljs-keyword">for</span> _ <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(num_examples):<br>        pick = random.randint(<span class="hljs-number">0</span>, <span class="hljs-built_in">len</span>(dataset)-<span class="hljs-number">1</span>)<br>        <span class="hljs-keyword">while</span> pick <span class="hljs-keyword">in</span> picks:<br>            pick = random.randint(<span class="hljs-number">0</span>, <span class="hljs-built_in">len</span>(dataset)-<span class="hljs-number">1</span>)<br>        picks.append(pick)<br>    <br>    df = pd.DataFrame(dataset[picks])<br>    <span class="hljs-keyword">for</span> column, typ <span class="hljs-keyword">in</span> dataset.features.items():<br>        <span class="hljs-keyword">if</span> <span class="hljs-built_in">isinstance</span>(typ, ClassLabel):<br>            df[column] = df[column].transform(<span class="hljs-keyword">lambda</span> i: typ.names[i])<br>        <span class="hljs-keyword">elif</span> <span class="hljs-built_in">isinstance</span>(typ, <span class="hljs-type">Sequence</span>) <span class="hljs-keyword">and</span> <span class="hljs-built_in">isinstance</span>(typ.feature, ClassLabel):<br>            df[column] = df[column].transform(<span class="hljs-keyword">lambda</span> x: [typ.feature.names[i] <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> x])<br>    display(HTML(df.to_html()))<br></code></pre></td></tr></table></figure>
+<img src="/2021/09/25/nlp-transformer/nlp-transformer-4/image-20210925160442953.png" srcset="/img/loading.gif" lazyload class="" title="dataset">
+<h3 id="预处理数据">预处理数据</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> transformers <span class="hljs-keyword">import</span> AutoTokenizer<br>    <br>tokenizer = AutoTokenizer.from_pretrained(model_checkpoint)<br></code></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment">#  查看所有预训练模型对应的tokenizer所拥有的特点</span><br><span class="hljs-keyword">import</span> transformers<br><span class="hljs-keyword">assert</span> <span class="hljs-built_in">isinstance</span>(tokenizer, transformers.PreTrainedTokenizerFast)<br></code></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">tokenizer(<span class="hljs-string">&quot;Hello, this is one sentence!&quot;</span>)<br></code></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment">#  输出结果</span><br>&#123;<span class="hljs-string">&#x27;input_ids&#x27;</span>: [<span class="hljs-number">101</span>, <span class="hljs-number">7592</span>, <span class="hljs-number">1010</span>, <span class="hljs-number">2023</span>, <span class="hljs-number">2003</span>, <span class="hljs-number">2028</span>, <span class="hljs-number">6251</span>, <span class="hljs-number">999</span>, <span class="hljs-number">102</span>], <span class="hljs-string">&#x27;attention_mask&#x27;</span>: [<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>]&#125;<br></code></pre></td></tr></table></figure>
+<p>transformer预训练模型在预训练的时候通常使用的是subword，如果我们的文本输入已经被切分成了word，那么这些word还会被我们的tokenizer继续切分。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python">example = datasets[<span class="hljs-string">&quot;train&quot;</span>][<span class="hljs-number">4</span>]<br><span class="hljs-built_in">print</span>(example[<span class="hljs-string">&quot;tokens&quot;</span>])<br></code></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python">[<span class="hljs-string">&#x27;Germany&#x27;</span>, <span class="hljs-string">&quot;&#x27;s&quot;</span>, <span class="hljs-string">&#x27;representative&#x27;</span>, <span class="hljs-string">&#x27;to&#x27;</span>, <span class="hljs-string">&#x27;the&#x27;</span>, <span class="hljs-string">&#x27;European&#x27;</span>, <span class="hljs-string">&#x27;Union&#x27;</span>, <span class="hljs-string">&quot;&#x27;s&quot;</span>, <span class="hljs-string">&#x27;veterinary&#x27;</span>, <span class="hljs-string">&#x27;committee&#x27;</span>, <span class="hljs-string">&#x27;Werner&#x27;</span>, <span class="hljs-string">&#x27;Zwingmann&#x27;</span>, <span class="hljs-string">&#x27;said&#x27;</span>, <span class="hljs-string">&#x27;on&#x27;</span>, <span class="hljs-string">&#x27;Wednesday&#x27;</span>, <span class="hljs-string">&#x27;consumers&#x27;</span>, <span class="hljs-string">&#x27;should&#x27;</span>, <span class="hljs-string">&#x27;buy&#x27;</span>, <span class="hljs-string">&#x27;sheepmeat&#x27;</span>, <span class="hljs-string">&#x27;from&#x27;</span>, <span class="hljs-string">&#x27;countries&#x27;</span>, <span class="hljs-string">&#x27;other&#x27;</span>, <span class="hljs-string">&#x27;than&#x27;</span>, <span class="hljs-string">&#x27;Britain&#x27;</span>, <span class="hljs-string">&#x27;until&#x27;</span>, <span class="hljs-string">&#x27;the&#x27;</span>, <span class="hljs-string">&#x27;scientific&#x27;</span>, <span class="hljs-string">&#x27;advice&#x27;</span>, <span class="hljs-string">&#x27;was&#x27;</span>, <span class="hljs-string">&#x27;clearer&#x27;</span>, <span class="hljs-string">&#x27;.&#x27;</span>]<br><br></code></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python">tokenized_input = tokenizer(example[<span class="hljs-string">&quot;tokens&quot;</span>], is_split_into_words=<span class="hljs-literal">True</span>)<br>tokens = tokenizer.convert_ids_to_tokens(tokenized_input[<span class="hljs-string">&quot;input_ids&quot;</span>])<br><span class="hljs-built_in">print</span>(tokens)<br></code></pre></td></tr></table></figure>
+<p>单词"Zwingmann" 和 "sheepmeat"继续被切分成了3个subtokens。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">[<span class="hljs-string">&#x27;[CLS]&#x27;</span>, <span class="hljs-string">&#x27;germany&#x27;</span>, <span class="hljs-string">&quot;&#x27;&quot;</span>, <span class="hljs-string">&#x27;s&#x27;</span>, <span class="hljs-string">&#x27;representative&#x27;</span>, <span class="hljs-string">&#x27;to&#x27;</span>, <span class="hljs-string">&#x27;the&#x27;</span>, <span class="hljs-string">&#x27;european&#x27;</span>, <span class="hljs-string">&#x27;union&#x27;</span>, <span class="hljs-string">&quot;&#x27;&quot;</span>, <span class="hljs-string">&#x27;s&#x27;</span>, <span class="hljs-string">&#x27;veterinary&#x27;</span>, <span class="hljs-string">&#x27;committee&#x27;</span>, <span class="hljs-string">&#x27;werner&#x27;</span>, <span class="hljs-string">&#x27;z&#x27;</span>, <span class="hljs-string">&#x27;##wing&#x27;</span>, <span class="hljs-string">&#x27;##mann&#x27;</span>, <span class="hljs-string">&#x27;said&#x27;</span>, <span class="hljs-string">&#x27;on&#x27;</span>, <span class="hljs-string">&#x27;wednesday&#x27;</span>, <span class="hljs-string">&#x27;consumers&#x27;</span>, <span class="hljs-string">&#x27;should&#x27;</span>, <span class="hljs-string">&#x27;buy&#x27;</span>, <span class="hljs-string">&#x27;sheep&#x27;</span>, <span class="hljs-string">&#x27;##me&#x27;</span>, <span class="hljs-string">&#x27;##at&#x27;</span>, <span class="hljs-string">&#x27;from&#x27;</span>, <span class="hljs-string">&#x27;countries&#x27;</span>, <span class="hljs-string">&#x27;other&#x27;</span>, <span class="hljs-string">&#x27;than&#x27;</span>, <span class="hljs-string">&#x27;britain&#x27;</span>, <span class="hljs-string">&#x27;until&#x27;</span>, <span class="hljs-string">&#x27;the&#x27;</span>, <span class="hljs-string">&#x27;scientific&#x27;</span>, <span class="hljs-string">&#x27;advice&#x27;</span>, <span class="hljs-string">&#x27;was&#x27;</span>, <span class="hljs-string">&#x27;clearer&#x27;</span>, <span class="hljs-string">&#x27;.&#x27;</span>, <span class="hljs-string">&#x27;[SEP]&#x27;</span>]<br></code></pre></td></tr></table></figure>
+<p>由于标注数据通常是在word级别进行标注的，既然word还会被切分成subtokens，那么意味着我们还需要对标注数据进行subtokens的对齐。同时，由于预训练模型输入格式的要求，往往还需要加上一些特殊符号比如：
+<code>[CLS]</code> 和 <code>[SEP]</code>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-built_in">len</span>(example[<span class="hljs-string">f&quot;<span class="hljs-subst">&#123;task&#125;</span>_tags&quot;</span>]), <span class="hljs-built_in">len</span>(tokenized_input[<span class="hljs-string">&quot;input_ids&quot;</span>])<br><br>(<span class="hljs-number">31</span>, <span class="hljs-number">39</span>)<br></code></pre></td></tr></table></figure>
+<p>tokenizer有一个
+<code>word_ids</code>方法可以帮助我们解决这个问题。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-built_in">print</span>(tokenized_input.word_ids())<br><br>[<span class="hljs-literal">None</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>, <span class="hljs-number">7</span>, <span class="hljs-number">7</span>, <span class="hljs-number">8</span>, <span class="hljs-number">9</span>, <span class="hljs-number">10</span>, <span class="hljs-number">11</span>, <span class="hljs-number">11</span>, <span class="hljs-number">11</span>, <span class="hljs-number">12</span>, <span class="hljs-number">13</span>, <span class="hljs-number">14</span>, <span class="hljs-number">15</span>, <span class="hljs-number">16</span>, <span class="hljs-number">17</span>, <span class="hljs-number">18</span>, <span class="hljs-number">18</span>, <span class="hljs-number">18</span>, <span class="hljs-number">19</span>, <span class="hljs-number">20</span>, <span class="hljs-number">21</span>, <span class="hljs-number">22</span>, <span class="hljs-number">23</span>, <span class="hljs-number">24</span>, <span class="hljs-number">25</span>, <span class="hljs-number">26</span>, <span class="hljs-number">27</span>, <span class="hljs-number">28</span>, <span class="hljs-number">29</span>, <span class="hljs-number">30</span>, <span class="hljs-literal">None</span>]<br><br></code></pre></td></tr></table></figure>
+<p>我们可以看到，word_ids将每一个subtokens位置都对应了一个word的下标。比如第1个位置对应第0个word，然后第2、3个位置对应第1个word。特殊字符对应了None。有了这个list，我们就能将subtokens和words还有标注的labels对齐啦。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python">word_ids = tokenized_input.word_ids()<br>aligned_labels = [-<span class="hljs-number">100</span> <span class="hljs-keyword">if</span> i <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span> <span class="hljs-keyword">else</span> example[<span class="hljs-string">f&quot;<span class="hljs-subst">&#123;task&#125;</span>_tags&quot;</span>][i] <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> word_ids]<br><span class="hljs-built_in">print</span>(<span class="hljs-built_in">len</span>(aligned_labels), <span class="hljs-built_in">len</span>(tokenized_input[<span class="hljs-string">&quot;input_ids&quot;</span>]))<br></code></pre></td></tr></table></figure>
+<figure class="highlight basic"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs basic"><span class="hljs-symbol">39 </span><span class="hljs-number">39</span><br></code></pre></td></tr></table></figure>
+<p>我们通常将特殊字符的label设置为-100，在模型中-100通常会被忽略掉不计算loss。</p>
+<p>我们有两种对齐label的方式：</p>
+<ul>
+<li>多个subtokens对齐一个word，对齐一个label</li>
+<li>多个subtokens的第一个subtoken对齐word，对齐一个label，其他subtokens直接赋予-100.</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 我们提供这两种方式，通过label_all_tokens = True切换。</span><br>label_all_tokens = <span class="hljs-literal">True</span><br></code></pre></td></tr></table></figure>
+<p>预处理函数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">tokenize_and_align_labels</span>(<span class="hljs-params">examples</span>):<br>    tokenized_inputs = tokenizer(examples[<span class="hljs-string">&quot;tokens&quot;</span>], truncation=<span class="hljs-literal">True</span>, is_split_into_words=<span class="hljs-literal">True</span>)<br><br>    labels = []<br>    <span class="hljs-keyword">for</span> i, label <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(examples[<span class="hljs-string">f&quot;<span class="hljs-subst">&#123;task&#125;</span>_tags&quot;</span>]):<br>        word_ids = tokenized_inputs.word_ids(batch_index=i)<br>        previous_word_idx = <span class="hljs-literal">None</span><br>        label_ids = []<br>        <span class="hljs-keyword">for</span> word_idx <span class="hljs-keyword">in</span> word_ids:<br>            <span class="hljs-comment"># Special tokens have a word id that is None. We set the label to -100 so they are automatically</span><br>            <span class="hljs-comment"># ignored in the loss function.</span><br>            <span class="hljs-keyword">if</span> word_idx <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span>:<br>                label_ids.append(-<span class="hljs-number">100</span>)<br>            <span class="hljs-comment"># We set the label for the first token of each word.</span><br>            <span class="hljs-keyword">elif</span> word_idx != previous_word_idx:<br>                label_ids.append(label[word_idx])<br>            <span class="hljs-comment"># For the other tokens in a word, we set the label to either the current label or -100, depending on</span><br>            <span class="hljs-comment"># the label_all_tokens flag.</span><br>            <span class="hljs-keyword">else</span>:<br>                label_ids.append(label[word_idx] <span class="hljs-keyword">if</span> label_all_tokens <span class="hljs-keyword">else</span> -<span class="hljs-number">100</span>)<br>            previous_word_idx = word_idx<br><br>        labels.append(label_ids)<br><br>    tokenized_inputs[<span class="hljs-string">&quot;labels&quot;</span>] = labels<br>    <span class="hljs-keyword">return</span> tokenized_inputs<br></code></pre></td></tr></table></figure>
+<p>接下来对数据集datasets里面的所有样本进行预处理，处理的方式是使用map函数，将预处理函数prepare_train_features应用到（map)所有样本上。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">tokenized_datasets = datasets.<span class="hljs-built_in">map</span>(tokenize_and_align_labels, batched=<span class="hljs-literal">True</span>)<br></code></pre></td></tr></table></figure>
+<h3 id="微调预训练模型-1">微调预训练模型</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> transformers <span class="hljs-keyword">import</span> AutoModelForTokenClassification, TrainingArguments, Trainer<br><br>model = AutoModelForTokenClassification.from_pretrained(model_checkpoint, num_labels=<span class="hljs-built_in">len</span>(label_list))  <span class="hljs-comment"># 预训练模型</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment">#  定义模型所需要的参数</span><br>args = TrainingArguments(<br>    <span class="hljs-string">f&quot;test-<span class="hljs-subst">&#123;task&#125;</span>&quot;</span>,<br>    evaluation_strategy = <span class="hljs-string">&quot;epoch&quot;</span>,<br>    learning_rate=<span class="hljs-number">2e-5</span>,<br>    per_device_train_batch_size=batch_size,<br>    per_device_eval_batch_size=batch_size,<br>    num_train_epochs=<span class="hljs-number">3</span>,<br>    weight_decay=<span class="hljs-number">0.01</span>,<br>)<br></code></pre></td></tr></table></figure>
+<p>最后我们需要一个数据收集器data
+collator，将我们处理好的输入喂给模型。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> transformers <span class="hljs-keyword">import</span> DataCollatorForTokenClassification<br><br>data_collator = DataCollatorForTokenClassification(tokenizer)<br></code></pre></td></tr></table></figure>
+<p>我们使用<a
+target="_blank" rel="noopener" href="https://github.com/chakki-works/seqeval"><code>seqeval</code></a>
+metric来完成评估。将模型预测送入评估之前，我们也会做一些数据后处理：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment">#模型评估</span><br>metric = load_metric(<span class="hljs-string">&quot;seqeval&quot;</span>)<br>labels = [label_list[i] <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> example[<span class="hljs-string">f&quot;<span class="hljs-subst">&#123;task&#125;</span>_tags&quot;</span>]]<br>metric.compute(predictions=[labels], references=[labels])<br></code></pre></td></tr></table></figure>
+<p>对模型预测结果做一些后处理：</p>
+<ul>
+<li>选择预测分类最大概率的下标</li>
+<li>将下标转化为label</li>
+<li>忽略-100所在地方</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">compute_metrics</span>(<span class="hljs-params">p</span>):<br>    predictions, labels = p<br>    predictions = np.argmax(predictions, axis=<span class="hljs-number">2</span>)<br><br>    <span class="hljs-comment"># Remove ignored index (special tokens)</span><br>    true_predictions = [<br>        [label_list[p] <span class="hljs-keyword">for</span> (p, l) <span class="hljs-keyword">in</span> <span class="hljs-built_in">zip</span>(prediction, label) <span class="hljs-keyword">if</span> l != -<span class="hljs-number">100</span>]<br>        <span class="hljs-keyword">for</span> prediction, label <span class="hljs-keyword">in</span> <span class="hljs-built_in">zip</span>(predictions, labels)<br>    ]<br>    true_labels = [<br>        [label_list[l] <span class="hljs-keyword">for</span> (p, l) <span class="hljs-keyword">in</span> <span class="hljs-built_in">zip</span>(prediction, label) <span class="hljs-keyword">if</span> l != -<span class="hljs-number">100</span>]<br>        <span class="hljs-keyword">for</span> prediction, label <span class="hljs-keyword">in</span> <span class="hljs-built_in">zip</span>(predictions, labels)<br>    ]<br><br>    results = metric.compute(predictions=true_predictions, references=true_labels)<br>    <span class="hljs-keyword">return</span> &#123;<br>        <span class="hljs-string">&quot;precision&quot;</span>: results[<span class="hljs-string">&quot;overall_precision&quot;</span>],<br>        <span class="hljs-string">&quot;recall&quot;</span>: results[<span class="hljs-string">&quot;overall_recall&quot;</span>],<br>        <span class="hljs-string">&quot;f1&quot;</span>: results[<span class="hljs-string">&quot;overall_f1&quot;</span>],<br>        <span class="hljs-string">&quot;accuracy&quot;</span>: results[<span class="hljs-string">&quot;overall_accuracy&quot;</span>],<br>    &#125;<br></code></pre></td></tr></table></figure>
+<p>将数据，模型，参数传入<code>Trainer</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python">trainer = Trainer(<br>    model,<br>    args,<br>    train_dataset=tokenized_datasets[<span class="hljs-string">&quot;train&quot;</span>],<br>    eval_dataset=tokenized_datasets[<span class="hljs-string">&quot;validation&quot;</span>],<br>    data_collator=data_collator,<br>    tokenizer=tokenizer,<br>    compute_metrics=compute_metrics<br>)<br></code></pre></td></tr></table></figure>
+<p>开始训练</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">trainer.train()<br></code></pre></td></tr></table></figure>
+<p>我们可以再次使用<code>evaluate</code>方法评估，可以评估其他数据集。</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs scss">trainer<span class="hljs-selector-class">.evaluate</span>()<br></code></pre></td></tr></table></figure>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" class="category-chain-item">深度学习</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%87%AA%E7%84%B6%E8%AF%AD%E8%A8%80%E5%A4%84%E7%90%86/" class="category-chain-item">自然语言处理</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Datawhale%E7%BB%84%E9%98%9F%E5%AD%A6%E4%B9%A0/">#Datawhale组队学习</a>
+      
+        <a href="/tags/NLP%E5%85%A5%E9%97%A8/">#NLP入门</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>基于Transformers的自然语言处理(NLP)入门(四)</div>
+      <div>https://www.spacezxy.top/2021/09/25/nlp-transformer/nlp-transformer-4/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Xavier ZXY</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年9月25日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/09/28/nlp-transformer/nlp-transformer-5/" title="基于Transformers的自然语言处理(NLP)入门(五)">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">基于Transformers的自然语言处理(NLP)入门(五)</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/09/21/practical-machine-learning/practical-machine-learning-1/" title="实用机器学习(一)">
+                        <span class="hidden-mobile">实用机器学习(一)</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a>
+    </div>
+  
+  
+  
+    <!-- 备案信息 ICP for China -->
+    <div class="beian">
+  <span>
+    <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+      湘ICP备  2021018889
+    </a>
+  </span>
+  
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

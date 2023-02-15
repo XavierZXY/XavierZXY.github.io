@@ -1,0 +1,971 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/logo16.svg">
+  <link rel="icon" href="/img/logo32.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Xavier ZXY">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="本文为参加Datawhale组队学习时所写，如若需了解细致内容，请去到Datawhale官方开源课程基于transformers的自然语言处理(NLP)入门 (datawhalechina.github.io) 前言 常见的NLP任务  文本分类 对单个，两个或者多段文本进行分类 序列标注 对文本序列中的token，字或者词进行分类 问答任务  抽取式问答 从一段给定的文本之">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于Transformers的自然语言处理(NLP)入门(一)">
+<meta property="og:url" content="https://www.spacezxy.top/2021/09/13/nlp-transformer/nlp-transformer-1/index.html">
+<meta property="og:site_name" content="Xavier ZXY">
+<meta property="og:description" content="本文为参加Datawhale组队学习时所写，如若需了解细致内容，请去到Datawhale官方开源课程基于transformers的自然语言处理(NLP)入门 (datawhalechina.github.io) 前言 常见的NLP任务  文本分类 对单个，两个或者多段文本进行分类 序列标注 对文本序列中的token，字或者词进行分类 问答任务  抽取式问答 从一段给定的文本之">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/13/nlp-transformer/nlp-transformer-1/image-20210914143639429.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/13/nlp-transformer/nlp-transformer-1/image-20210914145854549.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/13/nlp-transformer/nlp-transformer-1/image-20210914153123182.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/13/nlp-transformer/nlp-transformer-1/image-20210914153656605.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/13/nlp-transformer/nlp-transformer-1/1-7-attention-pro.gif">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/13/nlp-transformer/nlp-transformer-1/2-transformer.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/13/nlp-transformer/nlp-transformer-1/image-20210915201330887.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/13/nlp-transformer/nlp-transformer-1/image-20210915201613940.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/13/nlp-transformer/nlp-transformer-1/image-20210915203237569.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/13/nlp-transformer/nlp-transformer-1/2-decoder.webp">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/13/nlp-transformer/nlp-transformer-1/image-20210915204342805.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/13/nlp-transformer/nlp-transformer-1/image-20210915204718171.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/13/nlp-transformer/nlp-transformer-1/image-20210915205022037.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/13/nlp-transformer/nlp-transformer-1/image-20210915205400940.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/13/nlp-transformer/nlp-transformer-1/image-20210915205626346.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/13/nlp-transformer/nlp-transformer-1/image-20210915210106476.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/13/nlp-transformer/nlp-transformer-1/image-20210915210443220.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/13/nlp-transformer/nlp-transformer-1/image-20210915210721367.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/13/nlp-transformer/nlp-transformer-1/image-20210915210845022.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/13/nlp-transformer/nlp-transformer-1/image-20210915212410785.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/13/nlp-transformer/nlp-transformer-1/image-20210915212800378.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/13/nlp-transformer/nlp-transformer-1/image-20210915212824098.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/13/nlp-transformer/nlp-transformer-1/image-20210916144921044.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/13/nlp-transformer/nlp-transformer-1/image-20210916145207331.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/13/nlp-transformer/nlp-transformer-1/image-20210916145235108.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/13/nlp-transformer/nlp-transformer-1/image-20210916145447947.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/13/nlp-transformer/nlp-transformer-1/image-20210916152516472.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/13/nlp-transformer/nlp-transformer-1/image-20210916152608551.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/13/nlp-transformer/nlp-transformer-1/image-20210916152656516.png">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/13/nlp-transformer/nlp-transformer-1/transformer_decoding_1.gif">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/13/nlp-transformer/nlp-transformer-1/2-decoder.gif">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/13/nlp-transformer/nlp-transformer-1/image-20210916153706279.png">
+<meta property="article:published_time" content="2021-09-13T10:32:07.000Z">
+<meta property="article:modified_time" content="2021-09-16T11:28:58.230Z">
+<meta property="article:author" content="Xavier ZXY">
+<meta property="article:tag" content="Datawhale组队学习">
+<meta property="article:tag" content="NLP入门">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.spacezxy.top/2021/09/13/nlp-transformer/nlp-transformer-1/image-20210914143639429.png">
+  
+  
+  
+  <title>基于Transformers的自然语言处理(NLP)入门(一) - Xavier ZXY</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.spacezxy.top","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>SapceZXY</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="基于Transformers的自然语言处理(NLP)入门(一)"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-09-13 18:32" pubdate>
+          2021年9月13日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          9.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          77 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">基于Transformers的自然语言处理(NLP)入门(一)</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>本文为参加Datawhale组队学习时所写，如若需了解细致内容，请去到Datawhale官方开源课程<a
+target="_blank" rel="noopener" href="https://datawhalechina.github.io/learn-nlp-with-transformers/#/">基于transformers的自然语言处理(NLP)入门
+(datawhalechina.github.io)</a></p>
+<h1 id="前言">前言</h1>
+<h2 id="常见的nlp任务">常见的NLP任务</h2>
+<ul>
+<li><p><strong>文本分类</strong>
+对单个，两个或者多段文本进行分类</p></li>
+<li><p><strong>序列标注</strong>
+对文本序列中的token，字或者词进行分类</p></li>
+<li><p><strong>问答任务</strong></p>
+<ul>
+<li><strong>抽取式问答</strong> 从一段给定的文本之中找到答案</li>
+<li><strong>多选式回答</strong> 从多个选项中选出一个正确答案</li>
+</ul></li>
+<li><p><strong>生成任务</strong></p>
+<ul>
+<li><strong>语言模型</strong> 根据已有的一段文字生成一个字</li>
+<li><strong>摘要生成</strong> 根据一大段文字生成一小段总结性文字</li>
+<li><strong>机器翻译</strong> 将源语言翻译成为目标语言</li>
+</ul></li>
+</ul>
+<span id="more"></span>
+<h2 id="transformer的兴起">Transformer的兴起</h2>
+<p>2017年，Transformer模型结构首次被提出并在机器翻译上取得了效果。2018年Bert模型使用Transformer模型结构进行大规模语言预训练，刷新了许多NLP任务榜单的最高分。2019年-2021年，研究人员将<strong>Transformer</strong>这种模型结构<strong>预训练+微调</strong>这种方式结合，提出了一系列Transformer模型结构，训练方法的改进。Transformer的模型结构优异。使得其参数量可以非常庞大从而容纳更多的信息，随着预训练不断提升以及近年来计算能力的提升，越来越好的Transformer不断涌现。</p>
+<figure>
+<img
+src="https://huggingface.co/course/static/chapter1/model_parameters.png" srcset="/img/loading.gif" lazyload
+alt="Number of parameters of recent Transformers models" />
+<figcaption aria-hidden="true">Number of parameters of recent
+Transformers models</figcaption>
+</figure>
+<h1 id="transformer相关原理">Transformer相关原理</h1>
+<h1 id="图解attention">图解Attention</h1>
+<p>基于循环神经网络(RNN)的一类seq2seq模型，在处理长文本时遇到了挑战，对于长文本中不同位置的信息进行attention(注意力机制)有助于提高RNN的模型效果。</p>
+<h2 id="seq2seq框架">seq2seq框架</h2>
+<p>seq2seq(sequence to
+sequence)是一中常见的NLP模型结构，“序列到序列”。从一个文本得到一个新的文本。</p>
+<h2 id="seq2seq细节">seq2seq细节</h2>
+<p>seq2seq模型由编码器和解码器组成。编码器会处理输入序列中的每个元素并获得输入信息，这些信息会被转换成为一个向量（称为context向量）。当我们处理完整个输入序列后，编码器把
+context向量
+发送给解码器，解码器通过context向量中的信息，逐个元素输出新的序列。</p>
+<p>eq2seq模型中的编码器和解码器一般采用的是循环神经网络RNN。</p>
+<img src="/2021/09/13/nlp-transformer/nlp-transformer-1/image-20210914143639429.png" srcset="/img/loading.gif" lazyload class="" title="image-20210914143639429">
+<p>context向量对应上图中间浮点数向量。在下文中，我们会可视化这些数字向量，使用更明亮的色彩来表示更高的值，如上图右边所示</p>
+<p>context向量本质上是一组浮点数，context的数组长度是基于编码层的RNN的隐藏层神经元数量的。</p>
+<p>RNN如何处理输入序列？</p>
+<ol type="1">
+<li>序列输入时一个句子，setence = {w1, w2, ..., wn}</li>
+<li>RNN首先将句子中的每一个词映射成为一个向量得到一个向量序列，X = {x1,
+x2, ..., xn}</li>
+<li>然后在处理第t∈[1,n]个时间步的序列输入x<sub>t</sub>时，RNN网络的输入和输出可以表示为：h<sub>t</sub>=
+RNN(x<sub>t</sub>, h<sub>t</sub>)
+<ul>
+<li>输入：RNN在时间步t的输入之一为单词w<sub>t</sub>经过映射得到的向量x<sub>t</sub>。</li>
+<li>输入：RNN另一个输入为上一个时间步t-1得到的hidden
+state向量h<sub>t-1</sub>，同样是一个向量。</li>
+<li>输出：RNN在时间步t的输出为h<sub>t</sub> hidden state向量。</li>
+</ul></li>
+</ol>
+<img src="/2021/09/13/nlp-transformer/nlp-transformer-1/image-20210914145854549.png" srcset="/img/loading.gif" lazyload class="" title="image-20210914145854549">
+<p>上图左边每个单词经过word
+embedding算法之后得到中间一个对应的4维的向量。</p>
+<p>编码器在每一个是时间步得到hidden
+state，并将最终的state传输给解码器，解码器根据编码器给予的最后一个hidden
+state信息解码处输出序列，最后一个 hidden
+state实际上是我们上文提到的context向量。</p>
+<h2 id="attention">Attention</h2>
+<p>基于RNN的seq2seq模型编码器所有信息都编码到了一个context向量中，便是这类模型的瓶颈。一方面单个向量很难包含所有文本序列的信息，另一方面RNN递归地编码文本序列使得模型在处理长文本时面临非常大的挑战。</p>
+<p>attention注意力机制，使得seq2seq模型可以有区分度、有重点地关注输入序列。</p>
+<img src="/2021/09/13/nlp-transformer/nlp-transformer-1/image-20210914153123182.png" srcset="/img/loading.gif" lazyload class="" title="image-20210914153123182">
+<p>图：在第 7
+个时间步，注意力机制使得解码器在产生英语翻译student英文翻译之前，可以将注意力集中在法语输入序列的：étudiant。这种有区分度得attention到输入序列的重要信息，使得模型有更好的效果。</p>
+<p>带有注意力的seq2seq模型</p>
+<ul>
+<li>编码器把更多的数据传递给解码器，而不是只传递最后的hidden state</li>
+</ul>
+<img src="/2021/09/13/nlp-transformer/nlp-transformer-1/image-20210914153656605.png" srcset="/img/loading.gif" lazyload class="" title="image-20210914153656605">
+<ul>
+<li>注意力模型的解码器在产生输出之前，做了一个额外的attention处理。如下图所示，具体为：
+<ul>
+<li>由于编码器中每个 hidden
+state（隐藏层状态）都对应到输入句子中一个单词，那么解码器要查看所有接收到的编码器的
+hidden state（隐藏层状态）。</li>
+<li>给每个 hidden
+state（隐藏层状态）计算出一个分数（我们先忽略这个分数的计算过程）。</li>
+<li>所有hidden state（隐藏层状态）的分数经过softmax进行归一化。</li>
+<li>将每个 hidden
+state（隐藏层状态）乘以所对应的分数，从而能够让高分对应的 hidden
+state（隐藏层状态）会被放大，而低分对应的 hidden
+state（隐藏层状态）会被缩小。</li>
+<li>将所有hidden
+state根据对应分数进行加权求和，得到对应时间步的context向量。</li>
+</ul></li>
+</ul>
+<p><strong>seq2seq模型解码器全流程</strong></p>
+<ol type="1">
+<li>注意力模型的解码器 RNN 的输入包括：一个word embedding
+向量，和一个初始化好的解码器 hidden state，图中是h<sub>init</sub>。</li>
+<li>RNN 处理上述的 2 个输入，产生一个输出和一个新的 hidden
+state，图中为h4。</li>
+<li>注意力的步骤：我们使用编码器的所有 hidden state向量和 h4
+向量来计算这个时间步的context向量（C4）。</li>
+<li>我们把 h4 和 C4 拼接起来，得到一个橙色向量。</li>
+<li>我们把这个橙色向量输入一个前馈神经网络（这个网络是和整个模型一起训练的）。</li>
+<li>根据前馈神经网络的输出向量得到输出单词：假设输出序列可能的单词有N个，那么这个前馈神经网络的输出向量通常是N维的，每个维度的下标对应一个输出单词，每个维度的数值对应的是该单词的输出概率。</li>
+<li>在下一个时间步重复1-6步骤。</li>
+</ol>
+<img src="/2021/09/13/nlp-transformer/nlp-transformer-1/1-7-attention-pro.gif" srcset="/img/loading.gif" lazyload class="" title="1-7-attention-pro">
+<h1 id="图解transformer">图解Transformer</h1>
+<p>Transoformer整体结构图，左半部分为编码器(encoder)，右半部分为解码器(decoder)。</p>
+<img src="/2021/09/13/nlp-transformer/nlp-transformer-1/2-transformer.png" srcset="/img/loading.gif" lazyload class="" title="2-transformer">
+<h2 id="transformer宏观结构">Transformer宏观结构</h2>
+<p>Transformer最开始提出来解决机器翻译任务，因此可以看作是seq2seq模型的一种。</p>
+<img src="/2021/09/13/nlp-transformer/nlp-transformer-1/image-20210915201330887.png" srcset="/img/loading.gif" lazyload class="" title="image-20210915201330887">
+<p>编码器和解码器都是<strong>多层组成</strong>的。层数并不固定，每一层编码器和解码器结构是一样的，不同层编码器和解码器不共享参数。</p>
+<img src="/2021/09/13/nlp-transformer/nlp-transformer-1/image-20210915201613940.png" srcset="/img/loading.gif" lazyload class="" title="image-20210915201613940">
+<p>单层encoder由两部分组成</p>
+<ul>
+<li>Self-Attention Layer</li>
+<li>Feed Forward Neural Network (前馈神经网络，FFNN)</li>
+</ul>
+<p>编译器的输入文本序列最开始经过embedding转换，得到每一个单词的向量表示，然后经过self-attention层进行变换和信息交互得到新的向量表示，self-attention处理一个词时，不仅会使用这个词本身，还会使用上下文的信息，后通过FFNN得到新的向量进入下一层，这一过程中，单词的向量表示的维度并不会发生改变。</p>
+<img src="/2021/09/13/nlp-transformer/nlp-transformer-1/image-20210915203237569.png" srcset="/img/loading.gif" lazyload class="" title="encoder">
+<p>解码器在self-attention和FFNN中间插入了一个<strong>Encoder-Decoder
+Attention</strong>层，这一层帮助解码器聚焦于输入序列中最相关的部分，使得解码器在不同的时候注意的对象不同。</p>
+<img src="/2021/09/13/nlp-transformer/nlp-transformer-1/2-decoder.webp" srcset="/img/loading.gif" lazyload class="" title="decoder">
+<h2 id="transformer结构细节">Transformer结构细节</h2>
+<h3 id="输入处理">输入处理</h3>
+<h4 id="词向量">词向量</h4>
+<p>和常见的NLP 任务一样，我们首先会使用词嵌入算法（embedding
+algorithm），将输入文本序列的每个词转换为一个词向量。实际应用中的向量一般是
+256 或者 512 维。</p>
+<p>假设我们的输入文本是序列包含了3个词，那么每个词可以通过词嵌入算法得到一个4维向量(简化过程)，于是整个输入被转化成为一个向量序列。</p>
+<img src="/2021/09/13/nlp-transformer/nlp-transformer-1/image-20210915204342805.png" srcset="/img/loading.gif" lazyload class="" title="embedding">
+<p>如果每一个句子的长度不一样，我们会选择一个合适的长度，对于较短的句子进行填充(padding)，对于较长的句子进行截断。</p>
+<h4 id="位置向量">位置向量</h4>
+<p>Transformer模型对每个输入的词向量都加上了一个位置向量。这些向量有助于确定每个单词的位置特征，或者句子中不同单词之间的距离特征，可以为模型提供更多有意义的信息，比如词的位置，词之间的距离等。</p>
+<img src="/2021/09/13/nlp-transformer/nlp-transformer-1/image-20210915204718171.png" srcset="/img/loading.gif" lazyload class="" title="位置编码">
+<img src="/2021/09/13/nlp-transformer/nlp-transformer-1/image-20210915205022037.png" srcset="/img/loading.gif" lazyload class="" title="位置向量设计表达式">
+<p>上面表达式中的pospos代表词的位置，d<sub>model</sub>代表位置向量的维度，i∈[0,dmodel)代表位置d<sub>model</sub>维位置向量第i维。</p>
+<img src="/2021/09/13/nlp-transformer/nlp-transformer-1/image-20210915205400940.png" srcset="/img/loading.gif" lazyload class="" title="image-20210915205400940">
+<p>这种方法的优点是：可以扩展到未知的序列长度。</p>
+<h3 id="编码器encoder">编码器encoder</h3>
+<p>编码部分的输入文本序列经过输入处理之后得到了一个向量序列，这个向量序列将被送入第1层编码器，第1层编码器输出的同样是一个向量序列，再接着送入下一层编码器：第1层编码器的输入是融合位置向量的词向量，<em>更上层编码器的输入则是上一层编码器的输出</em>。</p>
+<img src="/2021/09/13/nlp-transformer/nlp-transformer-1/image-20210915205626346.png" srcset="/img/loading.gif" lazyload class="" title="encoder序列向量流动">
+<h3 id="self-attention层">Self-attention层</h3>
+<p>我们要翻译的句子为：</p>
+<figure class="highlight vbnet"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs vbnet">The animal didn<span class="hljs-comment">&#x27;t cross the street because it was too tired</span><br></code></pre></td></tr></table></figure>
+<p>这个句子中it这一个指代词的具体含义是什么？</p>
+<p>RNN 在处理序列中的一个词时，会考虑句子前面的词传过来的<em>hidden
+state</em>，而<em>hidden state</em>就包含了前面的词的信息；而<em>Self
+Attention</em>机制值得是，当前词会直接关注到自己句子中前后相关的所有词语。</p>
+<img src="/2021/09/13/nlp-transformer/nlp-transformer-1/image-20210915210106476.png" srcset="/img/loading.gif" lazyload class="" title="slef-attention">
+<h4 id="self-attention细节">self-attention细节</h4>
+<p>假设一句话包含两个单词：Thinking
+Machines。自注意力的一种理解是：Thinking-Thinking，Thinking-Machines，Machines-Thinking，Machines-Machines，共2<sup>2</sup>种两两attention。</p>
+<ul>
+<li>第1步：对输入编码器的词向量进行线性变换得到：Query向量:
+q1,q2，Key向量: k1,k2，Value向量:
+v1,v2。这3个向量是词向量分别和3个参数矩阵相乘得到的，而这个矩阵也是是模型要学习的参数。</li>
+</ul>
+<img src="/2021/09/13/nlp-transformer/nlp-transformer-1/image-20210915210443220.png" srcset="/img/loading.gif" lazyload class="" title="query-key-value">
+<p>attention计算的逻辑常常可以描述为：query和key计算相关或者叫attention得分，然后根据attention得分对value进行加权求和。</p>
+<ul>
+<li><p>第2步：计算Attention
+Score（注意力分数）。假设我们现在计算第一个词<em>Thinking</em>
+的Attention Score（注意力分数），需要根据<em>Thinking</em>
+对应的词向量，对句子中的其他词向量都计算一个分数。</p>
+<p>这些分数决定了我们在编码<em>Thinking</em>这个词时，需要对句子中其他位置的词向量的权重。Attention
+score是根据"<em>Thinking</em>" 对应的 Query 向量和其他位置的每个词的 Key
+向量进行点积得到的。Thinking的第一个Attention
+Score就是q1和k1的内积，第二个分数就是q1和k2的点积。这个计算过程在下图中进行了展示，下图里的具体得分数据是为了表达方便而自定义的。</p></li>
+</ul>
+<img src="/2021/09/13/nlp-transformer/nlp-transformer-1/image-20210915210721367.png" srcset="/img/loading.gif" lazyload class="" title="attention score">
+<ul>
+<li>第3步：把每个分数除以<span
+class="math inline">\(\sqrt{d_k}\)</span>,d<sub>k</sub>是Key向量的维度。你也可以除以其他数，除以一个数是为了在反向传播时，求梯度时更加稳定。</li>
+<li>第4步：接着把这些分数经过一个Softmax函数，Softmax可以将分数归一化，这样使得分数都是正数并且加起来等于1，
+如下图所示。
+这些分数决定了Thinking词向量，对其他所有位置的词向量分别有多少的注意力。</li>
+</ul>
+<img src="/2021/09/13/nlp-transformer/nlp-transformer-1/image-20210915210845022.png" srcset="/img/loading.gif" lazyload class="" title="attention score">
+<ul>
+<li><p>第5步：得到每个词向量的分数后，将分数分别与对应的Value向量相乘。这种做法背后的直觉理解就是：对于分数高的位置，相乘后的值就越大，我们把更多的注意力放到了它们身上；对于分数低的位置，相乘后的值就越小，这些位置的词可能是相关性不大的。</p></li>
+<li><p>第6步：把第5步得到的Value向量相加，就得到了Self
+Attention在当前位置（这里的例子是第1个位置）对应的输出。</p></li>
+<li><p>最后，在下图展示了 对第一个位置词向量计算Self Attention
+的全过程。最终得到的当前位置（这里的例子是第一个位置）词向量会继续输入到前馈神经网络。注意：上面的6个步骤每次只能计算一个位置的输出向量，在实际的代码实现中，Self
+Attention的计算过程是使用矩阵快速计算的，一次就得到所有位置的输出向量。</p></li>
+</ul>
+<img src="/2021/09/13/nlp-transformer/nlp-transformer-1/image-20210915212410785.png" srcset="/img/loading.gif" lazyload class="" title="attention后的向量表示">
+<h4 id="self-attention矩阵计算">self-attention矩阵计算</h4>
+<p>将self-attention计算6个步骤中的向量放一起，比如<span
+class="math inline">\(X=[x_1;x_2]X=[x1;x2]\)</span>，便可以进行矩阵计算啦。充分利用GPU的优势，加快速度。</p>
+<img src="/2021/09/13/nlp-transformer/nlp-transformer-1/image-20210915212800378.png" srcset="/img/loading.gif" lazyload class="" title="矩阵计算">
+<img src="/2021/09/13/nlp-transformer/nlp-transformer-1/image-20210915212824098.png" srcset="/img/loading.gif" lazyload class="" title="矩阵输出">
+<h4 id="多头注意力机制">多头注意力机制</h4>
+<ul>
+<li>它扩展了模型关注不同位置的能力。当我们翻译句子：<code>The animal didn’t cross the street because it was too tired</code>时，我们不仅希望模型关注到"it"本身，还希望模型关注到"The"和“animal”，甚至关注到"tired"。这时，多头注意力机制会有帮助</li>
+<li>多头注意力机制赋予attention层多个子空间表示。多头注意力机制会有多组权重矩阵，因此可以将X变换到更多种子空间进行表示。</li>
+</ul>
+<img src="/2021/09/13/nlp-transformer/nlp-transformer-1/image-20210916144921044.png" srcset="/img/loading.gif" lazyload class="" title="多头注意力机制">
+<img src="/2021/09/13/nlp-transformer/nlp-transformer-1/image-20210916145207331.png" srcset="/img/loading.gif" lazyload class="" title="z矩阵">
+<p>由于前馈神经网络层接收的是 1
+个矩阵（其中每行的向量表示一个词），而不是 8
+个矩阵，所以我们直接把8个子矩阵拼接起来得到一个大的矩阵，然后和另一个权重矩阵W^OWO相乘做一次变换，映射到前馈神经网络层所需要的维度。</p>
+<img src="/2021/09/13/nlp-transformer/nlp-transformer-1/image-20210916145235108.png" srcset="/img/loading.gif" lazyload class="" title="子矩阵映射变换">
+<p>运用多头注意力机制后</p>
+<img src="/2021/09/13/nlp-transformer/nlp-transformer-1/image-20210916145447947.png" srcset="/img/loading.gif" lazyload class="" title="运用多头注意力机制后">
+<h4 id="attention代码实例">Attention代码实例</h4>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">MultiheadAttention</span>(nn.Module):<br>    <span class="hljs-comment"># n_heads: 多头注意力的数量</span><br>    <span class="hljs-comment"># hid_dim: 每个词输出的向量维度</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, hid_dim, n_heads, dropout</span>):<br>        <span class="hljs-built_in">super</span>(MultiheadAttention, self).__init__()<br>        self_hid_dim = hid_dim<br>        self.n_heads = n_heads<br>        <br>        <span class="hljs-comment"># 强制hid_dim必须整除h</span><br>        <span class="hljs-keyword">assert</span> hid_dim % n_heads == <span class="hljs-number">0</span><br>        <span class="hljs-comment"># 定义W_q矩阵</span><br>        self.w_q = nn.Linear(hid_dim, hid_dim)<br>        <span class="hljs-comment"># 定义W_k矩阵</span><br>        self.w_k = nn.Linear(hid_dim, hid_dim)<br>        <span class="hljs-comment"># 定义W_v矩阵</span><br>        self.w_v = nn.Linear(hid_dim, hid_dim)<br>        <br>        self.fc = nn.Linear(hid_dim, hid_dim)<br>        self.do = nn.Dropout(dropout)<br>        <br>        <span class="hljs-comment"># 缩放</span><br>        self.scale = torch.sqrt(torch.FLoaTensor([hid_dim // n_heads]))<br>	<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">forward</span>(<span class="hljs-params">self, query, key, value, mask=<span class="hljs-literal">None</span></span>):<br>        <span class="hljs-comment"># 注意 Q，K，V的在句子长度这一个维度的数值可以一样，可以不一样。</span><br>        <span class="hljs-comment"># K: [64,10,300], 假设batch_size 为 64，有 10 个词，每个词的 Query 向量是300 维</span><br>        bsz = query.shape[<span class="hljs-number">0</span>]<br>        Q = self.w_q(query)<br>        K = self.w_k(key)<br>        V = self.w_v(value)<br>        <br>        <span class="hljs-comment"># 这里把 K Q V 矩阵拆分为多组注意力</span><br>        <span class="hljs-comment"># 最后一维就是是用 self.hid_dim // self.n_heads 来得到的，表示每组注意力的向量长度, 每个head 的向量长度是：300/6=50</span><br>        <span class="hljs-comment"># 64 表示 batch size，6 表示有 6组注意力，10 表示有 10 词，50表示每组注意力的词的向量长度</span><br>        <span class="hljs-comment"># K: [64,10,300] 拆分多组注意力 -&gt; [64,10,6,50] 转置得到 -&gt; [64,6,10,50]</span><br>        <span class="hljs-comment"># V: [64,10,300] 拆分多组注意力 -&gt; [64,10,6,50] 转置得到 -&gt; [64,6,10,50]</span><br>        <span class="hljs-comment"># Q: [64,12,300] 拆分多组注意力 -&gt; [64,12,6,50] 转置得到 -&gt; [64,6,12,50]</span><br>        <span class="hljs-comment"># 转置是为了把注意力的数量 6 放到前面，把 10 和 50 放到后面，方便下面计算</span><br>        Q = Q.view(bsz, -<span class="hljs-number">1</span>, self.n_heads, self.hid_dim //<br>                   self.n_heads).permute(<span class="hljs-number">0</span>, <span class="hljs-number">2</span>, <span class="hljs-number">1</span>, <span class="hljs-number">3</span>)<br>        K = K.view(bsz, -<span class="hljs-number">1</span>, self.n_heads, self.hid_dim //<br>                   self.n_heads).permute(<span class="hljs-number">0</span>, <span class="hljs-number">2</span>, <span class="hljs-number">1</span>, <span class="hljs-number">3</span>)<br>        V = V.view(bsz, -<span class="hljs-number">1</span>, self.n_heads, self.hid_dim //<br>                   self.n_heads).permute(<span class="hljs-number">0</span>, <span class="hljs-number">2</span>, <span class="hljs-number">1</span>, <span class="hljs-number">3</span>)<br><br>        <span class="hljs-comment"># 第 1 步：Q 乘以 K的转置，除以scale</span><br>        <span class="hljs-comment"># [64,6,12,50] * [64,6,50,10] = [64,6,12,10]</span><br>        <span class="hljs-comment"># attention：[64,6,12,10]</span><br>        attention = torch.matmul(Q, K.permute(<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">3</span>, <span class="hljs-number">2</span>)) / self.scale<br><br>        <span class="hljs-comment"># 如果 mask 不为空，那么就把 mask 为 0 的位置的 attention 分数设置为 -1e10，这里用“0”来指示哪些位置的词向量不能被attention到，比如padding位置，当然也可以用“1”或者其他数字来指示，主要设计下面2行代码的改动。</span><br>        <span class="hljs-keyword">if</span> mask <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">None</span>:<br>            attention = attention.masked_fill(mask == <span class="hljs-number">0</span>, -<span class="hljs-number">1e10</span>)<br><br>        <span class="hljs-comment"># 第 2 步：计算上一步结果的 softmax，再经过 dropout，得到 attention。</span><br>        <span class="hljs-comment"># 注意，这里是对最后一维做 softmax，也就是在输入序列的维度做 softmax</span><br>        <span class="hljs-comment"># attention: [64,6,12,10]</span><br>        attention = self.do(torch.softmax(attention, dim=-<span class="hljs-number">1</span>))<br><br>        <span class="hljs-comment"># 第三步，attention结果与V相乘，得到多头注意力的结果</span><br>        <span class="hljs-comment"># [64,6,12,10] * [64,6,10,50] = [64,6,12,50]</span><br>        <span class="hljs-comment"># x: [64,6,12,50]</span><br>        x = torch.matmul(attention, V)<br><br>        <span class="hljs-comment"># 因为 query 有 12 个词，所以把 12 放到前面，把 50 和 6 放到后面，方便下面拼接多组的结果</span><br>        <span class="hljs-comment"># x: [64,6,12,50] 转置-&gt; [64,12,6,50]</span><br>        x = x.permute(<span class="hljs-number">0</span>, <span class="hljs-number">2</span>, <span class="hljs-number">1</span>, <span class="hljs-number">3</span>).contiguous()<br>        <span class="hljs-comment"># 这里的矩阵转换就是：把多组注意力的结果拼接起来</span><br>        <span class="hljs-comment"># 最终结果就是 [64,12,300]</span><br>        <span class="hljs-comment"># x: [64,12,6,50] -&gt; [64,12,300]</span><br>        x = x.view(bsz, -<span class="hljs-number">1</span>, self.n_heads * (self.hid_dim // self.n_heads))<br>        x = self.fc(x)<br>        <span class="hljs-keyword">return</span> x<br><br><br><span class="hljs-comment"># batch_size 为 64，有 12 个词，每个词的 Query 向量是 300 维</span><br>query = torch.rand(<span class="hljs-number">64</span>, <span class="hljs-number">12</span>, <span class="hljs-number">300</span>)<br><span class="hljs-comment"># batch_size 为 64，有 12 个词，每个词的 Key 向量是 300 维</span><br>key = torch.rand(<span class="hljs-number">64</span>, <span class="hljs-number">10</span>, <span class="hljs-number">300</span>)<br><span class="hljs-comment"># batch_size 为 64，有 10 个词，每个词的 Value 向量是 300 维</span><br>value = torch.rand(<span class="hljs-number">64</span>, <span class="hljs-number">10</span>, <span class="hljs-number">300</span>)<br>attention = MultiheadAttention(hid_dim=<span class="hljs-number">300</span>, n_heads=<span class="hljs-number">6</span>, dropout=<span class="hljs-number">0.1</span>)<br>output = attention(query, key, value)<br><span class="hljs-comment">## output: torch.Size([64, 12, 300])</span><br><span class="hljs-built_in">print</span>(output.shape) <br>        <br></code></pre></td></tr></table></figure>
+<h4 id="残差连接">残差连接</h4>
+<p>编码器的每个子层（Self Attention 层和
+FFNN）都有一个残差连接和层标准化（layer-normalization），如下图所示。</p>
+<img src="/2021/09/13/nlp-transformer/nlp-transformer-1/image-20210916152516472.png" srcset="/img/loading.gif" lazyload class="" title="残差">
+<img src="/2021/09/13/nlp-transformer/nlp-transformer-1/image-20210916152608551.png" srcset="/img/loading.gif" lazyload class="" title="标准化细节">
+<p>假设一个 Transformer 是由 2
+层编码器和两层解码器组成的，将全部内部细节展示起来如下图所示。</p>
+<img src="/2021/09/13/nlp-transformer/nlp-transformer-1/image-20210916152656516.png" srcset="/img/loading.gif" lazyload class="" title="2层transformer">
+<h3 id="解码器">解码器</h3>
+<p>编码器一般有多层，第一个编码器的输入是一个序列文本，最后一个编码器输出是一组序列向量，这组序列向量会作为解码器的K、V输入，其中K=V=解码器输出的序列向量表示。这些注意力向量将会输入到每个解码器的Encoder-Decoder
+Attention层，这有助于解码器把注意力集中到输入序列的合适位置</p>
+<img src="/2021/09/13/nlp-transformer/nlp-transformer-1/transformer_decoding_1.gif" srcset="/img/loading.gif" lazyload class="" title="transformer_decoding_1">
+<p>解码（decoding
+）阶段的每一个时间步都输出一个翻译后的单词（这里的例子是英语翻译），解码器当前时间步的输出又重新作为输入Q和编码器的输出K、V共同作为下一个时间步解码器的输入。然后重复这个过程，直到输出一个结束符。</p>
+<img src="/2021/09/13/nlp-transformer/nlp-transformer-1/2-decoder.gif" srcset="/img/loading.gif" lazyload class="" title="decoder">
+<p>解码器中的 Self Attention 层，和编码器中的 Self Attention
+层的区别：</p>
+<ol type="1">
+<li>在解码器里，Self Attention
+层只允许关注到输出序列中早于当前位置之前的单词。具体做法是：在 Self
+Attention 分数经过 Softmax
+层之前，屏蔽当前位置之后的那些位置（将attention score设置成-inf）。</li>
+<li>解码器 Attention层是使用前一层的输出来构造Query 矩阵，而Key矩阵和
+Value矩阵来自于编码器最终的输出。</li>
+</ol>
+<h2 id="线性层和softmax">线性层和softmax</h2>
+<p>线性层就是一个普通的全连接神经网络，可以把解码器输出的向量，映射到一个更大的向量，这个向量称为
+logits 向量：假设我们的模型有 10000 个英语单词（模型的输出词汇表），此
+logits 向量便会有 10000 个数字，每个数表示一个单词的分数。</p>
+<p>然后，Softmax
+层会把这些分数转换为概率（把所有的分数转换为正数，并且加起来等于
+1）。然后选择最高概率的那个数字对应的词，就是这个时间步的输出单词。</p>
+<h2 id="损失函数">损失函数</h2>
+<p>Transformer训练的时候，需要将解码器的输出和label一同送入损失函数，以获得loss，最终模型根据loss进行方向传播。</p>
+<p>只要Transformer解码器预测了组概率，我们就可以把这组概率和正确的输出概率做对比，然后使用反向传播来调整模型的权重，使得输出的概率分布更加接近整数输出。</p>
+<img src="/2021/09/13/nlp-transformer/nlp-transformer-1/image-20210916153706279.png" srcset="/img/loading.gif" lazyload class="" title="概率分布">
+<ul>
+<li>Greedy
+decoding：由于模型每个时间步只产生一个输出，我们这样看待：模型是从概率分布中选择概率最大的词，并且丢弃其他词。这种方法叫做贪婪解码（greedy
+decoding）。</li>
+<li>Beam
+search：每个时间步保留k个最高概率的输出词，然后在下一个时间步，根据上一个时间步保留的k个词来确定当前应该保留哪k个词。假设k=2，第一个位置概率最高的两个输出的词是”I“和”a“，这两个词都保留，然后根据第一个词计算第2个位置的词的概率分布，再取出第2个位置上2个概率最高的词。对于第3个位置和第4个位置，我们也重复这个过程。这种方法称为集束搜索(beam
+search)。</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" class="category-chain-item">深度学习</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%87%AA%E7%84%B6%E8%AF%AD%E8%A8%80%E5%A4%84%E7%90%86/" class="category-chain-item">自然语言处理</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Datawhale%E7%BB%84%E9%98%9F%E5%AD%A6%E4%B9%A0/">#Datawhale组队学习</a>
+      
+        <a href="/tags/NLP%E5%85%A5%E9%97%A8/">#NLP入门</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>基于Transformers的自然语言处理(NLP)入门(一)</div>
+      <div>https://www.spacezxy.top/2021/09/13/nlp-transformer/nlp-transformer-1/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Xavier ZXY</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年9月13日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/09/16/nlp-transformer/nlp-transformer-2/" title="基于Transformers的自然语言处理(NLP)入门(二)">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">基于Transformers的自然语言处理(NLP)入门(二)</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/09/01/Models/Yolo/" title="Yolo">
+                        <span class="hidden-mobile">Yolo</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a>
+    </div>
+  
+  
+  
+    <!-- 备案信息 ICP for China -->
+    <div class="beian">
+  <span>
+    <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+      湘ICP备  2021018889
+    </a>
+  </span>
+  
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

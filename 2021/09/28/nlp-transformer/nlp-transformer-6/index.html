@@ -1,0 +1,733 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/logo16.svg">
+  <link rel="icon" href="/img/logo32.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Xavier ZXY">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="本文为参加Datawhale组队学习时所写，如若需了解细致内容，请去到Datawhale官方开源课程基于transformers的自然语言处理(NLP)入门 (datawhalechina.github.io) 机器翻译任务 在这个小节中，我们将展示如何使用🤗 Transformers代码库中的模型来解决自然语言处理中的翻译任务。我们将会使用WMT dataset数据集。这是翻译任务最">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于Transformers的自然语言处理(NLP)入门(六)">
+<meta property="og:url" content="https://www.spacezxy.top/2021/09/28/nlp-transformer/nlp-transformer-6/index.html">
+<meta property="og:site_name" content="Xavier ZXY">
+<meta property="og:description" content="本文为参加Datawhale组队学习时所写，如若需了解细致内容，请去到Datawhale官方开源课程基于transformers的自然语言处理(NLP)入门 (datawhalechina.github.io) 机器翻译任务 在这个小节中，我们将展示如何使用🤗 Transformers代码库中的模型来解决自然语言处理中的翻译任务。我们将会使用WMT dataset数据集。这是翻译任务最">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.spacezxy.top/2021/09/28/nlp-transformer/nlp-transformer-6/image-20210928164306279.png">
+<meta property="article:published_time" content="2021-09-28T08:24:49.000Z">
+<meta property="article:modified_time" content="2021-10-01T00:20:42.946Z">
+<meta property="article:author" content="Xavier ZXY">
+<meta property="article:tag" content="Datawhale组队学习">
+<meta property="article:tag" content="NLP入门">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.spacezxy.top/2021/09/28/nlp-transformer/nlp-transformer-6/image-20210928164306279.png">
+  
+  
+  
+  <title>基于Transformers的自然语言处理(NLP)入门(六) - Xavier ZXY</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.spacezxy.top","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>SapceZXY</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="基于Transformers的自然语言处理(NLP)入门(六)"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-09-28 16:24" pubdate>
+          2021年9月28日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          5.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          45 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">基于Transformers的自然语言处理(NLP)入门(六)</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>本文为参加Datawhale组队学习时所写，如若需了解细致内容，请去到Datawhale官方开源课程<a
+target="_blank" rel="noopener" href="https://datawhalechina.github.io/learn-nlp-with-transformers/#/">基于transformers的自然语言处理(NLP)入门
+(datawhalechina.github.io)</a></p>
+<h1 id="机器翻译任务">机器翻译任务</h1>
+<p>在这个小节中，我们将展示如何使用<a
+target="_blank" rel="noopener" href="https://github.com/huggingface/transformers">🤗
+Transformers</a>代码库中的模型来解决自然语言处理中的翻译任务。我们将会使用<a
+target="_blank" rel="noopener" href="http://www.statmt.org/wmt16/">WMT
+dataset</a>数据集。这是翻译任务最常用的数据集之一。</p>
+<p>对于翻译任务，我们将展示如何使用简单的加载数据集，同时针对相应的仍无使用transformer中的Trainer接口对模型进行微调。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">model_checkpoint = <span class="hljs-string">&quot;Helsinki-NLP/opus-mt-en-ro&quot;</span>   <span class="hljs-comment"># 选择一个模型checkpoint</span><br></code></pre></td></tr></table></figure>
+<p>本文我们使用已经训练好的<a
+target="_blank" rel="noopener" href="https://huggingface.co/Helsinki-NLP/opus-mt-en-ro"><code>Helsinki-NLP/opus-mt-en-ro</code></a>
+checkpoint来做翻译任务。</p>
+<span id="more"></span>
+<h2 id="加载数据">加载数据</h2>
+<p>数据加载和评测方式加载只需要简单使用load_dataset和load_metric即可。我们使用WMT数据集中的English/Romanian双语翻译。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> datasets <span class="hljs-keyword">import</span> load_dataset, load_metric<br><br>raw_datasets = load_dataset(<span class="hljs-string">&quot;wmt16&quot;</span>, <span class="hljs-string">&quot;ro-en&quot;</span>)<br>metric = load_metric(<span class="hljs-string">&quot;sacrebleu&quot;</span>)<br></code></pre></td></tr></table></figure>
+<p>dataset结构</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs python">DatasetDict(&#123;<br>    train: Dataset(&#123;<br>        features: [<span class="hljs-string">&#x27;translation&#x27;</span>],<br>        num_rows: <span class="hljs-number">610320</span><br>    &#125;)<br>    validation: Dataset(&#123;<br>        features: [<span class="hljs-string">&#x27;translation&#x27;</span>],<br>        num_rows: <span class="hljs-number">1999</span><br>    &#125;)<br>    test: Dataset(&#123;<br>        features: [<span class="hljs-string">&#x27;translation&#x27;</span>],<br>        num_rows: <span class="hljs-number">1999</span><br>    &#125;)<br>&#125;)<br></code></pre></td></tr></table></figure>
+<p>随机选取数据进行展示</p>
+<img src="/2021/09/28/nlp-transformer/nlp-transformer-6/image-20210928164306279.png" srcset="/img/loading.gif" lazyload class="" title="dataset">
+<p>我们使用<code>metric</code>中的<code>compute</code>方法来对比predictions和labels，从而计算得分。predictions和labels都需要是一个list。具体格式见下面的例子：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python">fake_preds = [<span class="hljs-string">&quot;hello there&quot;</span>, <span class="hljs-string">&quot;general kenobi&quot;</span>]<br>fake_labels = [[<span class="hljs-string">&quot;hello there&quot;</span>], [<span class="hljs-string">&quot;general kenobi&quot;</span>]]<br>metric.compute(predictions=fake_preds, references=fake_labels)<br></code></pre></td></tr></table></figure>
+<figure class="highlight prolog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs prolog">&#123;<span class="hljs-string">&#x27;score&#x27;</span>: <span class="hljs-number">0.0</span>,<br> <span class="hljs-string">&#x27;counts&#x27;</span>: [<span class="hljs-number">4</span>, <span class="hljs-number">2</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>],<br> <span class="hljs-string">&#x27;totals&#x27;</span>: [<span class="hljs-number">4</span>, <span class="hljs-number">2</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>],<br> <span class="hljs-string">&#x27;precisions&#x27;</span>: [<span class="hljs-number">100.0</span>, <span class="hljs-number">100.0</span>, <span class="hljs-number">0.0</span>, <span class="hljs-number">0.0</span>],<br> <span class="hljs-string">&#x27;bp&#x27;</span>: <span class="hljs-number">1.0</span>,<br> <span class="hljs-string">&#x27;sys_len&#x27;</span>: <span class="hljs-number">4</span>,<br> <span class="hljs-string">&#x27;ref_len&#x27;</span>: <span class="hljs-number">4</span>&#125;<br></code></pre></td></tr></table></figure>
+<h2 id="数据预处理">数据预处理</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> transformer <span class="hljs-keyword">import</span> AutoTokenizer<br><br>tokenizer = AutoTokenizer.from_pretrained(model_checkpoint)<br></code></pre></td></tr></table></figure>
+<p>以我们使用的mBART模型为例，我们需要正确设置source语言和target语言。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">if</span> <span class="hljs-string">&quot;mbart&quot;</span> <span class="hljs-keyword">in</span> model_checkpoint:<br>    tokenizer.src_lang = <span class="hljs-string">&quot;en-XX&quot;</span><br>    tokenizer.tgt_lang = <span class="hljs-string">&quot;ro-RO&quot;</span><br></code></pre></td></tr></table></figure>
+<p>token
+IDs也就是input_ids一般来说随着预训练模型名字的不同而有所不同。原因是不同的预训练模型在预训练的时候设定了不同的规则。但只要tokenizer和model的名字一致，那么tokenizer预处理的输入格式就会满足model需求的。</p>
+<p>为了给模型准备好翻译的targets，我们使用<code>as_target_tokenizer</code>来控制targets所对应的特殊token：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">with</span> tokenizer.as_target_tokenizer():<br>    <span class="hljs-built_in">print</span>(tokenizer(<span class="hljs-string">&quot;Hello, this one sentence!&quot;</span>))<br>    model_input = tokenizer(<span class="hljs-string">&quot;Hello, this one sentence!&quot;</span>)<br>    tokens = tokenizer.convert_ids_to_tokens(model_input[<span class="hljs-string">&#x27;input_ids&#x27;</span>])<br>    <span class="hljs-comment"># 打印看一下special toke</span><br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&#x27;tokens: &#123;&#125;&#x27;</span>.<span class="hljs-built_in">format</span>(tokens))<br></code></pre></td></tr></table></figure>
+<figure class="highlight prolog"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs prolog">&#123;<span class="hljs-string">&#x27;input_ids&#x27;</span>: [<span class="hljs-number">10334</span>, <span class="hljs-number">1204</span>, <span class="hljs-number">3</span>, <span class="hljs-number">15</span>, <span class="hljs-number">8915</span>, <span class="hljs-number">27</span>, <span class="hljs-number">452</span>, <span class="hljs-number">59</span>, <span class="hljs-number">29579</span>, <span class="hljs-number">581</span>, <span class="hljs-number">23</span>, <span class="hljs-number">0</span>], <span class="hljs-string">&#x27;attention_mask&#x27;</span>: [<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>]&#125;<br>tokens: [<span class="hljs-string">&#x27;▁Hel&#x27;</span>, <span class="hljs-string">&#x27;lo&#x27;</span>, <span class="hljs-string">&#x27;,&#x27;</span>, <span class="hljs-string">&#x27;▁&#x27;</span>, <span class="hljs-string">&#x27;this&#x27;</span>, <span class="hljs-string">&#x27;▁o&#x27;</span>, <span class="hljs-string">&#x27;ne&#x27;</span>, <span class="hljs-string">&#x27;▁se&#x27;</span>, <span class="hljs-string">&#x27;nten&#x27;</span>, <span class="hljs-string">&#x27;ce&#x27;</span>, <span class="hljs-string">&#x27;!&#x27;</span>, <span class="hljs-string">&#x27;&lt;/s&gt;&#x27;</span>]<br></code></pre></td></tr></table></figure>
+<p>如果您使用的是T5预训练模型的checkpoints，需要对特殊的前缀进行检查。T5使用特殊的前缀来告诉模型具体要做的任务，具体前缀例子如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">if</span> model_checkpoint <span class="hljs-keyword">in</span> [<span class="hljs-string">&quot;t5-small&quot;</span>, <span class="hljs-string">&quot;t5-base&quot;</span>, <span class="hljs-string">&quot;t5-larg&quot;</span>, <span class="hljs-string">&quot;t5-3b&quot;</span>, <span class="hljs-string">&quot;t5-11b&quot;</span>]:<br>    prefix = <span class="hljs-string">&quot;translate English to Romanian: &quot;</span><br><span class="hljs-keyword">else</span>:<br>    prefix = <span class="hljs-string">&quot;&quot;</span><br></code></pre></td></tr></table></figure>
+<p>现在我们可以把所有内容放在一起组成我们的预处理函数了。我们对样本进行预处理的时候，我们还会<code>truncation=True</code>这个参数来确保我们超长的句子被截断。默认情况下，对与比较短的句子我们会自动padding。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs python">max_input_length = <span class="hljs-number">128</span><br>max_target_length = <span class="hljs-number">128</span><br>source_lang = <span class="hljs-string">&quot;en&quot;</span><br>target_lang = <span class="hljs-string">&quot;ro&quot;</span><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">preprocess_function</span>(<span class="hljs-params">examples</span>):<br>    inputs = [prefix + ex[source_lang] <span class="hljs-keyword">for</span> ex <span class="hljs-keyword">in</span> examples[<span class="hljs-string">&quot;translation&quot;</span>]]<br>    targets = [ex[target_lang] <span class="hljs-keyword">for</span> ex <span class="hljs-keyword">in</span> examples[<span class="hljs-string">&quot;translation&quot;</span>]]<br>    model_inputs = tokenizer(inputs, max_length=max_input_length, truncation=<span class="hljs-literal">True</span>)<br><br>    <span class="hljs-comment"># Setup the tokenizer for targets</span><br>    <span class="hljs-keyword">with</span> tokenizer.as_target_tokenizer():<br>        labels = tokenizer(targets, max_length=max_target_length, truncation=<span class="hljs-literal">True</span>)<br><br>    model_inputs[<span class="hljs-string">&quot;labels&quot;</span>] = labels[<span class="hljs-string">&quot;input_ids&quot;</span>]<br>    <span class="hljs-keyword">return</span> model_inputs<br></code></pre></td></tr></table></figure>
+<p>接下来对数据集datasets里面的所有样本进行预处理，处理的方式是使用map函数，将预处理函数prepare_train_features应用到（map)所有样本上。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">tokenized_datasets = raw_datasets.<span class="hljs-built_in">map</span>(preprocess_function, batched=<span class="hljs-literal">True</span>)<br></code></pre></td></tr></table></figure>
+<h2 id="fine-tuning微调模型">Fine-tuning微调模型</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> transformers <span class="hljs-keyword">import</span> AutoModelForSeq2SeqLM, DataCollatorForSeq2Seq, Seq2SeqTrainingArguments, Seq2SeqTrainer<br><br>model = AutoModelForSeq2SeqLM.from_pretrained(model_checkpoint)<br></code></pre></td></tr></table></figure>
+<p>模型参数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs python">batch_size = <span class="hljs-number">16</span><br>args = Seq2SeqTrainingArguments(<br>    <span class="hljs-string">&quot;test-translation&quot;</span>,<br>    evaluation_strategy = <span class="hljs-string">&quot;epoch&quot;</span>,<br>    learning_rate=<span class="hljs-number">2e-5</span>,<br>    per_device_train_batch_size=batch_size,<br>    per_device_eval_batch_size=batch_size,<br>    weight_decay=<span class="hljs-number">0.01</span>,<br>    save_total_limit=<span class="hljs-number">3</span>,<br>    num_train_epochs=<span class="hljs-number">1</span>,<br>    predict_with_generate=<span class="hljs-literal">True</span>,<br>    fp16=<span class="hljs-literal">False</span>,<br>)<br></code></pre></td></tr></table></figure>
+<p>数据收集器</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">data_collator = DataCollatorForSeq2Seq(tokenizer, model=model)<br></code></pre></td></tr></table></figure>
+<p>数据后处理</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">postprocess_text</span>(<span class="hljs-params">preds, labels</span>):<br>    preds = [pred.strip() <span class="hljs-keyword">for</span> pred <span class="hljs-keyword">in</span> preds]<br>    labels = [[label.strip()] <span class="hljs-keyword">for</span> label <span class="hljs-keyword">in</span> labels]<br><br>    <span class="hljs-keyword">return</span> preds, labels<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">compute_metrics</span>(<span class="hljs-params">eval_preds</span>):<br>    preds, labels = eval_preds<br>    <span class="hljs-keyword">if</span> <span class="hljs-built_in">isinstance</span>(preds, <span class="hljs-built_in">tuple</span>):<br>        preds = preds[<span class="hljs-number">0</span>]<br>    decoded_preds = tokenizer.batch_decode(preds, skip_special_tokens=<span class="hljs-literal">True</span>)<br><br>    <span class="hljs-comment"># Replace -100 in the labels as we can&#x27;t decode them.</span><br>    labels = np.where(labels != -<span class="hljs-number">100</span>, labels, tokenizer.pad_token_id)<br>    decoded_labels = tokenizer.batch_decode(labels, skip_special_tokens=<span class="hljs-literal">True</span>)<br><br>    <span class="hljs-comment"># Some simple post-processing</span><br>    decoded_preds, decoded_labels = postprocess_text(decoded_preds, decoded_labels)<br><br>    result = metric.compute(predictions=decoded_preds, references=decoded_labels)<br>    result = &#123;<span class="hljs-string">&quot;bleu&quot;</span>: result[<span class="hljs-string">&quot;score&quot;</span>]&#125;<br><br>    prediction_lens = [np.count_nonzero(pred != tokenizer.pad_token_id) <span class="hljs-keyword">for</span> pred <span class="hljs-keyword">in</span> preds]<br>    result[<span class="hljs-string">&quot;gen_len&quot;</span>] = np.mean(prediction_lens)<br>    result = &#123;k: <span class="hljs-built_in">round</span>(v, <span class="hljs-number">4</span>) <span class="hljs-keyword">for</span> k, v <span class="hljs-keyword">in</span> result.items()&#125;<br>    <span class="hljs-keyword">return</span> result<br></code></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs python">trainer = Seq2SeqTrainer(<br>    model,<br>    args,<br>    train_dataset=tokenized_datasets[<span class="hljs-string">&quot;train&quot;</span>],<br>    eval_dataset=tokenized_datasets[<span class="hljs-string">&quot;validation&quot;</span>],<br>    data_collator=data_collator,<br>    tokenizer=tokenizer,<br>    compute_metrics=compute_metrics<br>)<br><br><span class="hljs-comment">#  开始训练</span><br>trainer.train()<br></code></pre></td></tr></table></figure>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" class="category-chain-item">深度学习</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/%E8%87%AA%E7%84%B6%E8%AF%AD%E8%A8%80%E5%A4%84%E7%90%86/" class="category-chain-item">自然语言处理</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Datawhale%E7%BB%84%E9%98%9F%E5%AD%A6%E4%B9%A0/">#Datawhale组队学习</a>
+      
+        <a href="/tags/NLP%E5%85%A5%E9%97%A8/">#NLP入门</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>基于Transformers的自然语言处理(NLP)入门(六)</div>
+      <div>https://www.spacezxy.top/2021/09/28/nlp-transformer/nlp-transformer-6/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Xavier ZXY</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年9月28日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/10/10/ML-Pratice/ML-Algorithm-pratice-1/" title="机器学习算法竞赛实战(一)">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">机器学习算法竞赛实战(一)</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/09/28/nlp-transformer/nlp-transformer-5/" title="基于Transformers的自然语言处理(NLP)入门(五)">
+                        <span class="hidden-mobile">基于Transformers的自然语言处理(NLP)入门(五)</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a>
+    </div>
+  
+  
+  
+    <!-- 备案信息 ICP for China -->
+    <div class="beian">
+  <span>
+    <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+      湘ICP备  2021018889
+    </a>
+  </span>
+  
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
