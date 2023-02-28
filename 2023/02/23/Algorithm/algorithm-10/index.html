@@ -16,21 +16,24 @@
   <meta name="author" content="Xavier ZXY">
   <meta name="keywords" content="">
   
-    <meta name="description" content="Conventional Commit Types Commit types     Commit Type Title Description Emoji Release Include in changelog     feat Features A new feature ✨ minor true   fix Bug Fixes A bug">
+    <meta name="description" content="贪心算法（二）  代码随想录  无重叠区间 435. 无重叠区间 - 力扣（Leetcode） 按照右边界排序，从左向右记录非交叉区间的个数。最后用区间总数减去非交叉区间的个数就是需要移除的区间个数了。  12345678910111213141516171819202122class Solution&amp;#123;public:    &#x2F;&#x2F; 按照区间右边界排序    static">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Conventional Commit Types">
-<meta property="og:url" content="https://www.spacezxy.top/2023/01/22/Tools/Conventional-Commit-Types/index.html">
+<meta property="og:title" content="贪心算法（二）">
+<meta property="og:url" content="https://www.spacezxy.top/2023/02/23/Algorithm/algorithm-10/index.html">
 <meta property="og:site_name" content="Xavier ZXY">
-<meta property="og:description" content="Conventional Commit Types Commit types     Commit Type Title Description Emoji Release Include in changelog     feat Features A new feature ✨ minor true   fix Bug Fixes A bug">
+<meta property="og:description" content="贪心算法（二）  代码随想录  无重叠区间 435. 无重叠区间 - 力扣（Leetcode） 按照右边界排序，从左向右记录非交叉区间的个数。最后用区间总数减去非交叉区间的个数就是需要移除的区间个数了。  12345678910111213141516171819202122class Solution&amp;#123;public:    &#x2F;&#x2F; 按照区间右边界排序    static">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2023-01-22T12:23:02.000Z">
-<meta property="article:modified_time" content="2023-01-25T02:17:11.563Z">
+<meta property="og:image" content="https://www.spacezxy.top/2023/02/23/Algorithm/algorithm-10/20230201164134.png">
+<meta property="article:published_time" content="2023-02-23T10:21:14.000Z">
+<meta property="article:modified_time" content="2023-02-23T11:06:16.599Z">
 <meta property="article:author" content="Xavier ZXY">
+<meta property="article:tag" content="“贪心算法”">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.spacezxy.top/2023/02/23/Algorithm/algorithm-10/20230201164134.png">
   
   
   
-  <title>Conventional Commit Types - Xavier ZXY</title>
+  <title>贪心算法（二） - Xavier ZXY</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -211,7 +214,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Conventional Commit Types"></span>
+            <span id="subtitle" data-typed-text="贪心算法（二）"></span>
           
         </div>
 
@@ -222,8 +225,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-01-22 20:23" pubdate>
-          2023年1月22日 晚上
+        <time datetime="2023-02-23 18:21" pubdate>
+          2023年2月23日 晚上
         </time>
       </span>
     
@@ -234,7 +237,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          898 字
+          651 字
         
       </span>
     
@@ -245,7 +248,7 @@
         
         
         
-          8 分钟
+          6 分钟
         
       </span>
     
@@ -283,122 +286,25 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">Conventional Commit Types</h1>
+            <h1 style="display: none">贪心算法（二）</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="conventional-commit-types">Conventional Commit Types</h1>
-<h2 id="commit-types">Commit types</h2>
-<table style="width:100%;">
-
-<thead>
-<tr class="header">
-<th style="text-align: center;">Commit Type</th>
-<th>Title</th>
-<th>Description</th>
-<th style="text-align: center;">Emoji</th>
-<th>Release</th>
-<th style="text-align: center;">Include in changelog</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: center;"><code>feat</code></td>
-<td>Features</td>
-<td>A new feature</td>
-<td style="text-align: center;">✨</td>
-<td><code>minor</code></td>
-<td style="text-align: center;"><code>true</code></td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"><code>fix</code></td>
-<td>Bug Fixes</td>
-<td>A bug Fix</td>
-<td style="text-align: center;">🐛</td>
-<td><code>patch</code></td>
-<td style="text-align: center;"><code>true</code></td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;"><code>docs</code></td>
-<td>Documentation</td>
-<td>Documentation only changes</td>
-<td style="text-align: center;">📚</td>
-<td><code>patch</code> if <code>scope</code> is <code>readme</code></td>
-<td style="text-align: center;"><code>true</code></td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"><code>style</code></td>
-<td>Styles</td>
-<td>Changes that do not affect the meaning of the code (white-space,
-formatting, missing semi-colons, etc)</td>
-<td style="text-align: center;">💎</td>
-<td>-</td>
-<td style="text-align: center;"><code>true</code></td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;"><code>refactor</code></td>
-<td>Code Refactoring</td>
-<td>A code change that neither fixes a bug nor adds a feature</td>
-<td style="text-align: center;">📦</td>
-<td>-</td>
-<td style="text-align: center;"><code>true</code></td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"><code>perf</code></td>
-<td>Performance Improvements</td>
-<td>A code change that improves performance</td>
-<td style="text-align: center;">🚀</td>
-<td><code>patch</code></td>
-<td style="text-align: center;"><code>true</code></td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;"><code>test</code></td>
-<td>Tests</td>
-<td>Adding missing tests or correcting existing tests</td>
-<td style="text-align: center;">🚨</td>
-<td>-</td>
-<td style="text-align: center;"><code>true</code></td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"><code>build</code></td>
-<td>Builds</td>
-<td>Changes that affect the build system or external dependencies
-(example scopes: gulp, broccoli, npm)</td>
-<td style="text-align: center;">🛠</td>
-<td><code>patch</code></td>
-<td style="text-align: center;"><code>true</code></td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;"><code>ci</code></td>
-<td>Continuous Integrations</td>
-<td>Changes to our CI configuration files and scripts (example scopes:
-Travis, Circle, BrowserStack, SauceLabs)</td>
-<td style="text-align: center;">⚙️</td>
-<td>-</td>
-<td style="text-align: center;"><code>true</code></td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"><code>chore</code></td>
-<td>Chores</td>
-<td>Other changes that don't modify src or test files</td>
-<td style="text-align: center;">♻️</td>
-<td>-</td>
-<td style="text-align: center;"><code>true</code></td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;"><code>revert</code></td>
-<td>Reverts</td>
-<td>Reverts a previous commit</td>
-<td style="text-align: center;">🗑</td>
-<td>-</td>
-<td style="text-align: center;"><code>true</code></td>
-</tr>
-</tbody>
-</table>
-<p><strong>另：</strong><a
-target="_blank" rel="noopener" href="https://www.conventionalcommits.org/zh-hans/v1.0.0/">约定式提交
-(conventionalcommits.org)</a></p>
+                <h1 id="贪心算法二">贪心算法（二）</h1>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://programmercarl.com/">代码随想录</a></p>
+</blockquote>
+<h2 id="无重叠区间">无重叠区间</h2>
+<p><a
+target="_blank" rel="noopener" href="https://leetcode.cn/problems/non-overlapping-intervals/">435.
+无重叠区间 - 力扣（Leetcode）</a></p>
+<p><strong>按照右边界排序，从左向右记录非交叉区间的个数。最后用区间总数减去非交叉区间的个数就是需要移除的区间个数了。</strong></p>
+<img src="/2023/02/23/Algorithm/algorithm-10/20230201164134.png" srcset="/img/loading.gif" lazyload class="" title="img">
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span>&#123;<br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-comment">// 按照区间右边界排序</span><br>    <span class="hljs-function"><span class="hljs-type">static</span> <span class="hljs-type">bool</span> <span class="hljs-title">cmp</span><span class="hljs-params">(<span class="hljs-type">const</span> vector&lt;<span class="hljs-type">int</span>&gt;&amp; a, <span class="hljs-type">const</span> vector&lt;<span class="hljs-type">int</span>&gt;&amp; b)</span> </span>&#123;<br>        <span class="hljs-keyword">return</span> a[<span class="hljs-number">1</span>] &lt; b[<span class="hljs-number">1</span>];<br>    &#125;<br>    <br>    <span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">eraseOverlapIntervals</span><span class="hljs-params">(vector&lt;vector&lt;<span class="hljs-type">int</span>&gt;&gt;&amp; intervals)</span> </span>&#123;<br>        <span class="hljs-keyword">if</span> (interval.<span class="hljs-built_in">size</span>() == <span class="hljs-number">0</span>)<br>            <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>        <span class="hljs-built_in">sort</span>(intervals.<span class="hljs-built_in">begin</span>(), intervals.<span class="hljs-built_in">end</span>(), cmp);<br>        <span class="hljs-type">int</span> count = <span class="hljs-number">1</span>;  <span class="hljs-comment">// 记录非交叉区间的个数</span><br>        <span class="hljs-type">int</span> end = intervals[<span class="hljs-number">0</span>][<span class="hljs-number">1</span>];<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">1</span>; i &lt; intervals.<span class="hljs-built_in">size</span>(); i ++) &#123;<br>            <span class="hljs-keyword">if</span> (end &lt;= intervals[i][<span class="hljs-number">0</span>]) &#123;<br>                end = intervals[i][<span class="hljs-number">1</span>];<br>                count ++;<br>            &#125;<br>        &#125;<br>        <span class="hljs-keyword">return</span> intervals.<span class="hljs-built_in">size</span>() - count;<br>    &#125;<br>&#125;;<br></code></pre></td></tr></table></figure>
+<h2 id="划分字母区间">划分字母区间</h2>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/partition-labels/">763.
+划分字母区间 - 力扣（Leetcode）</a></p>
 
                 
               </div>
@@ -417,7 +323,7 @@ target="_blank" rel="noopener" href="https://www.conventionalcommits.org/zh-hans
     
       <span class="category-chain">
         
-  <a href="/categories/Tools/" class="category-chain-item">Tools</a>
+  <a href="/categories/%E2%80%9C%E7%AE%97%E6%B3%95%E2%80%9D/" class="category-chain-item">“算法”</a>
   
   
 
@@ -429,6 +335,13 @@ target="_blank" rel="noopener" href="https://www.conventionalcommits.org/zh-hans
     </div>
   
   
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E2%80%9C%E8%B4%AA%E5%BF%83%E7%AE%97%E6%B3%95%E2%80%9D/">#“贪心算法”</a>
+      
+    </div>
+  
 </div>
 
 
@@ -437,8 +350,8 @@ target="_blank" rel="noopener" href="https://www.conventionalcommits.org/zh-hans
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Conventional Commit Types</div>
-      <div>https://www.spacezxy.top/2023/01/22/Tools/Conventional-Commit-Types/</div>
+      <div>贪心算法（二）</div>
+      <div>https://www.spacezxy.top/2023/02/23/Algorithm/algorithm-10/</div>
     </div>
     <div class="license-meta">
       
@@ -450,7 +363,7 @@ target="_blank" rel="noopener" href="https://www.conventionalcommits.org/zh-hans
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2023年1月22日</div>
+          <div>2023年2月23日</div>
         </div>
       
       
@@ -482,9 +395,9 @@ target="_blank" rel="noopener" href="https://www.conventionalcommits.org/zh-hans
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/01/25/Algorithm/algorithm-9/" title="贪心算法(一)">
+                      <a href="/2023/02/28/OperatingSystem/Operating-system-source-code/" title="你管这破玩意儿叫操作系统源码(一)">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">贪心算法(一)</span>
+                        <span class="hidden-mobile">你管这破玩意儿叫操作系统源码(一)</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -492,8 +405,8 @@ target="_blank" rel="noopener" href="https://www.conventionalcommits.org/zh-hans
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2022/10/25/Algorithm/algorithm-8/" title="二叉树（三）">
-                        <span class="hidden-mobile">二叉树（三）</span>
+                      <a href="/2023/01/25/Algorithm/algorithm-9/" title="贪心算法(一)">
+                        <span class="hidden-mobile">贪心算法(一)</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
