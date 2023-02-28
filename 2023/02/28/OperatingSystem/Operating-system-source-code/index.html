@@ -16,17 +16,20 @@
   <meta name="author" content="Xavier ZXY">
   <meta name="keywords" content="">
   
-    <meta name="description" content="本文为学习操作系统统源码 (低并发编程)所作笔记，仅供学习参考，不做任何商业用途,若有侵权，请联系删除。  第一回 - 最开始的两行代码 当你按下开机键的那一刻，在主板上提前写死的固件程序 BIOS 会将硬盘中启动区的 512 字节的数据，原封不动复制到内存中的 0x7c00 这个位置，并跳转到那个位置进行执行。   启动区的定义  0盘0道0扇区的512字节的最后两个">
+    <meta name="description" content="本文为学习操作系统统源码 (低并发编程)所作笔记，仅供学习参考，不做任何商业用途,若有侵权，请联系删除。  第一回 - 最开始的两行代码  你管这破玩意叫操作系统源码 | 第一回 最开始的两行代码 (qq.com)  当你按下开机键的那一刻，在主板上提前写死的固件程序 BIOS 会将硬盘中启动区的 512 字节的数据，原封不动复制到内存中的 0x7c00 这个位置，并跳转">
 <meta property="og:type" content="article">
 <meta property="og:title" content="你管这破玩意儿叫操作系统源码(一)">
 <meta property="og:url" content="https://www.spacezxy.top/2023/02/28/OperatingSystem/Operating-system-source-code/index.html">
 <meta property="og:site_name" content="Xavier ZXY">
-<meta property="og:description" content="本文为学习操作系统统源码 (低并发编程)所作笔记，仅供学习参考，不做任何商业用途,若有侵权，请联系删除。  第一回 - 最开始的两行代码 当你按下开机键的那一刻，在主板上提前写死的固件程序 BIOS 会将硬盘中启动区的 512 字节的数据，原封不动复制到内存中的 0x7c00 这个位置，并跳转到那个位置进行执行。   启动区的定义  0盘0道0扇区的512字节的最后两个">
+<meta property="og:description" content="本文为学习操作系统统源码 (低并发编程)所作笔记，仅供学习参考，不做任何商业用途,若有侵权，请联系删除。  第一回 - 最开始的两行代码  你管这破玩意叫操作系统源码 | 第一回 最开始的两行代码 (qq.com)  当你按下开机键的那一刻，在主板上提前写死的固件程序 BIOS 会将硬盘中启动区的 512 字节的数据，原封不动复制到内存中的 0x7c00 这个位置，并跳转">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://www.spacezxy.top/2023/02/28/OperatingSystem/Operating-system-source-code/640.png">
 <meta property="og:image" content="https://www.spacezxy.top/2023/02/28/OperatingSystem/Operating-system-source-code/640-16775752966583.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/02/28/OperatingSystem/Operating-system-source-code/640.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/02/28/OperatingSystem/Operating-system-source-code/640-16775837503485.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/02/28/OperatingSystem/Operating-system-source-code/640-16775838630138.png">
 <meta property="article:published_time" content="2023-02-28T08:58:22.000Z">
-<meta property="article:modified_time" content="2023-02-28T09:13:25.051Z">
+<meta property="article:modified_time" content="2023-02-28T11:43:19.687Z">
 <meta property="article:author" content="Xavier ZXY">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://www.spacezxy.top/2023/02/28/OperatingSystem/Operating-system-source-code/640.png">
@@ -237,7 +240,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          395 字
+          1.1k 字
         
       </span>
     
@@ -248,7 +251,7 @@
         
         
         
-          4 分钟
+          9 分钟
         
       </span>
     
@@ -297,6 +300,11 @@ target="_blank" rel="noopener" href="https://mp.weixin.qq.com/mp/appmsgalbum?act
 (低并发编程)</a>所作笔记，仅供学习参考，不做任何商业用途,若有侵权，请联系删除。</p>
 </blockquote>
 <h1 id="第一回---最开始的两行代码">第一回 - 最开始的两行代码</h1>
+<blockquote>
+<p><a
+target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&amp;mid=2247499226&amp;idx=1&amp;sn=1ff3d54a3608423b7781142ae3ac62ca&amp;chksm=c2c58777f5b20e61664a51d31ab779bbe68c317c3459218c7cd4b9530887dbb33470628c3248&amp;scene=178&amp;cur_album_id=2123743679373688834#rd">你管这破玩意叫操作系统源码
+| 第一回 最开始的两行代码 (qq.com)</a></p>
+</blockquote>
 <p>当你按下开机键的那一刻，在主板上提前写死的固件程序
 <strong>BIOS</strong> 会将硬盘中<strong>启动区的 512
 字节</strong>的数据，原封不动复制到<strong>内存中的 0x7c00</strong>
@@ -313,7 +321,51 @@ target="_blank" rel="noopener" href="https://mp.weixin.qq.com/mp/appmsgalbum?act
 <p>通过编译，这个 bootsect.s
 会被编译成二进制文件，存放在启动区的第一扇区。</p>
 <p><code>bootsect.s</code></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs asp">mov ax, 0x07c0	;x86架构在16位的实模式下可以访问2位的地址线，从而ds得到的短地址左移四位会变为0x7c00，与BIOS加载到内存的地址一致<br>mov ds, ax	; ds为16位段寄存器，内存寻址充当段基址的作用<br></code></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs asm">mov ax, 0x07c0	# x86架构在16位的实模式下可以访问2位的地址线，从而ds得到的短地址左移四位会变为0x7c00，与BIOS加载到内存的地址一致<br>mov ds, ax	# ds为16位段寄存器，内存寻址充当段基址的作用<br></code></pre></td></tr></table></figure>
+<h1 id="第二回-自己给自己挪个地儿">第二回 自己给自己挪个地儿</h1>
+<blockquote>
+<p><a
+target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&amp;mid=2247499274&amp;idx=1&amp;sn=23885b5b1344a1425f5a971d06ad2e7d&amp;chksm=c2c584a7f5b20db1b0a75ea896e7218a9f8bcd006e68f53693bab240b13f9e2fb0ec0c9b9a6a&amp;cur_album_id=2123743679373688834&amp;scene=189#wechat_redirect">你管这破玩意叫操作系统源码
+| 第二回 自己给自己挪个地儿 (qq.com)</a></p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs asm">mov ax,0x07c0<br>mov ds,ax<br>mov ax,0x9000<br>mov es,ax<br>mov cx,#256<br>sub si,si<br>sub di,di<br>rep movw<br></code></pre></td></tr></table></figure>
+<p>经过这些指令后，以下几个寄存器分别被附上了指定的值</p>
+<ul>
+<li><strong>ds = 0x07c0</strong></li>
+<li><strong>es = 0x9000</strong></li>
+<li><strong>cx = 256</strong></li>
+<li><strong>si = 0</strong></li>
+<li><strong>di = 0</strong></li>
+</ul>
+<img src="/2023/02/28/OperatingSystem/Operating-system-source-code/640.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>为这里寄存器赋值都是为下一条指令服务</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs asm">rep movw<br></code></pre></td></tr></table></figure>
+<p><strong>rep</strong> 表示重复执行后面的指令</p>
+<p><strong>movw</strong> 表示复制一个字（16bits）</p>
+<p>该指令<strong>就是不断重复地复制一个字。</strong></p>
+<ul>
+<li>重复次数：cx寄存器中的值，256次</li>
+<li>从哪复制到哪：ds:si -&gt; es:di</li>
+<li>一次复制多少： 复制一个字，16bit</li>
+</ul>
+<p><strong>将内存地址 0x7c00 处开始往后的 512 字节的数据，原封不动复制到
+0x90000 处</strong>。</p>
+<img src="/2023/02/28/OperatingSystem/Operating-system-source-code/640-16775837503485.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>现在，操作系统最开头的代码，已经被挪到了 <strong>0x90000</strong>
+这个位置了。</p>
+<p>再往后是一个<strong>跳转</strong>指令。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs asm">jmpi go,0x9000<br>go: <br>  mov ax,cs<br>  mov ds,ax<br></code></pre></td></tr></table></figure>
+<p><strong>jmpi</strong> 是一个<strong>段间跳转指令</strong>，表示跳转到
+<strong>0x9000:go</strong> 处执行。</p>
+<p><strong>段基址 :
+偏移地址</strong>，段基址仍然要先左移四位，因此结论就是跳转到
+<strong>0x90000 + go</strong> 这个内存地址处执行。</p>
+<p>再说 go，go
+就是一个<strong>标签</strong>，最终编译成机器码的时候会被翻译成一个值，这个值就是
+go 这个标签在文件内的偏移地址。</p>
+<p>这个偏移地址再加上 0x90000，就刚好是 go 标签后面那段代码 <strong>mov
+ax,cs</strong> 此时所在的内存地址了。</p>
+<img src="/2023/02/28/OperatingSystem/Operating-system-source-code/640-16775838630138.png" srcset="/img/loading.gif" lazyload class="" title="图片">
 
                 
               </div>
