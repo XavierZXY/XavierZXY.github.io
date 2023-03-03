@@ -16,24 +16,32 @@
   <meta name="author" content="Xavier ZXY">
   <meta name="keywords" content="">
   
-    <meta name="description" content="贪心算法（二）  代码随想录  无重叠区间 435. 无重叠区间 - 力扣（Leetcode） 按照右边界排序，从左向右记录非交叉区间的个数。最后用区间总数减去非交叉区间的个数就是需要移除的区间个数了。  12345678910111213141516171819202122class Solution&amp;#123;public:    &#x2F;&#x2F; 按照区间右边界排序    static">
+    <meta name="description" content="本文为学习操作系统统源码 (低并发编程)所作笔记，仅供学习参考，不做任何商业用途,若有侵权，请联系删除。  第六回 | 先解决段寄存器的历史包袱问题  第六回 | 先解决段寄存器的历史包袱问题 (qq.com)  当前的内存布局如下，  0地址开始处存放着操作系统的全部代码吗，也就是 system 模块，0x90000位置处往后的几十个字节存放着一些设备的信息，方便以">
 <meta property="og:type" content="article">
-<meta property="og:title" content="贪心算法（二）">
-<meta property="og:url" content="https://www.spacezxy.top/2023/02/23/Algorithm/algorithm-10/index.html">
+<meta property="og:title" content="你管这破玩意儿叫操作系统源码(二)">
+<meta property="og:url" content="https://www.spacezxy.top/2023/03/03/OperatingSystem/Operating-system-source-code-2/index.html">
 <meta property="og:site_name" content="Xavier ZXY">
-<meta property="og:description" content="贪心算法（二）  代码随想录  无重叠区间 435. 无重叠区间 - 力扣（Leetcode） 按照右边界排序，从左向右记录非交叉区间的个数。最后用区间总数减去非交叉区间的个数就是需要移除的区间个数了。  12345678910111213141516171819202122class Solution&amp;#123;public:    &#x2F;&#x2F; 按照区间右边界排序    static">
+<meta property="og:description" content="本文为学习操作系统统源码 (低并发编程)所作笔记，仅供学习参考，不做任何商业用途,若有侵权，请联系删除。  第六回 | 先解决段寄存器的历史包袱问题  第六回 | 先解决段寄存器的历史包袱问题 (qq.com)  当前的内存布局如下，  0地址开始处存放着操作系统的全部代码吗，也就是 system 模块，0x90000位置处往后的几十个字节存放着一些设备的信息，方便以">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://www.spacezxy.top/2023/02/23/Algorithm/algorithm-10/20230201164134.png">
-<meta property="article:published_time" content="2023-02-23T10:21:14.000Z">
-<meta property="article:modified_time" content="2023-03-03T07:34:54.361Z">
+<meta property="og:image" content="https://www.spacezxy.top/2023/03/03/OperatingSystem/Operating-system-source-code-2/640.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/03/03/OperatingSystem/Operating-system-source-code-2/640-16778300823713.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/03/03/OperatingSystem/Operating-system-source-code-2/640-16778301328306.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/03/03/OperatingSystem/Operating-system-source-code-2/640-16778301625849.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/03/03/OperatingSystem/Operating-system-source-code-2/640-167783020431112.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/03/03/OperatingSystem/Operating-system-source-code-2/640-167783025733915.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/03/03/OperatingSystem/Operating-system-source-code-2/640-167783051575618.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/03/03/OperatingSystem/Operating-system-source-code-2/640-167783075125121.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/03/03/OperatingSystem/Operating-system-source-code-2/640-167783090688524.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/03/03/OperatingSystem/Operating-system-source-code-2/640-167783092561327.png">
+<meta property="article:published_time" content="2023-03-03T07:32:19.000Z">
+<meta property="article:modified_time" content="2023-03-03T08:09:13.339Z">
 <meta property="article:author" content="Xavier ZXY">
-<meta property="article:tag" content="贪心算法">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://www.spacezxy.top/2023/02/23/Algorithm/algorithm-10/20230201164134.png">
+<meta name="twitter:image" content="https://www.spacezxy.top/2023/03/03/OperatingSystem/Operating-system-source-code-2/640.png">
   
   
   
-  <title>贪心算法（二） - Xavier ZXY</title>
+  <title>你管这破玩意儿叫操作系统源码(二) - Xavier ZXY</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -214,7 +222,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="贪心算法（二）"></span>
+            <span id="subtitle" data-typed-text="你管这破玩意儿叫操作系统源码(二)"></span>
           
         </div>
 
@@ -225,8 +233,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-02-23 18:21" pubdate>
-          2023年2月23日 晚上
+        <time datetime="2023-03-03 15:32" pubdate>
+          2023年3月3日 下午
         </time>
       </span>
     
@@ -237,7 +245,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          651 字
+          2k 字
         
       </span>
     
@@ -248,7 +256,7 @@
         
         
         
-          6 分钟
+          18 分钟
         
       </span>
     
@@ -286,25 +294,165 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">贪心算法（二）</h1>
+            <h1 style="display: none">你管这破玩意儿叫操作系统源码(二)</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="贪心算法二">贪心算法（二）</h1>
-<blockquote>
-<p><a target="_blank" rel="noopener" href="https://programmercarl.com/">代码随想录</a></p>
+                <blockquote>
+<p>本文为学习<a
+target="_blank" rel="noopener" href="https://mp.weixin.qq.com/mp/appmsgalbum?action=getalbum&amp;__biz=Mzk0MjE3NDE0Ng==&amp;scene=1&amp;album_id=2123743679373688834&amp;count=3#wechat_redirect">操作系统统源码
+(低并发编程)</a>所作笔记，仅供学习参考，不做任何商业用途,若有侵权，请联系删除。</p>
 </blockquote>
-<h2 id="无重叠区间">无重叠区间</h2>
+<h1 id="第六回-先解决段寄存器的历史包袱问题">第六回 |
+先解决段寄存器的历史包袱问题</h1>
+<blockquote>
 <p><a
-target="_blank" rel="noopener" href="https://leetcode.cn/problems/non-overlapping-intervals/">435.
-无重叠区间 - 力扣（Leetcode）</a></p>
-<p><strong>按照右边界排序，从左向右记录非交叉区间的个数。最后用区间总数减去非交叉区间的个数就是需要移除的区间个数了。</strong></p>
-<img src="/2023/02/23/Algorithm/algorithm-10/20230201164134.png" srcset="/img/loading.gif" lazyload class="" title="img">
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span>&#123;<br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-comment">// 按照区间右边界排序</span><br>    <span class="hljs-function"><span class="hljs-type">static</span> <span class="hljs-type">bool</span> <span class="hljs-title">cmp</span><span class="hljs-params">(<span class="hljs-type">const</span> vector&lt;<span class="hljs-type">int</span>&gt;&amp; a, <span class="hljs-type">const</span> vector&lt;<span class="hljs-type">int</span>&gt;&amp; b)</span> </span>&#123;<br>        <span class="hljs-keyword">return</span> a[<span class="hljs-number">1</span>] &lt; b[<span class="hljs-number">1</span>];<br>    &#125;<br>    <br>    <span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">eraseOverlapIntervals</span><span class="hljs-params">(vector&lt;vector&lt;<span class="hljs-type">int</span>&gt;&gt;&amp; intervals)</span> </span>&#123;<br>        <span class="hljs-keyword">if</span> (interval.<span class="hljs-built_in">size</span>() == <span class="hljs-number">0</span>)<br>            <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>        <span class="hljs-built_in">sort</span>(intervals.<span class="hljs-built_in">begin</span>(), intervals.<span class="hljs-built_in">end</span>(), cmp);<br>        <span class="hljs-type">int</span> count = <span class="hljs-number">1</span>;  <span class="hljs-comment">// 记录非交叉区间的个数</span><br>        <span class="hljs-type">int</span> end = intervals[<span class="hljs-number">0</span>][<span class="hljs-number">1</span>];<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">1</span>; i &lt; intervals.<span class="hljs-built_in">size</span>(); i ++) &#123;<br>            <span class="hljs-keyword">if</span> (end &lt;= intervals[i][<span class="hljs-number">0</span>]) &#123;<br>                end = intervals[i][<span class="hljs-number">1</span>];<br>                count ++;<br>            &#125;<br>        &#125;<br>        <span class="hljs-keyword">return</span> intervals.<span class="hljs-built_in">size</span>() - count;<br>    &#125;<br>&#125;;<br></code></pre></td></tr></table></figure>
-<h2 id="划分字母区间">划分字母区间</h2>
-<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/partition-labels/">763.
-划分字母区间 - 力扣（Leetcode）</a></p>
+target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&amp;mid=2247499667&amp;idx=1&amp;sn=a7e2297f16d048794fa31cceaa183fc9&amp;chksm=c2c5853ef5b20c286df24a28013f0fc3b0336790eca4a0d069ab831f6c536c03d1398893534b&amp;scene=178&amp;cur_album_id=2123743679373688834#rd">第六回
+| 先解决段寄存器的历史包袱问题 (qq.com)</a></p>
+</blockquote>
+<p>当前的内存布局如下，</p>
+<img src="/2023/03/03/OperatingSystem/Operating-system-source-code-2/640.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p><code>0</code>地址开始处存放着操作系统的全部代码吗，也就是
+<code>system</code>
+模块，<code>0x90000</code>位置处往后的几十个字节存放着一些设备的信息，方便以后使用。</p>
+<table>
+<thead>
+<tr class="header">
+<th>内存地址</th>
+<th>长度(字节)</th>
+<th>名称</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0x90000</td>
+<td>2</td>
+<td>光标位置</td>
+</tr>
+<tr class="even">
+<td>0x90002</td>
+<td>2</td>
+<td>扩展内存数</td>
+</tr>
+<tr class="odd">
+<td>0x90004</td>
+<td>2</td>
+<td>显示页面</td>
+</tr>
+<tr class="even">
+<td>0x90006</td>
+<td>1</td>
+<td>显示模式</td>
+</tr>
+<tr class="odd">
+<td>0x90007</td>
+<td>1</td>
+<td>字符列数</td>
+</tr>
+<tr class="even">
+<td>0x90008</td>
+<td>2</td>
+<td>未知</td>
+</tr>
+<tr class="odd">
+<td>0x9000A</td>
+<td>1</td>
+<td>显示内存</td>
+</tr>
+<tr class="even">
+<td>0x9000B</td>
+<td>1</td>
+<td>显示状态</td>
+</tr>
+<tr class="odd">
+<td>0x9000C</td>
+<td>2</td>
+<td>显卡特性参数</td>
+</tr>
+<tr class="even">
+<td>0x9000E</td>
+<td>1</td>
+<td>屏幕行数</td>
+</tr>
+<tr class="odd">
+<td>0x9000F</td>
+<td>1</td>
+<td>屏幕列数</td>
+</tr>
+<tr class="even">
+<td>0x90080</td>
+<td>16</td>
+<td>硬盘1参数表</td>
+</tr>
+<tr class="odd">
+<td>0x90090</td>
+<td>16</td>
+<td>硬盘2参数表</td>
+</tr>
+<tr class="even">
+<td>0x901FC</td>
+<td>2</td>
+<td>根设备号</td>
+</tr>
+</tbody>
+</table>
+<p>接下来就要进行真正的第一项大工程了，那就是<strong>模式的转换</strong>，需要从现在的<strong>16位的实模式</strong>转变为之后的<strong>32位的保护模式</strong>。</p>
+<p>这是 <strong>x86 的历史包袱</strong>问题，现在的 CPU 几乎都是支持 32
+位模式甚至 64 位模式了，很少有还仅仅停留在 16 位的实模式下的
+CPU。所以我们要为了这个历史包袱，<strong>写一段模式转换的代码</strong>，如果
+Intel CPU
+被重新设计而不用考虑兼容性，那么今天的代码将会减少很多甚至不复存在。</p>
+<p>并不直接介绍实模式和保护模式的区别，而是跟着代码慢慢品味。</p>
+<p><code>setup.s</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs asm">lidt  idt_48      ; load idt with 0,0<br>lgdt  gdt_48      ; load gdt with whatever appropriate<br><br>idt_48:<br>    .word   0     ; idt limit=0<br>    .word   0,0   ; idt base=0L<br></code></pre></td></tr></table></figure>
+<p>CPU计算物理地址的方式，段基址左移四位，再加上偏移地址。</p>
+<img src="/2023/03/03/OperatingSystem/Operating-system-source-code-2/640-16778300823713.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>当 CPU
+切换到<strong>保护模式</strong>后，同样的代码，内存地址的计算方式不一样。</p>
+<p>刚刚那个 ds
+寄存器里存储的值，在实模式下叫做<strong>段基址</strong>，在保护模式下叫<strong>段选择子</strong>。段选择子里存储着<strong>段描述符</strong>的索引。</p>
+<img src="/2023/03/03/OperatingSystem/Operating-system-source-code-2/640-16778301328306.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>通过段描述符索引，可以从<strong>全局描述符表 gdt</strong>
+中找到一个段描述符，段描述符里存储着段基址。</p>
+<img src="/2023/03/03/OperatingSystem/Operating-system-source-code-2/640-16778301625849.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>段基址取出来，再和偏移地址相加，就得到了物理地址，整个过程如下。</p>
+<img src="/2023/03/03/OperatingSystem/Operating-system-source-code-2/640-167783020431112.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p><strong>段寄存器（比如
+ds、ss、cs）里存储的是段选择子，段选择子去全局描述符表中寻找段描述符，从中取出段基址</strong>。</p>
+<p><strong>全局描述符表（gdt）</strong>长什么样？它在哪？怎么让 CPU
+知道它在哪？</p>
+<p>操作系统把这个位置信息存储在一个叫 <strong>gdtr</strong>
+的寄存器中。</p>
+<img src="/2023/03/03/OperatingSystem/Operating-system-source-code-2/640-167783025733915.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>怎么存呢？就是刚刚那条指令。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs asm">lgdt    gdt_48<br></code></pre></td></tr></table></figure>
+<p>其中 <strong>lgdt</strong>
+就表示把<strong>后面的值（gdt_48）</strong>放在 <strong>gdtr</strong>
+寄存器中，gdt_48 标签，我们看看它长什么样。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs asm">gdt_48:<br>    .word   0x800       ; gdt limit=2048, 256 GDT entries<br>    .word   512+gdt,0x9 ; gdt base = 0X9xxxx<br></code></pre></td></tr></table></figure>
+<p>可以看到这个标签位置处表示一个 48 位的数据，其中高 32
+位存储着的正是全局描述符表 gdt 的内存地址</p>
+<p><strong>0x90200 + gdt</strong></p>
+<p><strong>gdt</strong> 是个标签，表示在本文件内的偏移量，而本文件是
+<strong>setup.s</strong>，编译后是放在 <strong>0x90200</strong>
+这个内存地址的，还记得吧？所以要加上 0x90200 这个值。</p>
+<img src="/2023/03/03/OperatingSystem/Operating-system-source-code-2/640-167783051575618.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>那 gdt 这个标签处，就是全局描述符表在内存中的真正数据了。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs asm">gdt:<br>    .word   0,0,0,0     ; dummy<br><br>    .word   0x07FF      ; 8Mb - limit=2047 (2048*4096=8Mb)<br>    .word   0x0000      ; base address=0<br>    .word   0x9A00      ; code read/exec<br>    .word   0x00C0      ; granularity=4096, 386<br><br>    .word   0x07FF      ; 8Mb - limit=2047 (2048*4096=8Mb)<br>    .word   0x0000      ; base address=0<br>    .word   0x9200      ; data read/write<br>    .word   0x00C0      ; granularity=4096, 386<br></code></pre></td></tr></table></figure>
+<img src="/2023/03/03/OperatingSystem/Operating-system-source-code-2/640-167783075125121.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>可以看出目前全局描述符表有三个段描述符，第一个为<strong>空</strong>，第二个是<strong>代码段描述符（type=code）</strong>，第三个是<strong>数据段描述符（type=data）</strong>.</p>
+<p>第二个和第三个段描述符的段基址都是
+0，也就是之后在逻辑地址转换物理地址的时候，通过段选择子查找到无论是代码段还是数据段，取出的段基址都是
+0，那么物理地址将直接等于程序员给出的逻辑地址（准确说是逻辑地址中的偏移地址）。</p>
+<img src="/2023/03/03/OperatingSystem/Operating-system-source-code-2/640-167783090688524.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>接下来我们看看目前的内存布局，还是别管比例。</p>
+<img src="/2023/03/03/OperatingSystem/Operating-system-source-code-2/640-167783092561327.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>这里我把 <strong>idtr</strong>
+寄存器也画出来了，这个是<strong>中断描述符表</strong>，其原理和全局描述符表一样。全局描述符表是让段选择子去里面寻找段描述符用的，而中断描述符表是用来在发生中断时，CPU
+拿着中断号去中断描述符表中寻找中断处理程序的地址，找到后就跳到相应的中断程序中去执行，具体我们后面遇到了再说。</p>
+<p>好了，今天我们就讲，操作系统设置了个<strong>全局描述符表
+gdt</strong>，为后面切换到<strong>保护模式</strong>后，能去那里寻找到段描述符，然后拼凑成最终的物理地址，就这个作用。当然，还有很多段描述符，作用不仅仅是转换成最终的物理地址，不过这是后话了。</p>
 
                 
               </div>
@@ -323,7 +471,7 @@ target="_blank" rel="noopener" href="https://leetcode.cn/problems/non-overlappin
     
       <span class="category-chain">
         
-  <a href="/categories/%E7%AE%97%E6%B3%95/" class="category-chain-item">算法</a>
+  <a href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" class="category-chain-item">操作系统</a>
   
   
 
@@ -335,13 +483,6 @@ target="_blank" rel="noopener" href="https://leetcode.cn/problems/non-overlappin
     </div>
   
   
-    <div class="post-meta">
-      <i class="iconfont icon-tags"></i>
-      
-        <a href="/tags/%E8%B4%AA%E5%BF%83%E7%AE%97%E6%B3%95/">#贪心算法</a>
-      
-    </div>
-  
 </div>
 
 
@@ -350,8 +491,8 @@ target="_blank" rel="noopener" href="https://leetcode.cn/problems/non-overlappin
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>贪心算法（二）</div>
-      <div>https://www.spacezxy.top/2023/02/23/Algorithm/algorithm-10/</div>
+      <div>你管这破玩意儿叫操作系统源码(二)</div>
+      <div>https://www.spacezxy.top/2023/03/03/OperatingSystem/Operating-system-source-code-2/</div>
     </div>
     <div class="license-meta">
       
@@ -363,7 +504,7 @@ target="_blank" rel="noopener" href="https://leetcode.cn/problems/non-overlappin
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2023年2月23日</div>
+          <div>2023年3月3日</div>
         </div>
       
       
@@ -395,18 +536,12 @@ target="_blank" rel="noopener" href="https://leetcode.cn/problems/non-overlappin
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/02/28/OperatingSystem/Operating-system-source-code/" title="你管这破玩意儿叫操作系统源码(一)">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">你管这破玩意儿叫操作系统源码(一)</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/01/25/Algorithm/algorithm-9/" title="贪心算法(一)">
-                        <span class="hidden-mobile">贪心算法(一)</span>
+                      <a href="/2023/02/28/OperatingSystem/Operating-system-source-code/" title="你管这破玩意儿叫操作系统源码(一)">
+                        <span class="hidden-mobile">你管这破玩意儿叫操作系统源码(一)</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

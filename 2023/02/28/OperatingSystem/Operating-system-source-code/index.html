@@ -36,8 +36,12 @@
 <meta property="og:image" content="https://www.spacezxy.top/2023/02/28/OperatingSystem/Operating-system-source-code/640-167772017155115.png">
 <meta property="og:image" content="https://www.spacezxy.top/2023/02/28/OperatingSystem/Operating-system-source-code/640-167772039072718.png">
 <meta property="og:image" content="https://www.spacezxy.top/2023/02/28/OperatingSystem/Operating-system-source-code/640-167772052479421.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/02/28/OperatingSystem/Operating-system-source-code/640.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/02/28/OperatingSystem/Operating-system-source-code/640-16778276888023.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/02/28/OperatingSystem/Operating-system-source-code/640-16778284441636.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/02/28/OperatingSystem/Operating-system-source-code/640-16778284924179.png">
 <meta property="article:published_time" content="2023-02-28T08:58:22.000Z">
-<meta property="article:modified_time" content="2023-03-02T01:29:34.482Z">
+<meta property="article:modified_time" content="2023-03-03T07:58:37.916Z">
 <meta property="article:author" content="Xavier ZXY">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://www.spacezxy.top/2023/02/28/OperatingSystem/Operating-system-source-code/640.png">
@@ -248,7 +252,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          2.9k 字
+          5.2k 字
         
       </span>
     
@@ -259,7 +263,7 @@
         
         
         
-          24 分钟
+          44 分钟
         
       </span>
     
@@ -450,6 +454,138 @@ cx, bx, ax赋值都是作为这个终端程序的参数。</li>
 处的代码，就是从硬盘第二个扇区开始处加载到内存的。第二个扇区的最开始处，那也就是
 setup.s 文件的第一行代码。</p>
 <p><strong>在操作系统刚刚开始建立的时候，那是完全自己安排前前后后的关系</strong>，一个字节都不能偏，就是这么<strong>强耦合</strong>，需要小心翼翼，需要大脑时刻保持清醒，规划好自己写的代码被编译并存储在硬盘的哪个位置，而随后又会被加载到内存的哪个位置，不能错乱。</p>
+<h1 id="第五回-进入保护模式前的最后一次折腾内存">第五回 |
+进入保护模式前的最后一次折腾内存</h1>
+<blockquote>
+<p><a
+target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&amp;mid=2247499558&amp;idx=1&amp;sn=d5d057fae2fb835d38f82804c2649463&amp;chksm=c2c5858bf5b20c9de2db5c31dd34fbe766f6c46cda17f54f4518a75fc1838f2ada6fe5717aad&amp;scene=178&amp;cur_album_id=2123743679373688834#rd">第五回
+| 进入保护模式前的最后一次折腾内存 (qq.com)</a></p>
+</blockquote>
+<p>操作系统已经完成了各种从硬盘到内存的加载，以及内存到内存的复制。</p>
+<img src="/2023/02/28/OperatingSystem/Operating-system-source-code/640.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>至此，整个<strong>bootsect.s</strong>的使命就完成了，之后便跳转到了<strong>0x90200</strong>这个位置开始执行，这个位置的代码就是<strong>setup.s</strong>的开头，</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs asm">start:<br>    mov ax,#0x9000  ; this is done in bootsect already, but...<br>    mov ds,ax<br>    mov ah,#0x03    ; read cursor pos<br>    xor bh,bh<br>    int 0x10        ; save it in known place, con_init fetches<br>    mov [0],dx      ; it from 0x90000.<br></code></pre></td></tr></table></figure>
+<p><strong>int 0x10</strong></p>
+<ul>
+<li>触发BIOS提供的<strong>显示服务中断处理程序</strong>；</li>
+<li><strong>ah寄存器</strong>，表示显示服务里具体的<strong>读取光标位置功能</strong>。</li>
+</ul>
+<p>int
+0x10中断程序执行完毕并返回时，<strong>dx寄存器</strong>里的之表示光标的位置，具体来说高八位dh存储了行号，低八位存储了列号。</p>
+<img src="/2023/02/28/OperatingSystem/Operating-system-source-code/640-16778276888023.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>说明：计算机在加电自检后会自动初始化到文字模式，在这种模式下，整个屏幕可以显示25行，每行80个字符，也就是80列。</p>
+<p><code>mov [0], dx</code>就是把这个光标位置存储在[0]这个内存地址处（段基址ds=0x90000）。这里存放着光标的位置，以便之后在初始化控制台的时候用到。</p>
+<p>这个指令和平时调用方法没什么区别，只不过这里的<strong>寄存器</strong>的用法相当于<strong>入参和返回值</strong>，这里的<strong>0x10中断号</strong>相当于<strong>方法名</strong>。</p>
+<p>这里又应了之前说的一句话，操作系统内核的最开始处处也都是BIOS的<strong>调包侠</strong>。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><code class="hljs asm">比如获取内存信息。<br>; Get memory size (extended mem, kB)<br>    mov ah,#0x88<br>    int 0x15<br>    mov [2],ax<br>获取显卡显示模式。<br>; Get video-card data:<br>    mov ah,#0x0f<br>    int 0x10<br>    mov [4],bx      ; bh = display page<br>    mov [6],ax      ; al = video mode, ah = window width<br>检查显示方式并取参数<br>; check for EGA/VGA and some config parameters<br>    mov ah,#0x12<br>    mov bl,#0x10<br>    int 0x10<br>    mov [8],ax<br>    mov [10],bx<br>    mov [12],cx<br>获取第一块硬盘的信息。<br>; Get hd0 data<br>    mov ax,#0x0000<br>    mov ds,ax<br>    lds si,[4*0x41]<br>    mov ax,#INITSEG<br>    mov es,ax<br>    mov di,#0x0080<br>    mov cx,#0x10<br>    rep<br>    movsb<br>获取第二块硬盘的信息。<br>; Get hd1 data<br>    mov ax,#0x0000<br>    mov ds,ax<br>    lds si,[4*0x46]<br>    mov ax,#INITSEG<br>    mov es,ax<br>    mov di,#0x0090<br>    mov cx,#0x10<br>    rep<br>    movsb<br></code></pre></td></tr></table></figure>
+<p>最终存储在内存中的信息是什么，在什么位置，</p>
+<table>
+<thead>
+<tr class="header">
+<th>内存地址</th>
+<th>长度(字节)</th>
+<th>名称</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0x90000</td>
+<td>2</td>
+<td>光标位置</td>
+</tr>
+<tr class="even">
+<td>0x90002</td>
+<td>2</td>
+<td>扩展内存数</td>
+</tr>
+<tr class="odd">
+<td>0x90004</td>
+<td>2</td>
+<td>显示页面</td>
+</tr>
+<tr class="even">
+<td>0x90006</td>
+<td>1</td>
+<td>显示模式</td>
+</tr>
+<tr class="odd">
+<td>0x90007</td>
+<td>1</td>
+<td>字符列数</td>
+</tr>
+<tr class="even">
+<td>0x90008</td>
+<td>2</td>
+<td>未知</td>
+</tr>
+<tr class="odd">
+<td>0x9000A</td>
+<td>1</td>
+<td>显示内存</td>
+</tr>
+<tr class="even">
+<td>0x9000B</td>
+<td>1</td>
+<td>显示状态</td>
+</tr>
+<tr class="odd">
+<td>0x9000C</td>
+<td>2</td>
+<td>显卡特性参数</td>
+</tr>
+<tr class="even">
+<td>0x9000E</td>
+<td>1</td>
+<td>屏幕行数</td>
+</tr>
+<tr class="odd">
+<td>0x9000F</td>
+<td>1</td>
+<td>屏幕列数</td>
+</tr>
+<tr class="even">
+<td>0x90080</td>
+<td>16</td>
+<td>硬盘1参数表</td>
+</tr>
+<tr class="odd">
+<td>0x90090</td>
+<td>16</td>
+<td>硬盘2参数表</td>
+</tr>
+<tr class="even">
+<td>0x901FC</td>
+<td>2</td>
+<td>根设备号</td>
+</tr>
+</tbody>
+</table>
+<p>由于之后很快就会用 c 语言进行编程，虽然汇编和 c
+语言也可以用变量的形式进行传递数据，但这需要编译器在链接时做一些额外的工作，所以这么多数据更方便的还是<strong>双方共同约定一个内存地址</strong>，我往这里存，你从这里取，就完事了。这恐怕是最最原始和直观的变量传递的方式了。</p>
+<p>继续往下看，</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs asm">cli         ; no interrupts allowed ;<br></code></pre></td></tr></table></figure>
+<p>因为后面我们要把原本是 BIOS
+写好的中断向量表给覆盖掉，也就是给破坏掉了，写上我们自己的中断向量表，所以这个时候是不允许中断进来的。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs asm">; first we move the system to it&#x27;s rightful place<br>    mov ax,#0x0000<br>    cld         ; &#x27;direction&#x27;=0, movs moves forward<br>do_move:<br>    mov es,ax       ; destination segment<br>    add ax,#0x1000<br>    cmp ax,#0x9000<br>    jz  end_move<br>    mov ds,ax       ; source segment<br>    sub di,di<br>    sub si,si<br>    mov cx,#0x8000 repeat times<br>    rep movsw<br>    jmp do_move<br>; then we load the segment descriptors<br>end_move:<br>    ...<br></code></pre></td></tr></table></figure>
+<p><code>rep movsw</code>同前面的原理一样，也是做了个内存复制操作，最终的结果是，把内存地址
+<strong>0x10000</strong> 处开始往后一直到 <strong>0x90000</strong>
+的内容，统统复制到内存的最开始的 <strong>0</strong>
+位置，大概就是这么个效果。</p>
+<img src="/2023/02/28/OperatingSystem/Operating-system-source-code/640-16778284441636.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>栈顶地址仍然是 <strong>0x9FF00</strong> 没有改变。</p>
+<p><strong>0x90000</strong> 开始往上的位置，原来是
+<strong>bootsect</strong> 和 <strong>setup</strong> 程序的代码，现
+bootsect
+的一部分代码在已经被操作系统为了记录内存、硬盘、显卡等一些<strong>临时存放的</strong>数据给覆盖了一部分。</p>
+<p>内存最开始的 <strong>0</strong> 到 <strong>0x80000</strong> 这 512K
+被 <strong>system</strong> 模块给占用了，之前讲过，这个 system
+模块就是除了 bootsect 和 setup
+之外的全部程序链接在一起的结果，可以理解为<strong>操作系统的全部</strong>。</p>
+<p>那么现在的内存布局就是这个样子。</p>
+<img src="/2023/02/28/OperatingSystem/Operating-system-source-code/640-16778284924179.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>接下来，就要进行有点技术含量的工作了，那就是<strong>模式的转换</strong>，需要从现在的
+16 位的<strong>实模式</strong>转变为之后 32
+位的<strong>保护模式</strong>，这是一项大工程！</p>
 
                 
               </div>
@@ -532,6 +668,12 @@ setup.s 文件的第一行代码。</p>
                 <div class="post-prevnext my-3">
                   <article class="post-prev col-6">
                     
+                    
+                      <a href="/2023/03/03/OperatingSystem/Operating-system-source-code-2/" title="你管这破玩意儿叫操作系统源码(二)">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">你管这破玩意儿叫操作系统源码(二)</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
                     
                   </article>
                   <article class="post-next col-6">
