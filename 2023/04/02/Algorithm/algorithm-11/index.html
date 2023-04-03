@@ -16,16 +16,20 @@
   <meta name="author" content="Xavier ZXY">
   <meta name="keywords" content="">
   
-    <meta property="og:type" content="article">
+    <meta name="description" content="本文为学习代码随想录时所做的笔记，仅供学习参考，不做任何商业用途，若有侵权，请联系删除。  动态规划(一) 动态规划理论基础 什么是动态规划 Dynamic Programming，简称DP，如果某一问题有很多重叠子问题，使用动态规划是最有效的。 所以动态规划中每一个状态一定是由上一个状态推导出来的，这一点就区分于贪心，贪心没有状态推导，而是从局部直接选最优的。 动态规划的解题">
+<meta property="og:type" content="article">
 <meta property="og:title" content="动态规划(一)">
 <meta property="og:url" content="https://www.spacezxy.top/2023/04/02/Algorithm/algorithm-11/index.html">
 <meta property="og:site_name" content="Xavier ZXY">
+<meta property="og:description" content="本文为学习代码随想录时所做的笔记，仅供学习参考，不做任何商业用途，若有侵权，请联系删除。  动态规划(一) 动态规划理论基础 什么是动态规划 Dynamic Programming，简称DP，如果某一问题有很多重叠子问题，使用动态规划是最有效的。 所以动态规划中每一个状态一定是由上一个状态推导出来的，这一点就区分于贪心，贪心没有状态推导，而是从局部直接选最优的。 动态规划的解题">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/02/Algorithm/algorithm-11/20210105202546299.png">
 <meta property="article:published_time" content="2023-04-02T07:28:20.000Z">
-<meta property="article:modified_time" content="2023-04-02T07:29:57.854Z">
+<meta property="article:modified_time" content="2023-04-03T02:09:44.993Z">
 <meta property="article:author" content="Xavier ZXY">
 <meta property="article:tag" content="动态规划">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.spacezxy.top/2023/04/02/Algorithm/algorithm-11/20210105202546299.png">
   
   
   
@@ -233,7 +237,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          0 字
+          2k 字
         
       </span>
     
@@ -244,7 +248,7 @@
         
         
         
-          1 分钟
+          17 分钟
         
       </span>
     
@@ -287,7 +291,106 @@
             
               <div class="markdown-body">
                 
-                
+                <blockquote>
+<p>本文为学习<a
+target="_blank" rel="noopener" href="https://programmercarl.com/">代码随想录</a>时所做的笔记，仅供学习参考，不做任何商业用途，若有侵权，请联系删除。</p>
+</blockquote>
+<h1 id="动态规划一">动态规划(一)</h1>
+<h2 id="动态规划理论基础">动态规划理论基础</h2>
+<h3 id="什么是动态规划">什么是动态规划</h3>
+<p>Dynamic
+Programming，简称DP，如果某一问题有很多重叠子问题，使用动态规划是最有效的。</p>
+<p>所以动态规划中每一个状态一定是由上一个状态推导出来的，<strong>这一点就区分于贪心</strong>，贪心没有状态推导，而是从局部直接选最优的。</p>
+<h3 id="动态规划的解题步骤">动态规划的解题步骤</h3>
+<ol type="1">
+<li>确定dp数组以及下标的含义</li>
+<li>确定递推公式</li>
+<li>dp数组如何初始化</li>
+<li>确定遍历顺序</li>
+<li>举例推导dp数组</li>
+</ol>
+<h3 id="动态规划应该如何debug">动态规划应该如何debug</h3>
+<p><strong>找问题的最好方式就是把dp数组打印出来，看是否和自己的思路相一致。</strong></p>
+<h2 id="斐波那契数">斐波那契数</h2>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/fibonacci-number/">509.
+斐波那契数 - 力扣（Leetcode）</a></p>
+</blockquote>
+<ol type="1">
+<li>确定dp数组以及下标的含义</li>
+</ol>
+<p>dp[i]的定义为：第i个数的斐波那契数数值是dp[i]</p>
+<ol start="2" type="1">
+<li>确定递推公式</li>
+</ol>
+<p><span class="math display">\[dp[i] = dp[i-1] + dp[i-1]\]</span></p>
+<ol start="3" type="1">
+<li>dp数组如何初始化</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs cpp">dp[<span class="hljs-number">0</span>] = <span class="hljs-number">0</span>;<br>dp[<span class="hljs-number">1</span>] = <span class="hljs-number">1</span>;<br></code></pre></td></tr></table></figure>
+<ol start="4" type="1">
+<li>确定遍历顺序</li>
+</ol>
+<p>从前向后遍历</p>
+<ol start="5" type="1">
+<li>举例推导dp数组</li>
+</ol>
+<p>按照这个递推公式dp[i] = dp[i - 1] + dp[i -
+2]，我们来推导一下，当N为10的时候，dp数组应该是如下的数列：</p>
+<p>0 1 1 2 3 5 8 13 21 34 55</p>
+<p>如果代码写出来，发现结果不对，就把dp数组打印出来看看和我们推导的数列是不是一致的。</p>
+<h3 id="初始代码">初始代码</h3>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">fib</span><span class="hljs-params">(<span class="hljs-type">int</span> N)</span> </span>&#123;<br>        <span class="hljs-keyword">if</span> (N &lt;= <span class="hljs-number">1</span>) <span class="hljs-keyword">return</span> N;<br>        <span class="hljs-function">vector&lt;<span class="hljs-type">int</span>&gt; <span class="hljs-title">dp</span><span class="hljs-params">(N+<span class="hljs-number">1</span>)</span></span>;<br>        dp[<span class="hljs-number">0</span>] = <span class="hljs-number">0</span>;<br>        dp[<span class="hljs-number">1</span>] = <span class="hljs-number">1</span>;<br>        <br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">2</span>; i &lt;= N; i ++) &#123;<br>            dp[i] = dp[i<span class="hljs-number">-1</span>] + dp[i<span class="hljs-number">-2</span>];<br>        &#125;<br>        <br>        <span class="hljs-keyword">return</span> dp[N];<br>    &#125;<br>&#125;;<br></code></pre></td></tr></table></figure>
+<h3 id="优化代码">优化代码</h3>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">fib</span><span class="hljs-params">(<span class="hljs-type">int</span> N)</span> </span>&#123;<br>        <span class="hljs-keyword">if</span> (N &lt;= <span class="hljs-number">1</span>) <span class="hljs-keyword">return</span> N;<br>        <span class="hljs-type">int</span> dp[<span class="hljs-number">2</span>];<br>        dp[<span class="hljs-number">0</span>] = <span class="hljs-number">0</span>;<br>        dp[<span class="hljs-number">1</span>] = <span class="hljs-number">1</span>;<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">2</span>; i &lt;= N; i ++) &#123;<br>            <span class="hljs-type">int</span> sum = dp[<span class="hljs-number">0</span>] + dp[<span class="hljs-number">1</span>];<br>            dp [<span class="hljs-number">0</span>] = dp[<span class="hljs-number">1</span>];<br>            dp[<span class="hljs-number">1</span>] = sum;<br>        &#125;<br>        <br>        <span class="hljs-keyword">return</span> dp[<span class="hljs-number">1</span>];<br>    &#125;<br>&#125;;<br></code></pre></td></tr></table></figure>
+<h2 id="爬楼梯">爬楼梯</h2>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/climbing-stairs/">70. 爬楼梯 -
+力扣（Leetcode）</a></p>
+</blockquote>
+<p>爬到第一层楼梯有一种方法，爬到二层楼梯有两种方法。</p>
+<p>那么第一层楼梯再跨两步就到第三层 ，第二层楼梯再跨一步就到第三层。</p>
+<p>所以到第三层楼梯的状态可以由第二层楼梯 和
+到第一层楼梯状态推导出来，那么就可以想到动态规划了。</p>
+<ol type="1">
+<li>确定dp数组奇迹含义</li>
+</ol>
+<p>dp[i]:爬到第i层楼梯，有dp[i]种方法。</p>
+<ol start="2" type="1">
+<li>确定递推公式</li>
+</ol>
+<p>首先是dp[i - 1]，上i-1层楼梯，有dp[i -
+1]种方法，那么再一步跳一个台阶不就是dp[i]了么。</p>
+<p>还有就是dp[i - 2]，上i-2层楼梯，有dp[i -
+2]种方法，那么再一步跳两个台阶不就是dp[i]了么。</p>
+<p>那么dp[i]就是 dp[i - 1]与dp[i - 2]之和！</p>
+<p>所以dp[i] = dp[i - 1] + dp[i - 2] 。</p>
+<ol start="3" type="1">
+<li>dp数组如何初始化</li>
+</ol>
+<p>不考虑dp[0]如何初始化，只初始化dp[1] = 1，dp[2] = 2，然后从i =
+3开始递推，这样才符合dp[i]的定义。</p>
+<ol start="4" type="1">
+<li>确定遍历顺序</li>
+</ol>
+<p>从前向后遍历</p>
+<ol start="5" type="1">
+<li>举例推导dp数组</li>
+</ol>
+<p>举例当n为5的时候，dp table（dp数组）应该是这样的</p>
+<img src="/2023/04/02/Algorithm/algorithm-11/20210105202546299.png" srcset="/img/loading.gif" lazyload class="" title="70.爬楼梯">
+<p><strong>此时大家应该发现了，这不就是斐波那契数列么！</strong></p>
+<h3 id="初始代码-1">初始代码</h3>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">climbStairs</span><span class="hljs-params">(<span class="hljs-type">int</span> n)</span> </span>&#123;<br>        <span class="hljs-keyword">if</span> (n &lt;= <span class="hljs-number">1</span>) <span class="hljs-keyword">return</span> n;<br>        <span class="hljs-function">vector&lt;<span class="hljs-type">int</span>&gt; <span class="hljs-title">dp</span><span class="hljs-params">(n+<span class="hljs-number">1</span>)</span></span>;<br>        dp[<span class="hljs-number">1</span>] = <span class="hljs-number">1</span>;<br>        dp[<span class="hljs-number">2</span>] = <span class="hljs-number">2</span>;<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">3</span>; i &lt;= n; i ++) &#123;<br>            dp[i] = dp[i<span class="hljs-number">-1</span>] + dp[i<span class="hljs-number">-2</span>];<br>        &#125;<br>        <br>        <span class="hljs-keyword">return</span> dp[n];<br>    &#125;<br>&#125;;<br></code></pre></td></tr></table></figure>
+<h3 id="优化代码-1">优化代码</h3>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;<br><span class="hljs-keyword">public</span>:<br>    <span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">climbStairs</span><span class="hljs-params">(<span class="hljs-type">int</span> n)</span> </span>&#123;<br>        <span class="hljs-keyword">if</span> (n &lt;= <span class="hljs-number">1</span>) <span class="hljs-keyword">return</span> n;<br>        <span class="hljs-type">int</span> dp[<span class="hljs-number">3</span>];<br>        dp[<span class="hljs-number">1</span>] = <span class="hljs-number">1</span>;<br>        dp[<span class="hljs-number">2</span>] = <span class="hljs-number">2</span>;<br>        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">3</span>; i &lt;= n; i++) &#123;<br>            <span class="hljs-type">int</span> sum = dp[<span class="hljs-number">1</span>] + dp[<span class="hljs-number">2</span>];<br>            dp[<span class="hljs-number">1</span>] = dp[<span class="hljs-number">2</span>];<br>            dp[<span class="hljs-number">2</span>] = sum;<br>        &#125;<br>        <span class="hljs-keyword">return</span> dp[<span class="hljs-number">2</span>];<br>    &#125;<br>&#125;;<br></code></pre></td></tr></table></figure>
+<h3 id="拓展">拓展</h3>
+<p>这道题目还可以继续深化，就是一步一个台阶，两个台阶，三个台阶，直到
+m个台阶，有多少种方法爬到n阶楼顶。</p>
+<p>这又有难度了，这其实是一个完全背包问题，但力扣上没有这种题目，所以后续我在讲解背包问题的时候，今天这道题还会从背包问题的角度上来再讲一遍。
+如果想提前看一下，可以看这篇:<a
+target="_blank" rel="noopener" href="https://programmercarl.com/0070.爬楼梯完全背包版本.html">70.爬楼梯完全背包版本</a></p>
+<p>123</p>
 
                 
               </div>
