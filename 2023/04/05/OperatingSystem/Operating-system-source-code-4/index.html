@@ -1,0 +1,946 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/logo128.svg">
+  <link rel="icon" href="/img/logo32.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Xavier ZXY">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="本文为学习操作系统统源码 (低并发编程)所作笔记，仅供学习参考，不做任何商业用途,若有侵权，请联系删除。  第十四回 | 你的键盘是什么时候生效的  你的键盘是什么时候生效的？ (qq.com)  我们以 Linux 0.11 源码为例，发现进入内核的 main 函数后不久，有这样一行代码。 12345void main(void) &amp;#123;    ...    tr">
+<meta property="og:type" content="article">
+<meta property="og:title" content="你管这破玩意儿叫操作系统源码(四)">
+<meta property="og:url" content="https://www.spacezxy.top/2023/04/05/OperatingSystem/Operating-system-source-code-4/index.html">
+<meta property="og:site_name" content="Xavier ZXY">
+<meta property="og:description" content="本文为学习操作系统统源码 (低并发编程)所作笔记，仅供学习参考，不做任何商业用途,若有侵权，请联系删除。  第十四回 | 你的键盘是什么时候生效的  你的键盘是什么时候生效的？ (qq.com)  我们以 Linux 0.11 源码为例，发现进入内核的 main 函数后不久，有这样一行代码。 12345void main(void) &amp;#123;    ...    tr">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/05/OperatingSystem/Operating-system-source-code-4/640.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/05/OperatingSystem/Operating-system-source-code-4/640-16806833392603.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/05/OperatingSystem/Operating-system-source-code-4/640-16806836672046.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/05/OperatingSystem/Operating-system-source-code-4/640-16806836908199.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/05/OperatingSystem/Operating-system-source-code-4/640-168068374225712.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/05/OperatingSystem/Operating-system-source-code-4/640-168068421948018.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/05/OperatingSystem/Operating-system-source-code-4/640-168068425969721.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/05/OperatingSystem/Operating-system-source-code-4/640-168068429196824.png">
+<meta property="article:published_time" content="2023-04-05T08:21:47.000Z">
+<meta property="article:modified_time" content="2023-04-05T08:56:34.593Z">
+<meta property="article:author" content="Xavier ZXY">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.spacezxy.top/2023/04/05/OperatingSystem/Operating-system-source-code-4/640.png">
+  
+  
+  
+  <title>你管这破玩意儿叫操作系统源码(四) - Xavier ZXY</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.spacezxy.top","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>SapceZXY</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/wallpaper.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="你管这破玩意儿叫操作系统源码(四)"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-04-05 16:21" pubdate>
+          2023年4月5日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          11k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          95 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">你管这破玩意儿叫操作系统源码(四)</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <blockquote>
+<p>本文为学习<a
+target="_blank" rel="noopener" href="https://mp.weixin.qq.com/mp/appmsgalbum?action=getalbum&amp;__biz=Mzk0MjE3NDE0Ng==&amp;scene=1&amp;album_id=2123743679373688834&amp;count=3#wechat_redirect">操作系统统源码
+(低并发编程)</a>所作笔记，仅供学习参考，不做任何商业用途,若有侵权，请联系删除。</p>
+</blockquote>
+<h1 id="第十四回-你的键盘是什么时候生效的">第十四回 |
+你的键盘是什么时候生效的</h1>
+<blockquote>
+<p><a
+target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&amp;mid=2247500119&amp;idx=1&amp;sn=f46331f70677aba168243040a96be1c0&amp;chksm=c2c5bbfaf5b232ec6ed2187d0a8ae3a6001ab5997b9ee838f3b32aa892d9a41157473e90195f&amp;scene=178&amp;cur_album_id=2123743679373688834#rd">你的键盘是什么时候生效的？
+(qq.com)</a></p>
+</blockquote>
+<p>我们以 <strong>Linux 0.11</strong> 源码为例，发现进入内核的 main
+函数后不久，有这样一行代码。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span> &#123;<br>    ...<br>    trap_init();<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">trap_init</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span> &#123;<br>    <span class="hljs-type">int</span> i;<br>    set_trap_gate(<span class="hljs-number">0</span>,&amp;divide_error);<br>    set_trap_gate(<span class="hljs-number">1</span>,&amp;debug);<br>    set_trap_gate(<span class="hljs-number">2</span>,&amp;nmi);<br>    set_system_gate(<span class="hljs-number">3</span>,&amp;int3);   <span class="hljs-comment">/* int3-5 can be called from all */</span><br>    set_system_gate(<span class="hljs-number">4</span>,&amp;overflow);<br>    set_system_gate(<span class="hljs-number">5</span>,&amp;bounds);<br>    set_trap_gate(<span class="hljs-number">6</span>,&amp;invalid_op);<br>    set_trap_gate(<span class="hljs-number">7</span>,&amp;device_not_available);<br>    set_trap_gate(<span class="hljs-number">8</span>,&amp;double_fault);<br>    set_trap_gate(<span class="hljs-number">9</span>,&amp;coprocessor_segment_overrun);<br>    set_trap_gate(<span class="hljs-number">10</span>,&amp;invalid_TSS);<br>    set_trap_gate(<span class="hljs-number">11</span>,&amp;segment_not_present);<br>    set_trap_gate(<span class="hljs-number">12</span>,&amp;stack_segment);<br>    set_trap_gate(<span class="hljs-number">13</span>,&amp;general_protection);<br>    set_trap_gate(<span class="hljs-number">14</span>,&amp;page_fault);<br>    set_trap_gate(<span class="hljs-number">15</span>,&amp;reserved);<br>    set_trap_gate(<span class="hljs-number">16</span>,&amp;coprocessor_error);<br>    <span class="hljs-keyword">for</span> (i=<span class="hljs-number">17</span>;i&lt;<span class="hljs-number">48</span>;i++)<br>        set_trap_gate(i,&amp;reserved);<br>    set_trap_gate(<span class="hljs-number">45</span>,&amp;irq13);<br>    set_trap_gate(<span class="hljs-number">39</span>,&amp;parallel_interrupt);<br>&#125;<br></code></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">trap_init</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span> &#123;<br>    <span class="hljs-type">int</span> i;<br>    <span class="hljs-comment">// set 了一堆 trap_gate</span><br>    set_trap_gate(<span class="hljs-number">0</span>, &amp;divide_error);<br>    ... <br>    <span class="hljs-comment">// 又 set 了一堆 system_gate</span><br>    set_system_gate(<span class="hljs-number">45</span>, &amp;bounds);<br>    ...<br>    <span class="hljs-comment">// 又又批量 set 了一堆 trap_gate</span><br>    <span class="hljs-keyword">for</span> (i=<span class="hljs-number">17</span>;i&lt;<span class="hljs-number">48</span>;i++)<br>        set_trap_gate(i, &amp;reserved);<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>首先我们看 <strong>set_trap_gate</strong> 和
+<strong>set_system_gate</strong> 这俩货，发现了这么几个宏定义。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> _set_gate(gate_addr,type,dpl,addr) \</span><br><span class="hljs-meta">__asm__ (<span class="hljs-string">&quot;movw %%dx,%%ax\n\t&quot;</span> \</span><br><span class="hljs-meta">    <span class="hljs-string">&quot;movw %0,%%dx\n\t&quot;</span> \</span><br><span class="hljs-meta">    <span class="hljs-string">&quot;movl %%eax,%1\n\t&quot;</span> \</span><br><span class="hljs-meta">    <span class="hljs-string">&quot;movl %%edx,%2&quot;</span> \</span><br><span class="hljs-meta">    : \</span><br><span class="hljs-meta">    : <span class="hljs-string">&quot;i&quot;</span> ((short) (0x8000+(dpl&lt;&lt;13)+(type&lt;&lt;8))), \</span><br><span class="hljs-meta">    <span class="hljs-string">&quot;o&quot;</span> (*((char *) (gate_addr))), \</span><br><span class="hljs-meta">    <span class="hljs-string">&quot;o&quot;</span> (*(4+(char *) (gate_addr))), \</span><br><span class="hljs-meta">    <span class="hljs-string">&quot;d&quot;</span> ((char *) (addr)),<span class="hljs-string">&quot;a&quot;</span> (0x00080000))</span><br><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> set_trap_gate(n,addr) \</span><br><span class="hljs-meta">    _set_gate(&amp;idt[n],15,0,addr)</span><br><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> set_system_gate(n,addr) \</span><br><span class="hljs-meta">    _set_gate(&amp;idt[n],15,3,addr)</span><br></code></pre></td></tr></table></figure>
+<p>不过这俩都是最终指向了相同的另一个宏定义
+**_set_gate**，说明是有共性的。</p>
+<p>最终的效果就是<strong>在中断描述符表中插入了一个中断描述符</strong>。</p>
+<img src="/2023/04/05/OperatingSystem/Operating-system-source-code-4/640.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>这段代码就是往这个 idt
+表里一项一项地写东西，其对应的中断号就是第一个参数，中断处理程序就是第二个参数。</p>
+<p>产生的效果就是，之后如果来一个中断后，CPU
+根据其中断号，就可以到这个中断描述符表 idt
+中找到对应的中断处理程序了。</p>
+<p>比如这个。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c">set_trap_gate(<span class="hljs-number">0</span>,&amp;divide_error);<br></code></pre></td></tr></table></figure>
+<p>就是设置 <strong>0 号中断</strong>，对应的中断处理程序是
+<strong>divide_error</strong>。</p>
+<p>等 CPU 执行了一条除零指令的时候，会从硬件层面发起一个 0
+号异常中断，然后执行由我们操作系统定义的 divide_error
+也就是除法异常处理程序，执行完之后再返回。</p>
+<p>再比如这个。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c">set_system_gate(<span class="hljs-number">5</span>,&amp;overflow);<br></code></pre></td></tr></table></figure>
+<p>就是设置 5 号中断，对应的中断处理程序是
+overflow，是边界出错中断。</p>
+<blockquote>
+<p>TIPS：这个 trap 与 system
+的区别仅仅在于，设置的中断描述符的特权级不同，前者是 0（内核态），后者是
+3（用户态），这块展开将会是非常严谨的、绕口的、复杂的特权级相关的知识，不明白的话先不用管，就理解为都是设置一个中断号和中断处理程序的对应关系就好了。</p>
+</blockquote>
+<p>再往后看，批量操作这里。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">trap_init</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span> &#123;<br>    ...<br>    <span class="hljs-keyword">for</span> (i=<span class="hljs-number">17</span>;i&lt;<span class="hljs-number">48</span>;i++)<br>        set_trap_gate(i,&amp;reserved);<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>17 到 48 号中断都批量设置为了 <strong>reserved</strong>
+函数，这是暂时的，后面各个硬件初始化时要重新设置好这些中断，把暂时的这个给覆盖掉，此时你留个印象。</p>
+<img src="/2023/04/05/OperatingSystem/Operating-system-source-code-4/640-16806833392603.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>键盘产生的中断的中断号是
+<strong>0x21</strong>，此时这个中断号还仅仅对应着一个临时的中断处理程序
+&amp;reserved，我们接着往后看。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span> &#123;<br>    ...<br>    trap_init();<br>    ...<br>    tty_init();<br>    ...<br>&#125;<br><br><span class="hljs-type">void</span> <span class="hljs-title function_">tty_init</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span> &#123;<br>    rs_init();<br>    con_init();<br>&#125;<br><br><span class="hljs-type">void</span> <span class="hljs-title function_">con_init</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span> &#123;<br>    ...<br>    set_trap_gate(<span class="hljs-number">0x21</span>,&amp;keyboard_interrupt);<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>注意到 trap_init 后有个
+<strong>tty_init</strong>，最后根据调用链，会调用到一行添加 0x21
+号中断处理程序的代码，就是刚刚熟悉的
+<strong>set_trap_gate</strong>。</p>
+<p>而后面的 <strong>keyboard_interrupt</strong>
+根据名字也可以猜出，就是键盘的中断处理程序嘛！就是从这一行代码开始，我们的键盘生效了！</p>
+<p>没错，不过还有点小问题，不过不重要，就是我们现在的中断处于<strong>禁用状态</strong>，不论是键盘中断还是其他中断，通通都不好使。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span> &#123;<br>    ...<br>    trap_init();<br>    ...<br>    tty_init();<br>    ...<br>    sti();<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>sti 最终会对应一个同名的汇编指令
+sti，表示<strong>允许中断</strong>。所以这行代码之后，键盘才真正开始生效！</p>
+<h1 id="第十五回-读取硬盘前的准备工作有哪些">第十五回 |
+读取硬盘前的准备工作有哪些？</h1>
+<blockquote>
+<p><a
+target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&amp;mid=2247500147&amp;idx=1&amp;sn=409f5ed34ae3822e40a6b443207d40c5&amp;chksm=c2c5bbdef5b232c85c9bf655116eb1551c0bd1317fbbbcf6c68a8ed94fcadeeedcbfae1dd939&amp;scene=178&amp;cur_album_id=2123743679373688834#rd">读取硬盘前的准备工作有哪些？
+(qq.com)</a></p>
+</blockquote>
+<p>我们就讲讲，读取块设备与内存缓冲区之间的桥梁，<strong>块设备请求项</strong>的初始化工作。</p>
+<p>我们以 Linux 0.11 源码为例，发现进入内核的 main
+函数后不久，有这样一行代码</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span> &#123;<br>    ...<br>    blk_dev_init();<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">blk_dev_init</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span> &#123;<br>    <span class="hljs-type">int</span> i;<br>    <span class="hljs-keyword">for</span> (i=<span class="hljs-number">0</span>; i&lt;<span class="hljs-number">32</span>; i++) &#123;<br>        request[i].dev = <span class="hljs-number">-1</span>;<br>        request[i].next = <span class="hljs-literal">NULL</span>;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">/*</span><br><span class="hljs-comment"> * Ok, this is an expanded form so that we can use the same</span><br><span class="hljs-comment"> * request for paging requests when that is implemented. In</span><br><span class="hljs-comment"> * paging, &#x27;bh&#x27; is NULL, and &#x27;waiting&#x27; is used to wait for</span><br><span class="hljs-comment"> * read/write completion.</span><br><span class="hljs-comment"> */</span><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">request</span> &#123;</span><br>    <span class="hljs-type">int</span> dev;        <span class="hljs-comment">/* -1 if no request */</span><br>    <span class="hljs-type">int</span> cmd;        <span class="hljs-comment">/* READ or WRITE */</span><br>    <span class="hljs-type">int</span> errors;<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> sector;<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> nr_sectors;<br>    <span class="hljs-type">char</span> * buffer;<br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">task_struct</span> * <span class="hljs-title">waiting</span>;</span><br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">buffer_head</span> * <span class="hljs-title">bh</span>;</span><br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">request</span> * <span class="hljs-title">next</span>;</span><br>&#125;;<br></code></pre></td></tr></table></figure>
+<p>这也侧面说明了，学习操作系统，其实把遇到的重要数据结构牢记心中，就已经成功一半了。比如主内存管理结构
+mem_map，知道它的数据结构是什么样子，其功能也基本就懂了。</p>
+<p><strong>dev</strong> 表示设备号，-1 就表示空闲。</p>
+<p><strong>cmd</strong> 表示命令，其实就是 READ 还是
+WRITE，也就表示本次操作是读还是写。</p>
+<p><strong>errors</strong> 表示操作时产生的错误次数。</p>
+<p><strong>sector</strong> 表示起始扇区。</p>
+<p><strong>nr_sectors</strong> 表示扇区数。</p>
+<p><strong>buffer</strong>
+表示数据缓冲区，也就是读盘之后的数据放在内存中的什么位置。</p>
+<p><strong>waiting</strong> 是个 task_struct
+结构，这可以表示一个进程，也就表示是哪个进程发起了这个请求。</p>
+<p><strong>bh</strong>
+是缓冲区头指针，这个后面讲完缓冲区就懂了，因为这个 request
+是需要与缓冲区挂钩的。</p>
+<p><strong>next</strong> 指向了下一个请求项</p>
+<p>读请求时，<strong>cmd</strong> 就是 READ，<strong>sector</strong> 和
+<strong>nr_sectors</strong>
+这俩就定位了所要读取的块设备（可以简单先理解为硬盘）的哪几个扇区，<strong>buffer</strong>
+就定位了这些数据读完之后放在内存的什么位置。</p>
+<img src="/2023/04/05/OperatingSystem/Operating-system-source-code-4/640-16806836672046.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>而其他的参数，肯定是为了更好地配合操作系统进行读写块设备操作嘛，为了把多个读写块设备请求很好地组织起来。这个组织不但要有这个数据结构中
+hb 和 next
+等变量的配合，还要有后面的电梯调度算法的配合，仅此而已，先点到为止。</p>
+<p>总之，我们这里就先明白，这个 request
+结构可以完整描述一个读盘操作。然后那个 request
+数组就是把它们都放在一起，并且它们又通过 next 指针串成链表。</p>
+<img src="/2023/04/05/OperatingSystem/Operating-system-source-code-4/640-16806836908199.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>读操作的系统调用函数是
+<strong>sys_read</strong>，源代码很长，我给简化一下，仅仅保留读取普通文件的分支，就是如下的样子。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">sys_read</span><span class="hljs-params">(<span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> fd,<span class="hljs-type">char</span> * buf,<span class="hljs-type">int</span> count)</span> &#123;<br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">file</span> * <span class="hljs-title">file</span> =</span> current-&gt;filp[fd];<br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">m_inode</span> * <span class="hljs-title">inode</span> =</span> file-&gt;f_inode;<br>    <span class="hljs-comment">// 校验 buf 区域的内存限制</span><br>    verify_area(buf,count);<br>    <span class="hljs-comment">// 仅关注目录文件或普通文件</span><br>    <span class="hljs-keyword">return</span> file_read(inode,file,buf,count);<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>入参 <strong>fd</strong> 是文件描述符，通过它可以找到一个文件的
+inode，进而找到这个文件在硬盘中的位置。</p>
+<img src="/2023/04/05/OperatingSystem/Operating-system-source-code-4/640-168068374225712.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>另两个入参 <strong>buf</strong>
+就是要复制到的内存中的位置，<strong>count</strong>
+就是要复制多少个字节，很好理解。</p>
+<p><code>file_read 函数</code></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">file_read</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> m_inode * inode, <span class="hljs-keyword">struct</span> file * filp, <span class="hljs-type">char</span> * buf, <span class="hljs-type">int</span> count)</span> &#123;<br>    <span class="hljs-type">int</span> left,chars,nr;<br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">buffer_head</span> * <span class="hljs-title">bh</span>;</span><br>    left = count;<br>    <span class="hljs-keyword">while</span> (left) &#123;<br>        <span class="hljs-keyword">if</span> (nr = bmap(inode,(filp-&gt;f_pos)/BLOCK_SIZE)) &#123;<br>            <span class="hljs-keyword">if</span> (!(bh=bread(inode-&gt;i_dev,nr)))<br>                <span class="hljs-keyword">break</span>;<br>        &#125; <span class="hljs-keyword">else</span><br>            bh = <span class="hljs-literal">NULL</span>;<br>        nr = filp-&gt;f_pos % BLOCK_SIZE;<br>        chars = MIN( BLOCK_SIZE-nr , left );<br>        filp-&gt;f_pos += chars;<br>        left -= chars;<br>        <span class="hljs-keyword">if</span> (bh) &#123;<br>            <span class="hljs-type">char</span> * p = nr + bh-&gt;b_data;<br>            <span class="hljs-keyword">while</span> (chars--&gt;<span class="hljs-number">0</span>)<br>                put_fs_byte(*(p++),buf++);<br>            brelse(bh);<br>        &#125; <span class="hljs-keyword">else</span> &#123;<br>            <span class="hljs-keyword">while</span> (chars--&gt;<span class="hljs-number">0</span>)<br>                put_fs_byte(<span class="hljs-number">0</span>,buf++);<br>        &#125;<br>    &#125;<br>    inode-&gt;i_atime = CURRENT_TIME;<br>    <span class="hljs-keyword">return</span> (count-left)?(count-left):-ERROR;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>整体看，就是一个 while
+循环，每次读入一个块的数据，直到入参所要求的大小全部读完为止。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">file_read</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> m_inode * inode, <span class="hljs-keyword">struct</span> file * filp, <span class="hljs-type">char</span> * buf, <span class="hljs-type">int</span> count)</span> &#123;<br>    ...<br>    <span class="hljs-keyword">while</span> (left) &#123;<br>        ...<br>        <span class="hljs-keyword">if</span> (!(bh=bread(inode-&gt;i_dev,nr)))<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p><code>bread() function</code></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-keyword">struct</span> buffer_head * <span class="hljs-title function_">bread</span><span class="hljs-params">(<span class="hljs-type">int</span> dev,<span class="hljs-type">int</span> block)</span> &#123;<br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">buffer_head</span> * <span class="hljs-title">bh</span> =</span> getblk(dev,block);<br>    <span class="hljs-keyword">if</span> (bh-&gt;b_uptodate)<br>        <span class="hljs-keyword">return</span> bh;<br>    ll_rw_block(READ,bh);<br>    wait_on_buffer(bh);<br>    <span class="hljs-keyword">if</span> (bh-&gt;b_uptodate)<br>        <span class="hljs-keyword">return</span> bh;<br>    brelse(bh);<br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">NULL</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>其中 getblk 先申请了一个内存中的缓冲块，然后 ll_rw_block
+负责把数据读入这个缓冲块，进去继续看。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">ll_rw_block</span><span class="hljs-params">(<span class="hljs-type">int</span> rw, <span class="hljs-keyword">struct</span> buffer_head * bh)</span> &#123;<br>    ...<br>    make_request(major,rw,bh);<br>&#125;<br><br><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">make_request</span><span class="hljs-params">(<span class="hljs-type">int</span> major,<span class="hljs-type">int</span> rw, <span class="hljs-keyword">struct</span> buffer_head * bh)</span> &#123;<br>    ...<br><span class="hljs-keyword">if</span> (rw == READ)<br>        req = request+NR_REQUEST;<br>    <span class="hljs-keyword">else</span><br>        req = request+((NR_REQUEST*<span class="hljs-number">2</span>)/<span class="hljs-number">3</span>);<br><span class="hljs-comment">/* find an empty request */</span><br>    <span class="hljs-keyword">while</span> (--req &gt;= request)<br>        <span class="hljs-keyword">if</span> (req-&gt;dev&lt;<span class="hljs-number">0</span>)<br>            <span class="hljs-keyword">break</span>;<br>    ...<br><span class="hljs-comment">/* fill up the request-info, and add it to the queue */</span><br>    req-&gt;dev = bh-&gt;b_dev;<br>    req-&gt;cmd = rw;<br>    req-&gt;errors=<span class="hljs-number">0</span>;<br>    req-&gt;sector = bh-&gt;b_blocknr&lt;&lt;<span class="hljs-number">1</span>;<br>    req-&gt;nr_sectors = <span class="hljs-number">2</span>;<br>    req-&gt;buffer = bh-&gt;b_data;<br>    req-&gt;waiting = <span class="hljs-literal">NULL</span>;<br>    req-&gt;bh = bh;<br>    req-&gt;next = <span class="hljs-literal">NULL</span>;<br>    add_request(major+blk_dev,req);<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>具体说来，就是该函数会往刚刚的设备的请求项链表 request[32]
+中添加一个请求项，只要 request[32]
+中有未处理的请求项存在，都会陆续地被处理，直到设备的请求项链表是空为止。</p>
+<h1 id="第十六回-按下键盘后为什么屏幕上就会有输出">第十六回 |
+按下键盘后为什么屏幕上就会有输出</h1>
+<blockquote>
+<p><a
+target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&amp;mid=2247500190&amp;idx=1&amp;sn=b0bebe846b55f7e29fc009e1b6587214&amp;chksm=c2c5bb33f5b23225845ab699d1b8fcee39a04ca98a48ebf0e2c22584b638fa0b0839d1212485&amp;cur_album_id=2123743679373688834&amp;scene=189#wechat_redirect">第16回
+| 按下键盘后为什么屏幕上就会有输出 (qq.com)</a></p>
+</blockquote>
+<p><code>tty_init() function</code></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span> &#123;<br>    ...<br>    mem_init(main_memory_start,memory_end);<br>    trap_init();<br>    blk_dev_init();<br>    chr_dev_init();<br>    tty_init();<br>    time_init();<br>    sched_init();<br>    buffer_init(buffer_memory_end);<br>    hd_init();<br>    floppy_init();<br>    <br>    sti();<br>    move_to_user_mode();<br>    <span class="hljs-keyword">if</span> (!fork()) &#123;init();&#125;<br>    <span class="hljs-keyword">for</span>(;;) pause();<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>这个方法执行完成之后，我们将会具备键盘输入到显示器输出字符这个最常用的功能。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">tty_init</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span><br>&#123;<br>    rs_init();<br>    con_init();<br>&#125;<br></code></pre></td></tr></table></figure>
+<p><code>rs_init() function</code></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">rs_init</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span><br>&#123;<br>    set_intr_gate(<span class="hljs-number">0x24</span>,rs1_interrupt);<br>    set_intr_gate(<span class="hljs-number">0x23</span>,rs2_interrupt);<br>    init(tty_table[<span class="hljs-number">1</span>].read_q.data);<br>    init(tty_table[<span class="hljs-number">2</span>].read_q.data);<br>    outb(inb_p(<span class="hljs-number">0x21</span>)&amp;<span class="hljs-number">0xE7</span>,<span class="hljs-number">0x21</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>这个方法是串口中断的开启，以及设置对应的中断处理程序，串口在我们现在的
+PC 机上已经很少用到了，所以这个直接忽略。</p>
+<p><code>con_init() function</code></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">con_init</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span> &#123;<br>    ...<br>    <span class="hljs-keyword">if</span> (ORIG_VIDEO_MODE == <span class="hljs-number">7</span>) &#123;<br>        ...<br>        <span class="hljs-keyword">if</span> ((ORIG_VIDEO_EGA_BX &amp; <span class="hljs-number">0xff</span>) != <span class="hljs-number">0x10</span>) &#123;...&#125;<br>        <span class="hljs-keyword">else</span> &#123;...&#125;<br>    &#125; <span class="hljs-keyword">else</span> &#123;<br>        ...<br>        <span class="hljs-keyword">if</span> ((ORIG_VIDEO_EGA_BX &amp; <span class="hljs-number">0xff</span>) != <span class="hljs-number">0x10</span>) &#123;...&#125;<br>        <span class="hljs-keyword">else</span> &#123;...&#125;<br>    &#125;<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>这是为了应对不同的显示模式，来分配不同的变量值，那如果我们仅仅找出一个显示模式，这些分支就可以只看一个了。</p>
+<p>啥是显示模式呢？那我们得简单说说显示，<strong>一个字符是如何显示在屏幕上的呢</strong>？换句话说，如果你可以随意操作内存和
+CPU 等设备，你如何操作才能使得你的显示器上，显示一个字符‘a’呢？</p>
+<img src="/2023/04/05/OperatingSystem/Operating-system-source-code-4/640-168068421948018.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>内存中有这样一部分区域，是和显存映射的。啥意思，就是你往上图的这些内存区域中写数据，相当于写在了显存中。而往显存中写数据，就相当于在屏幕上输出文本了。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs asm">mov [0xB8000],&#x27;h&#x27;<br></code></pre></td></tr></table></figure>
+<p>其实就是往内存中 <strong>0xB8000</strong>
+这个位置写了一个值，只要一写，屏幕上就会是这样。</p>
+<img src="/2023/04/05/OperatingSystem/Operating-system-source-code-4/640-168068425969721.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>具体说来，这片内存是每两个字节表示一个显示在屏幕上的字符，<strong>第一个是字符的编码，第二个是字符的颜色</strong>，那我们先不管颜色，如果多写几个字符就像这样。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs asm">mov [0xB8000],&#x27;h&#x27;<br>mov [0xB8002],&#x27;e&#x27;<br>mov [0xB8004],&#x27;l&#x27;<br>mov [0xB8006],&#x27;l&#x27;<br>mov [0xB8008],&#x27;o&#x27;<br></code></pre></td></tr></table></figure>
+<img src="/2023/04/05/OperatingSystem/Operating-system-source-code-4/640-168068429196824.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>我们就假设显示模式是我们现在的这种文本模式，那条件分支就可以去掉好多。</p>
+<p>代码可以简化成这个样子。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> ORIG_X          (*(unsigned char *)0x90000)</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> ORIG_Y          (*(unsigned char *)0x90001)</span><br><span class="hljs-type">void</span> <span class="hljs-title function_">con_init</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span> &#123;<br>    <span class="hljs-keyword">register</span> <span class="hljs-type">unsigned</span> <span class="hljs-type">char</span> a;<br>    <span class="hljs-comment">// 第一部分 获取显示模式相关信息</span><br>    video_num_columns = (((*(<span class="hljs-type">unsigned</span> <span class="hljs-type">short</span> *)<span class="hljs-number">0x90006</span>) &amp; <span class="hljs-number">0xff00</span>) &gt;&gt; <span class="hljs-number">8</span>);<br>    video_size_row = video_num_columns * <span class="hljs-number">2</span>;<br>    video_num_lines = <span class="hljs-number">25</span>;<br>    video_page = (*(<span class="hljs-type">unsigned</span> <span class="hljs-type">short</span> *)<span class="hljs-number">0x90004</span>);<br>    video_erase_char = <span class="hljs-number">0x0720</span>;<br>    <span class="hljs-comment">// 第二部分 显存映射的内存区域 </span><br>    video_mem_start = <span class="hljs-number">0xb8000</span>;<br>    video_port_reg  = <span class="hljs-number">0x3d4</span>;<br>    video_port_val  = <span class="hljs-number">0x3d5</span>;<br>    video_mem_end = <span class="hljs-number">0xba000</span>;<br>    <span class="hljs-comment">// 第三部分 滚动屏幕操作时的信息</span><br>    origin  = video_mem_start;<br>    scr_end = video_mem_start + video_num_lines * video_size_row;<br>    top = <span class="hljs-number">0</span>;<br>    bottom  = video_num_lines;<br>    <span class="hljs-comment">// 第四部分 定位光标并开启键盘中断</span><br>    gotoxy(ORIG_X, ORIG_Y);<br>    set_trap_gate(<span class="hljs-number">0x21</span>,&amp;keyboard_interrupt);<br>    outb_p(inb_p(<span class="hljs-number">0x21</span>)&amp;<span class="hljs-number">0xfd</span>,<span class="hljs-number">0x21</span>);<br>    a=inb_p(<span class="hljs-number">0x61</span>);<br>    outb_p(a|<span class="hljs-number">0x80</span>,<span class="hljs-number">0x61</span>);<br>    outb(a,<span class="hljs-number">0x61</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr class="header">
+<th>内存地址</th>
+<th>长度(字节)</th>
+<th>名称</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0x90000</td>
+<td>2</td>
+<td>光标位置</td>
+</tr>
+<tr class="even">
+<td>0x90002</td>
+<td>2</td>
+<td>扩展内存数</td>
+</tr>
+<tr class="odd">
+<td>0x90004</td>
+<td>2</td>
+<td>显示页面</td>
+</tr>
+<tr class="even">
+<td>0x90006</td>
+<td>1</td>
+<td>显示模式</td>
+</tr>
+<tr class="odd">
+<td>0x90007</td>
+<td>1</td>
+<td>字符列数</td>
+</tr>
+<tr class="even">
+<td>0x90008</td>
+<td>2</td>
+<td>未知</td>
+</tr>
+<tr class="odd">
+<td>0x9000A</td>
+<td>1</td>
+<td>显示内存</td>
+</tr>
+<tr class="even">
+<td>0x9000B</td>
+<td>1</td>
+<td>显示状态</td>
+</tr>
+<tr class="odd">
+<td>0x9000C</td>
+<td>2</td>
+<td>显卡特性参数</td>
+</tr>
+<tr class="even">
+<td>0x9000E</td>
+<td>1</td>
+<td>屏幕行数</td>
+</tr>
+<tr class="odd">
+<td>0x9000F</td>
+<td>1</td>
+<td>屏幕列数</td>
+</tr>
+<tr class="even">
+<td>0x90080</td>
+<td>16</td>
+<td>硬盘1参数表</td>
+</tr>
+<tr class="odd">
+<td>0x90090</td>
+<td>16</td>
+<td>硬盘2参数表</td>
+</tr>
+<tr class="even">
+<td>0x901FC</td>
+<td>2</td>
+<td>根设备号</td>
+</tr>
+</tbody>
+</table>
+<p><strong>第一部分</strong>获取 0x90006
+地址处的数据，就是获取显示模式等相关信息。</p>
+<p><strong>第二部分</strong>就是显存映射的内存地址范围，我们现在假设是
+CGA 类型的文本模式，所以映射的内存是从 0xB8000 到 0xBA000。</p>
+<p><strong>第三部分</strong>是设置一些滚动屏幕时需要的参数，定义顶行和底行是哪里，这里顶行就是第一行，底行就是最后一行，很合理。</p>
+<p><strong>第四部分</strong>是把光标定位到之前保存的光标位置处（取内存地址
+0x90000 处的数据），然后设置并开启键盘中断。</p>
+<p>开启键盘中断后，键盘上敲击一个按键后就会触发中断，中断程序就会读键盘码转换成
+ASCII
+码，然后写到光标处的内存地址，也就相当于往显存写，于是这个键盘敲击的字符就显示在了屏幕上。</p>
+<p><strong>1.</strong>
+我们现在根据已有信息已经可以实现往屏幕上的任意位置写字符了，而且还能指定颜色。</p>
+<p><strong>2.</strong>
+并且，我们也能接受键盘中断，根据键盘码中断处理程序就可以得知哪个键按下了。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> ORIG_X          (*(unsigned char *)0x90000)</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> ORIG_Y          (*(unsigned char *)0x90001)</span><br><span class="hljs-type">void</span> <span class="hljs-title function_">con_init</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span> &#123;<br>    ...<br>    <span class="hljs-comment">// 第四部分 定位光标并开启键盘中断</span><br>    gotoxy(ORIG_X, ORIG_Y);<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">static</span> <span class="hljs-keyword">inline</span> <span class="hljs-type">void</span> <span class="hljs-title function_">gotoxy</span><span class="hljs-params">(<span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> new_x,<span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> new_y)</span> &#123;<br>   ...<br>   x = new_x;<br>   y = new_y;<br>   pos = origin + y*video_size_row + (x&lt;&lt;<span class="hljs-number">1</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>其中 <strong>x</strong> 表示光标在哪一列，<strong>y</strong>
+表示光标在哪一行，<strong>pos</strong>
+表示根据列号和行号计算出来的内存指针，也就是往这个 pos
+指向的地址处写数据，就相当于往控制台的 x 列 y
+行处写入字符了，简单吧？</p>
+<p>然后，当你按下键盘后，触发键盘中断，之后的程序调用链是这样的。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs c">_keyboard_interrupt:<br>    ...<br>    call _do_tty_interrupt<br>    ...<br>    <br><span class="hljs-type">void</span> <span class="hljs-title function_">do_tty_interrupt</span><span class="hljs-params">(<span class="hljs-type">int</span> tty)</span> &#123;<br>   copy_to_cooked(tty_table+tty);<br>&#125;<br><br><span class="hljs-type">void</span> <span class="hljs-title function_">copy_to_cooked</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> tty_struct * tty)</span> &#123;<br>    ...<br>    tty-&gt;write(tty);<br>    ...<br>&#125;<br><br><span class="hljs-comment">// 控制台时 tty 的 write 为 con_write 函数</span><br><span class="hljs-type">void</span> <span class="hljs-title function_">con_write</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> tty_struct * tty)</span> &#123;<br>    ...<br>    __asm__(<span class="hljs-string">&quot;movb _attr,%%ah\n\t&quot;</span><br>      <span class="hljs-string">&quot;movw %%ax,%1\n\t&quot;</span><br>      ::<span class="hljs-string">&quot;a&quot;</span> (c),<span class="hljs-string">&quot;m&quot;</span> (*(<span class="hljs-type">short</span> *)pos)<br>      :<span class="hljs-string">&quot;ax&quot;</span>);<br>     pos += <span class="hljs-number">2</span>;<br>     x++;<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+<p><strong>asm</strong> 内联汇编，就是把键盘输入的字符
+<strong>c</strong> 写入 <strong>pos</strong>
+指针指向的内存，相当于往屏幕输出了。</p>
+<p>之后两行 pos+=2 和 x++，就是调整所谓的<strong>光标</strong>。</p>
+<p>你看，写入一个字符，最底层，<strong>其实就是往内存的某处写个数据，然后顺便调整一下光标</strong>。</p>
+<p>由此我们也可以看出，光标的本质，其实就是这里的 x y pos
+这仨变量而已。</p>
+<p>我们还可以做<strong>换行效果</strong>，当发现光标位置处于某一行的结尾时（这个应该很好算吧，我们都知道屏幕上一共有几行几列了），就把光标计算出一个新值，让其处于下一行的开头。</p>
+<p>就一个小计算公式即可搞定，仍然在 con_write 源码处有体现，就是判断列号
+x 是否大于了总列数。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">con_write</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> tty_struct * tty)</span> &#123;<br>    ...<br>    <span class="hljs-keyword">if</span> (x&gt;=video_num_columns) &#123;<br>        x -= video_num_columns;<br>        pos -= video_size_row;<br>        lf();<br>  &#125;<br>  ...<br>&#125;<br><br><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">lf</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span> &#123;<br>   <span class="hljs-keyword">if</span> (y+<span class="hljs-number">1</span>&lt;bottom) &#123;<br>      y++;<br>      pos += video_size_row;<br>      <span class="hljs-keyword">return</span>;<br>   &#125;<br> ...<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>相似的，我们还可以实现<strong>滚屏</strong>的效果，无非就是当检测到光标已经出现在最后一行最后一列了，那就把每一行的字符，都复制到它上一行，其实就是算好哪些内存地址上的值，拷贝到哪些内存地址，就好了。</p>
+<p>所以，有了这个初始化工作，我们就可以利用这些信息，弄几个小算法，实现各种我们常见控制台的操作。</p>
+<p>所以 console.c
+中的其他方法就是做这个事的，我们就不展开每一个功能的方法体了，简单看看有哪些方法。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">// 定位光标的</span><br><span class="hljs-type">static</span> <span class="hljs-keyword">inline</span> <span class="hljs-type">void</span> <span class="hljs-title function_">gotoxy</span><span class="hljs-params">(<span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> new_x, <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> new_y)</span>&#123;&#125;<br><span class="hljs-comment">// 滚屏，即内容向上滚动一行</span><br><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">scrup</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span>&#123;&#125;<br><span class="hljs-comment">// 光标同列位置下移一行</span><br><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">lf</span><span class="hljs-params">(<span class="hljs-type">int</span> currcons)</span>&#123;&#125;<br><span class="hljs-comment">// 光标回到第一列</span><br><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">cr</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span>&#123;&#125;<br>...<br><span class="hljs-comment">// 删除一行</span><br><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">delete_line</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span>&#123;&#125;<br></code></pre></td></tr></table></figure>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" class="category-chain-item">操作系统</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>你管这破玩意儿叫操作系统源码(四)</div>
+      <div>https://www.spacezxy.top/2023/04/05/OperatingSystem/Operating-system-source-code-4/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Xavier ZXY</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年4月5日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/04/03/OperatingSystem/Operating-system-source-code-3/" title="你管这破玩意儿叫操作系统源码(三)">
+                        <span class="hidden-mobile">你管这破玩意儿叫操作系统源码(三)</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a>
+    </div>
+  
+  
+  
+    <!-- 备案信息 ICP for China -->
+    <div class="beian">
+  <span>
+    <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+      湘ICP备  2021018889
+    </a>
+  </span>
+  
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

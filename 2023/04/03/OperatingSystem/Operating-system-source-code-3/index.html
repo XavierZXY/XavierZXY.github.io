@@ -36,8 +36,12 @@
 <meta property="og:image" content="https://www.spacezxy.top/2023/04/03/OperatingSystem/Operating-system-source-code-3/640-168048612741230.png">
 <meta property="og:image" content="https://www.spacezxy.top/2023/04/03/OperatingSystem/Operating-system-source-code-3/640-168048697699733.png">
 <meta property="og:image" content="https://www.spacezxy.top/2023/04/03/OperatingSystem/Operating-system-source-code-3/640-168048698787836.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/03/OperatingSystem/Operating-system-source-code-3/640.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/03/OperatingSystem/Operating-system-source-code-3/640-16806802983577.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/03/OperatingSystem/Operating-system-source-code-3/640-168068169823910.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/03/OperatingSystem/Operating-system-source-code-3/640-168068246802913.png">
 <meta property="article:published_time" content="2023-04-03T01:05:17.000Z">
-<meta property="article:modified_time" content="2023-04-03T01:56:39.329Z">
+<meta property="article:modified_time" content="2023-04-05T08:18:35.228Z">
 <meta property="article:author" content="Xavier ZXY">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://www.spacezxy.top/2023/04/03/OperatingSystem/Operating-system-source-code-3/640.png">
@@ -248,7 +252,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          3.2k 字
+          8.2k 字
         
       </span>
     
@@ -259,7 +263,7 @@
         
         
         
-          27 分钟
+          69 分钟
         
       </span>
     
@@ -404,6 +408,196 @@ main.c 里写的 main 函数的内存地址，是我们刚刚特意压入栈的�
 函数的参数，但实际上似乎也没有用到，所以也不必关心。</p>
 <img src="/2023/04/03/OperatingSystem/Operating-system-source-code-3/640-168048697699733.png" srcset="/img/loading.gif" lazyload class="" title="图片">
 <img src="/2023/04/03/OperatingSystem/Operating-system-source-code-3/640-168048698787836.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<h1 id="第一部分总结">第一部分总结</h1>
+<blockquote>
+<p><a
+target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&amp;mid=2247499882&amp;idx=1&amp;sn=68fd16c5aeae15084be58afb1e5bd9e8&amp;chksm=c2c5bac7f5b233d1c486fa57e9e3a2bc907a92ab69ff0344babab4d50bdaf76e7766b4b42914&amp;scene=178&amp;cur_album_id=2123743679373688834#rd">第一部分完结
+进入内核前的苦力活 (qq.com)</a></p>
+</blockquote>
+<h1 id="第十一回-整个操作系统就20几行代码">第十一回 |
+整个操作系统就20几行代码</h1>
+<blockquote>
+<p><a
+target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&amp;mid=2247499918&amp;idx=1&amp;sn=987617e81bb0f73cf164b074c625ca80&amp;chksm=c2c5ba23f5b23335eef4903ffa1fae0a20881161606f0a134301094e419037b7b8ebbb98d443&amp;scene=178&amp;cur_album_id=2123743679373688834#rd">第11回
+| 整个操作系统就 20 几行代码 (qq.com)</a></p>
+</blockquote>
+<p>mian.c文件中的main方法。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span> &#123;<br>    ROOT_DEV = ORIG_ROOT_DEV;<br>    drive_info = DRIVE_INFO;<br>    memory_end = (<span class="hljs-number">1</span>&lt;&lt;<span class="hljs-number">20</span>) + (EXT_MEM_K&lt;&lt;<span class="hljs-number">10</span>);<br>    memory_end &amp;= <span class="hljs-number">0xfffff000</span>;<br>    <span class="hljs-keyword">if</span> (memory_end &gt; <span class="hljs-number">16</span>*<span class="hljs-number">1024</span>*<span class="hljs-number">1024</span>)<br>        memory_end = <span class="hljs-number">16</span>*<span class="hljs-number">1024</span>*<span class="hljs-number">1024</span>;<br>    <span class="hljs-keyword">if</span> (memory_end &gt; <span class="hljs-number">12</span>*<span class="hljs-number">1024</span>*<span class="hljs-number">1024</span>) <br>        buffer_memory_end = <span class="hljs-number">4</span>*<span class="hljs-number">1024</span>*<span class="hljs-number">1024</span>;<br>    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (memory_end &gt; <span class="hljs-number">6</span>*<span class="hljs-number">1024</span>*<span class="hljs-number">1024</span>)<br>        buffer_memory_end = <span class="hljs-number">2</span>*<span class="hljs-number">1024</span>*<span class="hljs-number">1024</span>;<br>    <span class="hljs-keyword">else</span><br>        buffer_memory_end = <span class="hljs-number">1</span>*<span class="hljs-number">1024</span>*<span class="hljs-number">1024</span>;<br>    main_memory_start = buffer_memory_end;<br><br>    mem_init(main_memory_start,memory_end);<br>    trap_init();<br>    blk_dev_init();<br>    chr_dev_init();<br>    tty_init();<br>    time_init();<br>    sched_init();<br>    buffer_init(buffer_memory_end);<br>    hd_init();<br>    floppy_init();<br><br>    sti();<br>    move_to_user_mode();<br>    <span class="hljs-keyword">if</span> (!fork()) &#123;<br>        init();<br>    &#125;<br><br>    <span class="hljs-keyword">for</span>(;;) pause();<br>&#125;<br></code></pre></td></tr></table></figure>
+<ul>
+<li>第一部分是一些参数的取值和计算</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span> &#123;<br>    ROOT_DEV = ORIG_ROOT_DEV;<br>    drive_info = DRIVE_INFO;<br>    memory_end = (<span class="hljs-number">1</span>&lt;&lt;<span class="hljs-number">20</span>) + (EXT_MEM_K&lt;&lt;<span class="hljs-number">10</span>);<br>    memory_end &amp;= <span class="hljs-number">0xfffff000</span>;<br>    <span class="hljs-keyword">if</span> (memory_end &gt; <span class="hljs-number">16</span>*<span class="hljs-number">1024</span>*<span class="hljs-number">1024</span>)<br>        memory_end = <span class="hljs-number">16</span>*<span class="hljs-number">1024</span>*<span class="hljs-number">1024</span>;<br>    <span class="hljs-keyword">if</span> (memory_end &gt; <span class="hljs-number">12</span>*<span class="hljs-number">1024</span>*<span class="hljs-number">1024</span>) <br>        buffer_memory_end = <span class="hljs-number">4</span>*<span class="hljs-number">1024</span>*<span class="hljs-number">1024</span>;<br>    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (memory_end &gt; <span class="hljs-number">6</span>*<span class="hljs-number">1024</span>*<span class="hljs-number">1024</span>)<br>        buffer_memory_end = <span class="hljs-number">2</span>*<span class="hljs-number">1024</span>*<span class="hljs-number">1024</span>;<br>    <span class="hljs-keyword">else</span><br>        buffer_memory_end = <span class="hljs-number">1</span>*<span class="hljs-number">1024</span>*<span class="hljs-number">1024</span>;<br>    main_memory_start = buffer_memory_end;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>包括<strong>根设备
+ROOT_DEV</strong>，之前在汇编语言中获取的各个设备的<strong>参数信息
+drive_info</strong>，以及通过计算得到的<strong>内存边界</strong></p>
+<p>main_memory_start</p>
+<p>main_memory_end</p>
+<p>buffer_memory_start</p>
+<p>buffer_memory_end</p>
+<p>从哪获得之前的设备参数信息呢？如果你前面看了，那一定还记得这个表，都是由
+setup.s 这个汇编程序调用 BIOS
+中断获取的各个设备的信息，并保存在约定好的内存地址 0x90000 处。</p>
+<table>
+<thead>
+<tr class="header">
+<th>内存地址</th>
+<th>长度(字节)</th>
+<th>名称</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0x90000</td>
+<td>2</td>
+<td>光标位置</td>
+</tr>
+<tr class="even">
+<td>0x90002</td>
+<td>2</td>
+<td>扩展内存数</td>
+</tr>
+<tr class="odd">
+<td>0x90004</td>
+<td>2</td>
+<td>显示页面</td>
+</tr>
+<tr class="even">
+<td>0x90006</td>
+<td>1</td>
+<td>显示模式</td>
+</tr>
+<tr class="odd">
+<td>0x90007</td>
+<td>1</td>
+<td>字符列数</td>
+</tr>
+<tr class="even">
+<td>0x90008</td>
+<td>2</td>
+<td>未知</td>
+</tr>
+<tr class="odd">
+<td>0x9000A</td>
+<td>1</td>
+<td>显示内存</td>
+</tr>
+<tr class="even">
+<td>0x9000B</td>
+<td>1</td>
+<td>显示状态</td>
+</tr>
+<tr class="odd">
+<td>0x9000C</td>
+<td>2</td>
+<td>显卡特性参数</td>
+</tr>
+<tr class="even">
+<td>0x9000E</td>
+<td>1</td>
+<td>屏幕行数</td>
+</tr>
+<tr class="odd">
+<td>0x9000F</td>
+<td>1</td>
+<td>屏幕列数</td>
+</tr>
+<tr class="even">
+<td>0x90080</td>
+<td>16</td>
+<td>硬盘1参数表</td>
+</tr>
+<tr class="odd">
+<td>0x90090</td>
+<td>16</td>
+<td>硬盘2参数表</td>
+</tr>
+<tr class="even">
+<td>0x901FC</td>
+<td>2</td>
+<td>根设备号</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>第二部分是各种初始化init操作</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span> &#123;<br>    ...<br>    mem_init(main_memory_start,memory_end);  <span class="hljs-comment">// 内存初始化</span><br>    trap_init();  <span class="hljs-comment">// 中断初始化</span><br>    blk_dev_init();  <br>    chr_dev_init();<br>    tty_init();<br>    time_init();<br>    sched_init();  <span class="hljs-comment">//进程调度初始化</span><br>    buffer_init(buffer_memory_end);<br>    hd_init();<br>    floppy_init();<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+<ul>
+<li>切换到用户态模式，并在新的进程中做一个最终的初始化init</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span> &#123;<br>    ...<br>    sti();<br>    move_to_user_mode();<br>    <span class="hljs-keyword">if</span> (!fork()) &#123;<br>        init();<br>    &#125;<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>这里init函数里会创建一个进程，设置终端的标准IO，并且再创建一个执行shell程序的进程用来接收用户的命令，到这里其实就出现了我们熟悉的画面。</p>
+<img src="/2023/04/03/OperatingSystem/Operating-system-source-code-3/640.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<ul>
+<li><p>第四部分是个<strong>死循环</strong>，如果没有任何任务可以运行，操作系统会一直陷入这个死循环无法自拔。</p>
+<p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span> &#123;<br>    ...<br>    <span class="hljs-keyword">for</span>(;;) pause();<br>&#125;<br></code></pre></td></tr></table></figure></p></li>
+</ul>
+<p>目前的内存布局图</p>
+<img src="/2023/04/03/OperatingSystem/Operating-system-source-code-3/640-16806802983577.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<h1 id="第十二回-管理内存前先划分出三个边界值">第十二回 |
+管理内存前先划分出三个边界值</h1>
+<blockquote>
+<p><a
+target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&amp;mid=2247500061&amp;idx=1&amp;sn=6cb3382d7ac35ebeac52bbba3a89db4e&amp;chksm=c2c5bbb0f5b232a6e1b2c7b1f55a7b7057d29ea11348068e122a03b75db220ffe19ea1e8fc24&amp;cur_album_id=2123743679373688834&amp;scene=189#wechat_redirect">第12回
+| 管理内存前先划分出三个边界值 (qq.com)</a></p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span> &#123;<br>    ...<br>    memory_end = (<span class="hljs-number">1</span>&lt;&lt;<span class="hljs-number">20</span>) + (EXT_MEM_K&lt;&lt;<span class="hljs-number">10</span>);<br>    memory_end &amp;= <span class="hljs-number">0xfffff000</span>;<br>    <span class="hljs-keyword">if</span> (memory_end &gt; <span class="hljs-number">16</span>*<span class="hljs-number">1024</span>*<span class="hljs-number">1024</span>)<br>        memory_end = <span class="hljs-number">16</span>*<span class="hljs-number">1024</span>*<span class="hljs-number">1024</span>;<br>    <span class="hljs-keyword">if</span> (memory_end &gt; <span class="hljs-number">12</span>*<span class="hljs-number">1024</span>*<span class="hljs-number">1024</span>) <br>        buffer_memory_end = <span class="hljs-number">4</span>*<span class="hljs-number">1024</span>*<span class="hljs-number">1024</span>;<br>    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (memory_end &gt; <span class="hljs-number">6</span>*<span class="hljs-number">1024</span>*<span class="hljs-number">1024</span>)<br>        buffer_memory_end = <span class="hljs-number">2</span>*<span class="hljs-number">1024</span>*<span class="hljs-number">1024</span>;<br>    <span class="hljs-keyword">else</span><br>        buffer_memory_end = <span class="hljs-number">1</span>*<span class="hljs-number">1024</span>*<span class="hljs-number">1024</span>;<br>    main_memory_start = buffer_memory_end;<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>判断的标准都是 memory_end
+也就是内存最大值的大小，而这个内存最大值由第一行代码可以看出，是等于 1M
++ 扩展内存大小。</p>
+<p><strong>其实就只是针对不同的内存大小，设置不同的边界值罢了</strong></p>
+<p>假设总内存一共就 <strong>8M</strong> 大小吧。</p>
+<p>那么如果内存为 8M 大小，<strong>memory_end</strong> 就是</p>
+<p>8 * 1024 * 1024</p>
+<p>也就只会走倒数第二个分支，那么 <strong>buffer_memory_end</strong>
+就为</p>
+<p>2 * 1024 * 1024</p>
+<p>那么 <strong>main_memory_start</strong> 也为</p>
+<p>2 * 1024 * 1024</p>
+<img src="/2023/04/03/OperatingSystem/Operating-system-source-code-3/640-168068169823910.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>该段代码就是决定了三个边界地址。</p>
+<p>主内存区的管理和分配是以下代码，</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span> &#123;<br>    ...<br>    mem_init(main_memory_start, memory_end);<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>缓冲区的管理和分配是以下代码，</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span> &#123;<br>    ...<br>    buffer_init(buffer_memory_end);<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+<h1 id="第十三回-操作系统就用一张大表管理内存">第十三回 |
+操作系统就用一张大表管理内存？</h1>
+<blockquote>
+<p><a
+target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&amp;mid=2247500089&amp;idx=1&amp;sn=9a3fd6e585b0fd1ec528599ead6677c6&amp;chksm=c2c5bb94f5b2328224fbc1309718ac7e022bfa32dbf3d6f593b23f2f58ffd0910fe80de05a7f&amp;cur_album_id=2123743679373688834&amp;scene=189#wechat_redirect">操作系统就用一张大表管理内存？
+(qq.com)</a></p>
+</blockquote>
+<p>该篇文章主要简述主内存是如何进行管理的。</p>
+<p><code>mem_init() function</code></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> LOW_MEM 0x100000</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> PAGING_MEMORY (15*1024*1024)</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> PAGING_PAGES (PAGING_MEMORY&gt;&gt;12)</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MAP_NR(addr) (((addr)-LOW_MEM)&gt;&gt;12)</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> USED 100</span><br><br><span class="hljs-type">static</span> <span class="hljs-type">long</span> HIGH_MEMORY = <span class="hljs-number">0</span>;<br><span class="hljs-type">static</span> <span class="hljs-type">unsigned</span> <span class="hljs-type">char</span> mem_map[PAGING_PAGES] = &#123; <span class="hljs-number">0</span>, &#125;;<br><br><span class="hljs-comment">// start_mem = 2 * 1024 * 1024</span><br><span class="hljs-comment">// end_mem = 8 * 1024 * 1024</span><br><span class="hljs-type">void</span> <span class="hljs-title function_">mem_init</span><span class="hljs-params">(<span class="hljs-type">long</span> start_mem, <span class="hljs-type">long</span> end_mem)</span><br>&#123;<br>    <span class="hljs-type">int</span> i;<br>    HIGH_MEMORY = end_mem;<br>    <span class="hljs-keyword">for</span> (i=<span class="hljs-number">0</span> ; i&lt;PAGING_PAGES ; i++)<br>        mem_map[i] = USED;<br>    i = MAP_NR(start_mem);<br>    end_mem -= start_mem;<br>    end_mem &gt;&gt;= <span class="hljs-number">12</span>;<br>    <span class="hljs-keyword">while</span> (end_mem-- &gt;<span class="hljs-number">0</span>)<br>        mem_map[i++]=<span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>仔细一看这个方法，其实折腾来折腾去，就是给一个
+<strong>mem_map</strong> 数组的各个位置上赋了值，而且显示全部赋值为 USED
+也就是 100，然后对其中一部分又赋值为了 0。</p>
+<p><strong>就是准备了一个表，记录了哪些内存被占用了，哪些内存没被占用</strong>。</p>
+<img src="/2023/04/03/OperatingSystem/Operating-system-source-code-3/640-168068246802913.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>可以看出，初始化完成后，其实就是 mem_map 这个数组的每个元素都代表一个
+4K 内存是否空闲（准确说是使用次数）。</p>
+<p>4K 内存通常叫做 1
+页内存，而这种管理方式叫<strong>分页管理</strong>，就是把内存分成一页一页（4K）的单位去管理。</p>
+<p>1M
+以下的内存这个数组干脆没有记录，这里的内存是无需管理的，或者换个说法是无权管理的，也就是没有权利申请和释放，因为这个区域是内核代码所在的地方，不能被“污染”。</p>
+<p>1M 到 2M 这个区间是<strong>缓冲区</strong>，2M
+是缓冲区的末端，缓冲区的开始在哪里之后再说，这些地方不是主内存区域，因此直接标记为
+USED，产生的效果就是无法再被分配了。</p>
+<p>2M
+以上的空间是<strong>主内存区域</strong>，而主内存目前没有任何程序申请，所以初始化时统统都是零，未来等着应用程序去申请和释放这里的内存资源。</p>
+<h2 id="应用程序申请内存">应用程序申请内存</h2>
+<p>在 <strong>memory.c</strong> 文件中有个函数
+<strong>get_free_page()</strong>，用于在主内存区中申请一页空闲内存页，并返回物理内存页的起始地址。</p>
+<p>比如我们在 fork 子进程的时候，会调用 <strong>copy_process</strong>
+函数来复制进程的结构信息，其中有一个步骤就是要<strong>申请一页内存</strong>，用于存放进程结构信息
+task_struct。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">copy_process</span><span class="hljs-params">(...)</span> &#123;<br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">task_struct</span> *<span class="hljs-title">p</span>;</span><br>    ...<br>    p = (<span class="hljs-keyword">struct</span> task_struct *) get_free_page();<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>我们看 get_free_page
+的具体实现，是内联汇编代码，看不懂不要紧，注意它里面就有
+<strong>mem_map</strong> 结构的使用。就是选择 mem_map
+中首个空闲页面，并标记为已使用。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> <span class="hljs-title function_">get_free_page</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span> &#123;<br>    <span class="hljs-keyword">register</span> <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> __res <span class="hljs-title function_">asm</span><span class="hljs-params">(<span class="hljs-string">&quot;ax&quot;</span>)</span>;<br>    __asm__(<br>        <span class="hljs-string">&quot;std ; repne ; scasb\n\t&quot;</span><br>        <span class="hljs-string">&quot;jne 1f\n\t&quot;</span><br>        <span class="hljs-string">&quot;movb $1,1(%%edi)\n\t&quot;</span><br>        <span class="hljs-string">&quot;sall $12,%%ecx\n\t&quot;</span><br>        <span class="hljs-string">&quot;addl %2,%%ecx\n\t&quot;</span><br>        <span class="hljs-string">&quot;movl %%ecx,%%edx\n\t&quot;</span><br>        <span class="hljs-string">&quot;movl $1024,%%ecx\n\t&quot;</span><br>        <span class="hljs-string">&quot;leal 4092(%%edx),%%edi\n\t&quot;</span><br>        <span class="hljs-string">&quot;rep ; stosl\n\t&quot;</span><br>        <span class="hljs-string">&quot;movl %%edx,%%eax\n&quot;</span><br>        <span class="hljs-string">&quot;1:&quot;</span><br>        :<span class="hljs-string">&quot;=a&quot;</span> (__res)<br>        :<span class="hljs-string">&quot;0&quot;</span> (<span class="hljs-number">0</span>),<span class="hljs-string">&quot;i&quot;</span> (LOW_MEM),<span class="hljs-string">&quot;c&quot;</span> (PAGING_PAGES),<br>        <span class="hljs-string">&quot;D&quot;</span> (mem_map + PAGING_PAGES<span class="hljs-number">-1</span>)<br>        :<span class="hljs-string">&quot;di&quot;</span>,<span class="hljs-string">&quot;cx&quot;</span>,<span class="hljs-string">&quot;dx&quot;</span>);<br>    <span class="hljs-keyword">return</span> __res;<br>&#125;<br></code></pre></td></tr></table></figure>
 
                 
               </div>
@@ -486,6 +680,12 @@ main.c 里写的 main 函数的内存地址，是我们刚刚特意压入栈的�
                 <div class="post-prevnext my-3">
                   <article class="post-prev col-6">
                     
+                    
+                      <a href="/2023/04/05/OperatingSystem/Operating-system-source-code-4/" title="你管这破玩意儿叫操作系统源码(四)">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">你管这破玩意儿叫操作系统源码(四)</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
                     
                   </article>
                   <article class="post-next col-6">
