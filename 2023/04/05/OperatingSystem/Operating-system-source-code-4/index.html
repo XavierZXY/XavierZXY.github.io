@@ -31,8 +31,9 @@
 <meta property="og:image" content="https://www.spacezxy.top/2023/04/05/OperatingSystem/Operating-system-source-code-4/640-168068421948018.png">
 <meta property="og:image" content="https://www.spacezxy.top/2023/04/05/OperatingSystem/Operating-system-source-code-4/640-168068425969721.png">
 <meta property="og:image" content="https://www.spacezxy.top/2023/04/05/OperatingSystem/Operating-system-source-code-4/640-168068429196824.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/05/OperatingSystem/Operating-system-source-code-4/640.jpeg">
 <meta property="article:published_time" content="2023-04-05T08:21:47.000Z">
-<meta property="article:modified_time" content="2023-04-05T08:56:34.593Z">
+<meta property="article:modified_time" content="2023-04-05T11:52:34.520Z">
 <meta property="article:author" content="Xavier ZXY">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://www.spacezxy.top/2023/04/05/OperatingSystem/Operating-system-source-code-4/640.png">
@@ -243,7 +244,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          11k 字
+          13k 字
         
       </span>
     
@@ -254,7 +255,7 @@
         
         
         
-          95 分钟
+          112 分钟
         
       </span>
     
@@ -576,6 +577,97 @@ x 是否大于了总列数。</p>
 <p>所以 console.c
 中的其他方法就是做这个事的，我们就不展开每一个功能的方法体了，简单看看有哪些方法。</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">// 定位光标的</span><br><span class="hljs-type">static</span> <span class="hljs-keyword">inline</span> <span class="hljs-type">void</span> <span class="hljs-title function_">gotoxy</span><span class="hljs-params">(<span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> new_x, <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> new_y)</span>&#123;&#125;<br><span class="hljs-comment">// 滚屏，即内容向上滚动一行</span><br><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">scrup</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span>&#123;&#125;<br><span class="hljs-comment">// 光标同列位置下移一行</span><br><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">lf</span><span class="hljs-params">(<span class="hljs-type">int</span> currcons)</span>&#123;&#125;<br><span class="hljs-comment">// 光标回到第一列</span><br><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">cr</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span>&#123;&#125;<br>...<br><span class="hljs-comment">// 删除一行</span><br><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">delete_line</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span>&#123;&#125;<br></code></pre></td></tr></table></figure>
+<h1 id="第十七回-原来操作系统获取时间的方式也这么low">第十七回 |
+原来操作系统获取时间的方式也这么low</h1>
+<blockquote>
+<p><a
+target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&amp;mid=2247500414&amp;idx=1&amp;sn=f3e77f90848dbfa0b82a220590e56e45&amp;chksm=c2c5b8d3f5b231c5c2e0dc3a722ae1d2bf9690eb98daa85b9083e41fb0eb1592bcac4ff713b9&amp;scene=178&amp;cur_album_id=2123743679373688834#rd">第17回
+| 原来操作系统获取时间的方式也这么 low (qq.com)</a></p>
+</blockquote>
+<p><code>time_init</code></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> CMOS_READ(addr) (&#123; \</span><br><span class="hljs-meta">    outb_p(0x80|addr,0x70); \</span><br><span class="hljs-meta">    inb_p(0x71); \</span><br><span class="hljs-meta">&#125;)</span><br><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> BCD_TO_BIN(val) ((val)=((val)&amp;15) + ((val)&gt;&gt;4)*10)</span><br><br><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">time_init</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span> &#123;<br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">tm</span> <span class="hljs-title">time</span>;</span><br>    <span class="hljs-keyword">do</span> &#123;<br>        time.tm_sec = CMOS_READ(<span class="hljs-number">0</span>);<br>        time.tm_min = CMOS_READ(<span class="hljs-number">2</span>);<br>        time.tm_hour = CMOS_READ(<span class="hljs-number">4</span>);<br>        time.tm_mday = CMOS_READ(<span class="hljs-number">7</span>);<br>        time.tm_mon = CMOS_READ(<span class="hljs-number">8</span>);<br>        time.tm_year = CMOS_READ(<span class="hljs-number">9</span>);<br>    &#125; <span class="hljs-keyword">while</span> (time.tm_sec != CMOS_READ(<span class="hljs-number">0</span>));<br>    BCD_TO_BIN(time.tm_sec);<br>    BCD_TO_BIN(time.tm_min);<br>    BCD_TO_BIN(time.tm_hour);<br>    BCD_TO_BIN(time.tm_mday);<br>    BCD_TO_BIN(time.tm_mon);<br>    BCD_TO_BIN(time.tm_year);<br>    time.tm_mon--;<br>    startup_time = kernel_mktime(&amp;time);<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>那主要就是对 <strong>CMOS_READ</strong> 和
+<strong>BCD_TO_BIN</strong> 都是啥意思展开讲一下就明白了了。</p>
+<p>首先是 <strong>CMOS_READ</strong></p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs reasonml">#define <span class="hljs-constructor">CMOS_READ(<span class="hljs-params">addr</span>)</span> (&#123; \<br>    outb<span class="hljs-constructor">_p(0x80|<span class="hljs-params">addr</span>,0x70)</span>; \<br>    inb<span class="hljs-constructor">_p(0x71)</span>; \<br>&#125;)<br></code></pre></td></tr></table></figure>
+<p>就是对一个端口先 <strong>out</strong> 写一下，再 <strong>in</strong>
+读一下。</p>
+<p>这是 CPU 与外设交互的一个基本玩法，CPU
+与外设打交道基本是通过端口，往某些端口写值来表示要这个外设干嘛，然后从另一些端口读值来接受外设的反馈。</p>
+<p>至于这个外设内部是怎么实现的，对使用它的操作系统而言，是个黑盒，无需关心。那对于我们程序员来说，就更不用关心了。</p>
+<p>对 CMOS 这个外设的交互讲起来可能没感觉，我们看看与硬盘的交互。</p>
+<p>最常见的就是读硬盘了，我们看硬盘的端口表。</p>
+<table>
+
+<thead>
+<tr class="header">
+<th>端口</th>
+<th>读</th>
+<th>写</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0x1F0</td>
+<td>数据寄存器</td>
+<td>数据寄存器</td>
+</tr>
+<tr class="even">
+<td>0x1F1</td>
+<td>错误寄存器</td>
+<td>特征寄存器</td>
+</tr>
+<tr class="odd">
+<td>0x1F2</td>
+<td>扇区计数寄存器</td>
+<td>扇区计数寄存器</td>
+</tr>
+<tr class="even">
+<td>0x1F3</td>
+<td>扇区号寄存器或 LBA 块地址 0~7</td>
+<td>扇区号或 LBA 块地址 0~7</td>
+</tr>
+<tr class="odd">
+<td>0x1F4</td>
+<td>磁道数低 8 位或 LBA 块地址 8~15</td>
+<td>磁道数低 8 位或 LBA 块地址 8~15</td>
+</tr>
+<tr class="even">
+<td>0x1F5</td>
+<td>磁道数高 8 位或 LBA 块地址 16~23</td>
+<td>磁道数高 8 位或 LBA 块地址 16~23</td>
+</tr>
+<tr class="odd">
+<td>0x1F6</td>
+<td>驱动器/磁头或 LBA 块地址 24~27</td>
+<td>驱动器/磁头或 LBA 块地址 24~27</td>
+</tr>
+<tr class="even">
+<td>0x1F7</td>
+<td>命令寄存器或状态寄存器</td>
+<td>命令寄存器</td>
+</tr>
+</tbody>
+</table>
+<ol type="1">
+<li>在 0x1F2 写入要读取的扇区数</li>
+<li>在 0x1F3 ~ 0x1F6 这四个端口写入计算好的起始 LBA 地址</li>
+<li>在 0x1F7 处写入读命令的指令号</li>
+<li>不断检测 0x1F7 （此时已成为状态寄存器的含义）的忙位</li>
+<li>如果第四步骤为不忙，则开始不断从 0x1F0
+处读取数据到内存指定位置，直到读完</li>
+</ol>
+<p><strong>CMOS</strong>。它是主板上的一个可读写的 RAM
+芯片，你在开机时长按某个键就可以进入设置它的页面。</p>
+<img src="/2023/04/05/OperatingSystem/Operating-system-source-code-4/640.jpeg" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>最后一步 <strong>kernel_mktime</strong>
+也很简单，就是根据刚刚的那些时分秒数据，计算从 <strong>1970 年 1 月 1 日
+0 时</strong>起到开机当时经过的秒数，作为开机时间，存储在
+<strong>startup_time</strong> 这个变量里。</p>
+<p>想研究可以仔细看看这段代码，不过我觉得这种细节不必看。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs c">startup_time = kernel_mktime(&amp;time);<br><br><span class="hljs-comment">// kernel/mktime.c</span><br><span class="hljs-type">long</span> <span class="hljs-title function_">kernel_mktime</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> tm * tm)</span><br>&#123;<br>    <span class="hljs-type">long</span> res;<br>    <span class="hljs-type">int</span> year;<br>    year = tm-&gt;tm_year - <span class="hljs-number">70</span>;<br>    res = YEAR*year + DAY*((year+<span class="hljs-number">1</span>)/<span class="hljs-number">4</span>);<br>    res += month[tm-&gt;tm_mon];<br>    <span class="hljs-keyword">if</span> (tm-&gt;tm_mon&gt;<span class="hljs-number">1</span> &amp;&amp; ((year+<span class="hljs-number">2</span>)%<span class="hljs-number">4</span>))<br>        res -= DAY;<br>    res += DAY*(tm-&gt;tm_mday<span class="hljs-number">-1</span>);<br>    res += HOUR*tm-&gt;tm_hour;<br>    res += MINUTE*tm-&gt;tm_min;<br>    res += tm-&gt;tm_sec;<br>    <span class="hljs-keyword">return</span> res;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>所以今天其实就是，计算出了一个 <strong>startup_time</strong>
+变量而已，至于这个变量今后会被谁用，怎么用，那就是后话了。</p>
 
                 
               </div>
@@ -658,6 +750,12 @@ x 是否大于了总列数。</p>
                 <div class="post-prevnext my-3">
                   <article class="post-prev col-6">
                     
+                    
+                      <a href="/2023/04/05/OperatingSystem/Operating-system-source-code-5/" title="你管这破玩意儿叫操作系统源码(五)">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">你管这破玩意儿叫操作系统源码(五)</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
                     
                   </article>
                   <article class="post-next col-6">

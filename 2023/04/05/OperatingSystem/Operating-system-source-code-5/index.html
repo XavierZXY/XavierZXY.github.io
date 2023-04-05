@@ -1,0 +1,1018 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/logo128.svg">
+  <link rel="icon" href="/img/logo32.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Xavier ZXY">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="本文为学习操作系统统源码 (低并发编程)所作笔记，仅供学习参考，不做任何商业用途,若有侵权，请联系删除。  第十八回 | 大名鼎鼎的进程调度就是从这里开始的  第18回 | 大名鼎鼎的进程调度就是从这里开始的 (qq.com)  shed_init 进程调度初始化 12345void sched_init(void) &amp;#123;    set_tss_desc(gdt+4">
+<meta property="og:type" content="article">
+<meta property="og:title" content="你管这破玩意儿叫操作系统源码(五)">
+<meta property="og:url" content="https://www.spacezxy.top/2023/04/05/OperatingSystem/Operating-system-source-code-5/index.html">
+<meta property="og:site_name" content="Xavier ZXY">
+<meta property="og:description" content="本文为学习操作系统统源码 (低并发编程)所作笔记，仅供学习参考，不做任何商业用途,若有侵权，请联系删除。  第十八回 | 大名鼎鼎的进程调度就是从这里开始的  第18回 | 大名鼎鼎的进程调度就是从这里开始的 (qq.com)  shed_init 进程调度初始化 12345void sched_init(void) &amp;#123;    set_tss_desc(gdt+4">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/05/OperatingSystem/Operating-system-source-code-5/640.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/05/OperatingSystem/Operating-system-source-code-5/640-16806959147073.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/05/OperatingSystem/Operating-system-source-code-5/640-16806959649316.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/05/OperatingSystem/Operating-system-source-code-5/640-16806961036439.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/05/OperatingSystem/Operating-system-source-code-5/640-168069623802612.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/05/OperatingSystem/Operating-system-source-code-5/640-168069636373515.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/05/OperatingSystem/Operating-system-source-code-5/640-168069644345318.gif">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/05/OperatingSystem/Operating-system-source-code-5/640-168069666815821.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/05/OperatingSystem/Operating-system-source-code-5/640-168069667833224.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/05/OperatingSystem/Operating-system-source-code-5/640-168069679951827.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/05/OperatingSystem/Operating-system-source-code-5/640-168069729908530.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/05/OperatingSystem/Operating-system-source-code-5/640-168069733478033.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/05/OperatingSystem/Operating-system-source-code-5/640-168069739069336.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/05/OperatingSystem/Operating-system-source-code-5/640-168069754424439.png">
+<meta property="article:published_time" content="2023-04-05T11:53:47.000Z">
+<meta property="article:modified_time" content="2023-04-05T12:35:33.621Z">
+<meta property="article:author" content="Xavier ZXY">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.spacezxy.top/2023/04/05/OperatingSystem/Operating-system-source-code-5/640.png">
+  
+  
+  
+  <title>你管这破玩意儿叫操作系统源码(五) - Xavier ZXY</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.spacezxy.top","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>SapceZXY</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/wallpaper.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="你管这破玩意儿叫操作系统源码(五)"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-04-05 19:53" pubdate>
+          2023年4月5日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          10k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          84 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">你管这破玩意儿叫操作系统源码(五)</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <blockquote>
+<p>本文为学习<a
+target="_blank" rel="noopener" href="https://mp.weixin.qq.com/mp/appmsgalbum?action=getalbum&amp;__biz=Mzk0MjE3NDE0Ng==&amp;scene=1&amp;album_id=2123743679373688834&amp;count=3#wechat_redirect">操作系统统源码
+(低并发编程)</a>所作笔记，仅供学习参考，不做任何商业用途,若有侵权，请联系删除。</p>
+</blockquote>
+<h1 id="第十八回-大名鼎鼎的进程调度就是从这里开始的">第十八回 |
+大名鼎鼎的进程调度就是从这里开始的</h1>
+<blockquote>
+<p><a
+target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&amp;mid=2247500496&amp;idx=1&amp;sn=3bddde6c68c2b03d9721ba74e949cfa8&amp;chksm=c2c5b87df5b2316b083015a4fdba2df29211f38fcfd1cdb040e02ab410432608e26383a43ef5&amp;cur_album_id=2123743679373688834&amp;scene=189#wechat_redirect">第18回
+| 大名鼎鼎的进程调度就是从这里开始的 (qq.com)</a></p>
+</blockquote>
+<p><code>shed_init 进程调度初始化</code></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">sched_init</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span> &#123;<br>    set_tss_desc(gdt+<span class="hljs-number">4</span>, &amp;(init_task.task.tss));<br>    set_ldt_desc(gdt+<span class="hljs-number">5</span>, &amp;(init_task.task.ldt));<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>两行代码初始化了下 <strong>TSS</strong> 和 <strong>LDT</strong>。</p>
+<p>先别急问这俩结构是啥。还记得之前讲的全局描述符表 gdt
+么？它在内存的这个位置，并且被设置成了这个样子。</p>
+<blockquote>
+<p><a
+target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&amp;mid=2247499734&amp;idx=1&amp;sn=89045b51e41d2e74754f5475d25d7b54&amp;chksm=c2c5857bf5b20c6d1698df2abd0e1eea601e83612ee6af58dc8eb79f93c751f73d7c62e565ce&amp;scene=21#wechat_redirect">第八回
+| 烦死了又要重新设置一遍 idt 和 gdt (qq.com)</a></p>
+</blockquote>
+<img src="/2023/04/05/OperatingSystem/Operating-system-source-code-5/640.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<img src="/2023/04/05/OperatingSystem/Operating-system-source-code-5/640-16806959147073.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>TSS
+叫<strong>任务状态段</strong>，就是<strong>保存和恢复进程的上下文的</strong>，所谓上下文，其实就是各个寄存器的信息而已，这样进程切换的时候，才能做到保存和恢复上下文，继续执行。</p>
+<p>由它的数据结构你应该可以看出点意思。</p>
+<figure class="highlight smali"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs smali">struct tss_struct&#123;<br>   <span class="hljs-built_in"> long </span>back_link;<br>   <span class="hljs-built_in"> long </span>esp0;<br>   <span class="hljs-built_in"> long </span>ss0;<br>   <span class="hljs-built_in"> long </span>esp1;<br>   <span class="hljs-built_in"> long </span>ss1;<br>   <span class="hljs-built_in"> long </span>esp2;<br>   <span class="hljs-built_in"> long </span>ss2;<br>   <span class="hljs-built_in"> long </span>cr3;<br>   <span class="hljs-built_in"> long </span>eip;<br>   <span class="hljs-built_in"> long </span>eflags;<br>   <span class="hljs-built_in"> long </span>eax, ecx, edx, ebx;<br>   <span class="hljs-built_in"> long </span>esp;<br>   <span class="hljs-built_in"> long </span>ebp;<br>   <span class="hljs-built_in"> long </span>esi;<br>   <span class="hljs-built_in"> long </span>edi;<br>   <span class="hljs-built_in"> long </span>es;<br>   <span class="hljs-built_in"> long </span>cs;<br>   <span class="hljs-built_in"> long </span>ss;<br>   <span class="hljs-built_in"> long </span>ds;<br>   <span class="hljs-built_in"> long </span>fs;<br>   <span class="hljs-built_in"> long </span>gs;<br>   <span class="hljs-built_in"> long </span>ldt;<br>   <span class="hljs-built_in"> long </span>trace_bitmap;<br>    struct i387_struct i387;<br>&#125;;<br></code></pre></td></tr></table></figure>
+<p>而 LDT 叫<strong>局部描述符表</strong>，是与 GDT
+全局描述符表相对应的，内核态的代码用 GDT
+里的数据段和代码段，而用户进程的代码用每个用户进程自己的 LDT
+里得数据段和代码段。</p>
+<img src="/2023/04/05/OperatingSystem/Operating-system-source-code-5/640-16806959649316.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">desc_struct</span> &#123;</span><br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> a,b;<br>&#125;<br><br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">task_struct</span> * <span class="hljs-title">task</span>[64] =</span> &#123;&amp;(init_task.task), &#125;;<br><br><span class="hljs-type">void</span> <span class="hljs-title function_">sched_init</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span> &#123;<br>    ...<br>    <span class="hljs-type">int</span> i;<br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">desc_struct</span> * <span class="hljs-title">p</span>;</span><br>        p = gdt+<span class="hljs-number">6</span>;<br>    <span class="hljs-keyword">for</span>(i=<span class="hljs-number">1</span>;i&lt;<span class="hljs-number">64</span>;i++) &#123;<br>        task[i] = <span class="hljs-literal">NULL</span>;<br>        p-&gt;a=p-&gt;b=<span class="hljs-number">0</span>;<br>        p++;<br>        p-&gt;a=p-&gt;b=<span class="hljs-number">0</span>;<br>        p++;<br>    &#125;<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>这段代码有个循环，干了两件事。</p>
+<p>一个是给一个长度为 64，结构为 <strong>task_struct</strong> 的数组
+task 附上初始值。</p>
+<img src="/2023/04/05/OperatingSystem/Operating-system-source-code-5/640-16806961036439.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>这个 task_struct
+结构就是代表<strong>每一个进程的信息</strong>，这可是个相当相当重要的结构了，把它放在心里。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">task_struct</span> &#123;</span><br><span class="hljs-comment">/* these are hardcoded - don&#x27;t touch */</span><br>    <span class="hljs-type">long</span> state; <span class="hljs-comment">/* -1 unrunnable, 0 runnable, &gt;0 stopped */</span><br>    <span class="hljs-type">long</span> counter;<br>    <span class="hljs-type">long</span> priority;<br>    <span class="hljs-type">long</span> signal;<br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">sigaction</span> <span class="hljs-title">sigaction</span>[32];</span><br>    <span class="hljs-type">long</span> blocked; <span class="hljs-comment">/* bitmap of masked signals */</span><br>  <span class="hljs-comment">/* various fields */</span><br>    <span class="hljs-type">int</span> exit_code;<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> start_code,end_code,end_data,brk,start_stack;<br>    <span class="hljs-type">long</span> pid,father,pgrp,session,leader;<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">short</span> uid,euid,suid;<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">short</span> gid,egid,sgid;<br>    <span class="hljs-type">long</span> alarm;<br>    <span class="hljs-type">long</span> utime,stime,cutime,cstime,start_time;<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">short</span> used_math;<br>  <span class="hljs-comment">/* file system info */</span><br>    <span class="hljs-type">int</span> tty;  <span class="hljs-comment">/* -1 if no tty, so it must be signed */</span><br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">short</span> umask;<br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">m_inode</span> * <span class="hljs-title">pwd</span>;</span><br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">m_inode</span> * <span class="hljs-title">root</span>;</span><br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">m_inode</span> * <span class="hljs-title">executable</span>;</span><br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> close_on_exec;<br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">file</span> * <span class="hljs-title">filp</span>[<span class="hljs-title">NR_OPEN</span>];</span><br>  <span class="hljs-comment">/* ldt for this task 0 - zero 1 - cs 2 - ds&amp;ss */</span><br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">desc_struct</span> <span class="hljs-title">ldt</span>[3];</span><br>  <span class="hljs-comment">/* tss for this task */</span><br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">tss_struct</span> <span class="hljs-title">tss</span>;</span><br>&#125;;<br></code></pre></td></tr></table></figure>
+<p>这个循环做的另一件事，是给 gdt 剩下的位置填充上 0，也就是把剩下留给
+TSS 和 LDT 的描述符都先附上空值。</p>
+<img src="/2023/04/05/OperatingSystem/Operating-system-source-code-5/640-168069623802612.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>往后展望一下的话，就是以后每创建一个新进程，就会在后面添加一组 TSS 和
+LDT 表示这个进程的任务状态段以及局部描述符表信息。</p>
+<p>那为什么一开始就先有了一组 TSS 和 LDT
+呢？现在也没创建进程呀。错了，现在虽然我们还没有建立起进程调度的机制，但我们正在运行的代码就是会作为<strong>未来的一个进程的指令流</strong>。</p>
+<p>也就是当未来进程调度机制一建立起来，正在执行的代码就会化身成为<strong>进程
+0</strong> 的代码。所以我们需要提前把这些未来会作为进程 0
+的信息写好。</p>
+<p>初始化了一组 TSS 和 LDT 后，再往下看两行。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> ltr(n) __asm__(<span class="hljs-string">&quot;ltr %%ax&quot;</span>::<span class="hljs-string">&quot;a&quot;</span> (_TSS(n)))</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> lldt(n) __asm__(<span class="hljs-string">&quot;lldt %%ax&quot;</span>::<span class="hljs-string">&quot;a&quot;</span> (_LDT(n)))</span><br><br><span class="hljs-type">void</span> <span class="hljs-title function_">sched_init</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span> &#123;<br>    ...<br>    ltr(<span class="hljs-number">0</span>);<br>    lldt(<span class="hljs-number">0</span>);<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>还记得 <strong>lidt</strong> 和 <strong>lgdt</strong>
+指令么？一个是给 idtr 寄存器赋值，以告诉 CPU 中断描述符表 idt
+在内存的位置；一个是给 gdtr 寄存器赋值，以告诉 CPU 全局描述符表 gdt
+在内存的位置。</p>
+<p><strong>ltr</strong> 是给 <strong>tr</strong> 寄存器赋值，以告诉 CPU
+任务状态段 TSS 在内存的位置；<strong>lldt</strong> 一个是给
+<strong>ldt</strong> 寄存器赋值，以告诉 CPU 局部描述符 LDT
+在内存的位置。</p>
+<img src="/2023/04/05/OperatingSystem/Operating-system-source-code-5/640-168069636373515.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>CPU 之后就能通过 tr
+寄存器找到当前进程的任务状态段信息，也就是上下文信息，以及通过 ldt
+寄存器找到当前进程在用的局部描述符表信息。</p>
+<p>我们继续看。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">sched_init</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span> &#123;<br>    ...<br>    outb_p(<span class="hljs-number">0x36</span>,<span class="hljs-number">0x43</span>);      <span class="hljs-comment">/* binary, mode 3, LSB/MSB, ch 0 */</span><br>    outb_p(LATCH &amp; <span class="hljs-number">0xff</span> , <span class="hljs-number">0x40</span>);    <span class="hljs-comment">/* LSB */</span><br>    outb(LATCH &gt;&gt; <span class="hljs-number">8</span> , <span class="hljs-number">0x40</span>);    <span class="hljs-comment">/* MSB */</span><br>    set_intr_gate(<span class="hljs-number">0x20</span>,&amp;timer_interrupt);<br>    outb(inb_p(<span class="hljs-number">0x21</span>)&amp;~<span class="hljs-number">0x01</span>,<span class="hljs-number">0x21</span>);<br>    set_system_gate(<span class="hljs-number">0x80</span>,&amp;system_call);<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>四行端口读写代码，两行设置中断代码。</p>
+<p>而这次交互的外设是一个<strong>可编程定时器</strong>的芯片，这四行代码就开启了这个定时器，之后这个定时器变会<strong>持续的、以一定频率的向
+CPU 发出中断信号</strong>。</p>
+<img src="/2023/04/05/OperatingSystem/Operating-system-source-code-5/640-168069644345318.gif" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>而这段代码中设置的两个中断，第一个就是<strong>时钟中断</strong>，中断号为
+<strong>0x20</strong>，中断处理程序为
+<strong>timer_interrupt</strong>。那么每次定时器向 CPU
+发出中断后，便会执行这个函数。</p>
+<p>第二个设置的中断叫系统调用 <strong>system_call</strong>，中断号是
+<strong>0x80</strong>，这个中断又是个非常非常非常非常非常非常非常重要的中断，所有用户态程序想要调用内核提供的方法，都需要基于这个系统调用来进行。</p>
+<p>比如 Java 程序员写一个 read，底层会执行汇编指令 <strong>int
+0x80</strong>，这就会触发系统调用这个中断，最终调用到 Linux 里的
+sys_read 方法。</p>
+<table>
+<thead>
+<tr class="header">
+<th>中断号</th>
+<th>中断处理函数</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0 ~ 0x10</td>
+<td>trap_init 里设置的一堆</td>
+</tr>
+<tr class="even">
+<td>0x20</td>
+<td>timer_interrupt</td>
+</tr>
+<tr class="odd">
+<td>0x21</td>
+<td>keyboard_interrupt</td>
+</tr>
+<tr class="even">
+<td>0x80</td>
+<td>system_call</td>
+</tr>
+</tbody>
+</table>
+<h1
+id="第十九回-操作系统就是用这两个面试常考的结构管理的缓冲区">第十九回 |
+操作系统就是用这两个面试常考的结构管理的缓冲区</h1>
+<blockquote>
+<p><a
+target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&amp;mid=2247500596&amp;idx=1&amp;sn=0df64f9f5133cfe8a259b8ce7b7feaeb&amp;chksm=c2c5b999f5b2308f76095af30e8915f125f18702df9c58be7612b58e4d009c14948193974f9b&amp;cur_album_id=2123743679373688834&amp;scene=189#wechat_redirect">第19回
+| 操作系统就是用这两个面试常考的结构管理的缓冲区 (qq.com)</a></p>
+</blockquote>
+<p><code>缓冲区初始化 buffer_init()</code></p>
+<p>首先要注意到，这个函数传了个参数
+buffer_memory_end，这个是在老早之前就设置好的，就在<a
+target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&amp;mid=2247500061&amp;idx=1&amp;sn=6cb3382d7ac35ebeac52bbba3a89db4e&amp;scene=21#wechat_redirect">第12回
+| 管理内存前先划分出三个边界值</a>，回顾下。</p>
+<img src="/2023/04/05/OperatingSystem/Operating-system-source-code-5/640-168069666815821.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>而且我们在 <a
+target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&amp;mid=2247500089&amp;idx=1&amp;sn=9a3fd6e585b0fd1ec528599ead6677c6&amp;scene=21#wechat_redirect">第13回
+| 主内存初始化 mem_init</a> 中，用 mem_init 设置好了主内存的管理结构
+mam_map。</p>
+<img src="/2023/04/05/OperatingSystem/Operating-system-source-code-5/640-168069667833224.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>我们还是采用之前的方式，就假设内存只有
+8M，把一些不相干的分支去掉，方便理解。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-keyword">extern</span> <span class="hljs-type">int</span> end;<br><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">buffer_head</span> * <span class="hljs-title">start_buffer</span> =</span> (<span class="hljs-keyword">struct</span> buffer_head *) &amp;end;<br><br><span class="hljs-type">void</span> <span class="hljs-title function_">buffer_init</span><span class="hljs-params">(<span class="hljs-type">long</span> buffer_end)</span> &#123;<br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">buffer_head</span> * <span class="hljs-title">h</span> =</span> start_buffer;<br>    <span class="hljs-type">void</span> * b = (<span class="hljs-type">void</span> *) buffer_end;<br>    <span class="hljs-keyword">while</span> ( (b -= <span class="hljs-number">1024</span>) &gt;= ((<span class="hljs-type">void</span> *) (h+<span class="hljs-number">1</span>)) ) &#123;<br>        h-&gt;b_dev = <span class="hljs-number">0</span>;<br>        h-&gt;b_dirt = <span class="hljs-number">0</span>;<br>        h-&gt;b_count = <span class="hljs-number">0</span>;<br>        h-&gt;b_lock = <span class="hljs-number">0</span>;<br>        h-&gt;b_uptodate = <span class="hljs-number">0</span>;<br>        h-&gt;b_wait = <span class="hljs-literal">NULL</span>;<br>        h-&gt;b_next = <span class="hljs-literal">NULL</span>;<br>        h-&gt;b_prev = <span class="hljs-literal">NULL</span>;<br>        h-&gt;b_data = (<span class="hljs-type">char</span> *) b;<br>        h-&gt;b_prev_free = h<span class="hljs-number">-1</span>;<br>        h-&gt;b_next_free = h+<span class="hljs-number">1</span>;<br>        h++;<br>    &#125;<br>    h--;<br>    free_list = start_buffer;<br>    free_list-&gt;b_prev_free = h;<br>    h-&gt;b_next_free = free_list;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i=<span class="hljs-number">0</span>;i&lt;<span class="hljs-number">307</span>;i++)<br>        hash_table[i]=<span class="hljs-literal">NULL</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>虽然很长，但其实就造了<strong>两个数据结构</strong>而已。</p>
+<p>不过别急，我们先看这一行代码。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-keyword">extern</span> <span class="hljs-type">int</span> end;<br><span class="hljs-type">void</span> <span class="hljs-title function_">buffer_init</span><span class="hljs-params">(<span class="hljs-type">long</span> buffer_end)</span> &#123;<br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">buffer_head</span> * <span class="hljs-title">start_buffer</span> =</span> (<span class="hljs-keyword">struct</span> buffer_head *) &amp;end;<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>这里有个外部变量 <strong>end</strong>，而我们的缓冲区开始位置
+<strong>start_buffer</strong> 就等于这个变量的内存地址。</p>
+<p>这个外部变量 end 并不是操作系统代码写就的，而是由<strong>链接器
+ld</strong>
+在链接整个程序时设置的一个外部变量，帮我们计算好了整个内核代码的末尾地址。</p>
+<p>那在这之前的是内核代码区域肯定不能用，在这之后的，就给 buffer
+用了。所以我们的内存分布图可以更精确一点了。</p>
+<img src="/2023/04/05/OperatingSystem/Operating-system-source-code-5/640-168069679951827.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>内核程序和缓冲区的划分，肯定有个分界线，这个分界线就是 end
+变量的值。</p>
+<p>可是内核程序占多大内存在写的时候完全不知道，就算知道了如果改动一点代码也会变化，所以就由程序编译链接时由链接器程序帮我们把这个内核代码末端的地址计算出来，作为一个外部变量
+end 我们拿来即用，就方便多了。</p>
+<p><strong>整段代码创造了哪两个管理结构</strong>？</p>
+<p>我们先看这段结构。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">buffer_init</span><span class="hljs-params">(<span class="hljs-type">long</span> buffer_end)</span> &#123;<br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">buffer_head</span> * <span class="hljs-title">h</span> =</span> start_buffer;<br>    <span class="hljs-type">void</span> * b = (<span class="hljs-type">void</span> *) buffer_end;<br>    <span class="hljs-keyword">while</span> ( (b -= <span class="hljs-number">1024</span>) &gt;= ((<span class="hljs-type">void</span> *) (h+<span class="hljs-number">1</span>)) ) &#123;<br>        ...<br>        h-&gt;b_data = (<span class="hljs-type">char</span> *) b;<br>        h-&gt;b_prev_free = h<span class="hljs-number">-1</span>;<br>        h-&gt;b_next_free = h+<span class="hljs-number">1</span>;<br>        h++;<br>    &#125;<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>一个是 <strong>buffer_head</strong> 结构的
+<strong>h</strong>，代表缓冲头，其指针值是
+start_buffer，刚刚我们计算过了，就是图中的内核代码末端地址
+end，也就是缓冲区开头。</p>
+<p>一个是 <strong>b</strong>，代表缓冲块，指针值是
+buffer_end，也就是图中的 2M，就是缓冲区结尾。</p>
+<p>缓冲区结尾的 b 每次循环 -1024，也就是一页的值，缓冲区结尾的 h
+每次循环 +1（一个 buffer_head 大小的内存），直到碰一块为止。</p>
+<img src="/2023/04/05/OperatingSystem/Operating-system-source-code-5/640-168069729908530.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>可以看到，其实这个 b 就代表缓冲块，h
+代表缓冲头，一个从上往下，一个从下往上。</p>
+<p>而且这个过程中，h 被附上了属性值，其中比较关键的是这个 buffer
+所表示的数据部分 <strong>b_data</strong>，也就是指向了上面的缓冲块
+b。</p>
+<p>还有这个 buffer 的前后空闲 buffer 的指针 <strong>b_prev_free</strong>
+和 <strong>b_next_free</strong>。</p>
+<img src="/2023/04/05/OperatingSystem/Operating-system-source-code-5/640-168069733478033.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>当缓冲头 h 的所有 next 和 prev
+指针都指向彼此时，就构成了一个双向链表。继续看。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">buffer_init</span><span class="hljs-params">(<span class="hljs-type">long</span> buffer_end)</span> &#123;<br>    ...<br>    free_list = start_buffer;<br>    free_list-&gt;b_prev_free = h;<br>    h-&gt;b_next_free = free_list;<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>这三行代码，结合刚刚的双向链表 h，我画出图，你就懂了。</p>
+<img src="/2023/04/05/OperatingSystem/Operating-system-source-code-5/640-168069739069336.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>看，free_list
+指向了缓冲头双向链表的第一个结构，然后就可以顺着这个结构，从双向链表中遍历到任何一个<strong>缓冲头</strong>结构了，而通过缓冲头又可以找到这个缓冲头对应的<strong>缓冲块</strong>。</p>
+<p>简单说，<strong>缓冲头就是具体缓冲块的管理结构，而 free_list
+开头的双向链表又是缓冲头的管理结构</strong>，整个管理体系就这样建立起来了。</p>
+<p>现在，从 free_list 开始遍历，就可以找到这里的所有内容了。</p>
+<p>不过，还有最后一个事，能帮助更好管理，往下看。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">buffer_init</span><span class="hljs-params">(<span class="hljs-type">long</span> buffer_end)</span> &#123;<br>    ...<br>    <span class="hljs-keyword">for</span> (i=<span class="hljs-number">0</span>;i&lt;<span class="hljs-number">307</span>;i++)<br>        hash_table[i]=<span class="hljs-literal">NULL</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>一个 307 大小的 <strong>hash_table</strong> 数组，这是干嘛的呢？</p>
+<p>其实今天的这个代码在 <strong>buffer.c</strong> 中，而 buffer.c 是在
+<strong>fs</strong>
+包下的，也就是<strong>文件系统</strong>包下的。所以它今后是为文件系统而服务，具体是内核程序如果需要访问块设备中的数据，就都需要经过缓冲区来间接地操作。</p>
+<p>也就是说，读取块设备的数据（硬盘中的数据），需要先读到缓冲区中，如果缓冲区已有了，就不用从块设备读取了，直接取走。</p>
+<p>那怎么知道缓冲区已经有了要读取的块设备中的数据呢？从双向链表从头遍历当然可以，但是这效率可太低了。所以需要一个
+hashmap 的结构方便快速查找，这就是 hash_table 这个数组的作用。</p>
+<p>之后当要读取某个块设备上的数据时，首先要搜索相应的缓冲块，是下面这个函数。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> _hashfn(dev,block) (((unsigned)(dev^block))%307)</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> hash(dev,block) hash_table[_hashfn(dev,block)]</span><br><br><span class="hljs-comment">// 搜索合适的缓冲块 </span><br><span class="hljs-keyword">struct</span> buffer_head * <span class="hljs-title function_">getblk</span><span class="hljs-params">(<span class="hljs-type">int</span> dev,<span class="hljs-type">int</span> block)</span> &#123;<br>    ...<br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">buffer_head</span> <span class="hljs-title">bh</span> =</span> get_hash_table(dev,block)；<br>    ...<br>&#125;<br><br><span class="hljs-keyword">struct</span> buffer_head * <span class="hljs-title function_">get_hash_table</span><span class="hljs-params">(<span class="hljs-type">int</span> dev, <span class="hljs-type">int</span> block)</span> &#123;<br>    ...    <br>    find_buffer(dev,block);<br>    ...<br>&#125;<br><br><span class="hljs-type">static</span> <span class="hljs-keyword">struct</span> buffer_head * <span class="hljs-title function_">find_buffer</span><span class="hljs-params">(<span class="hljs-type">int</span> dev, <span class="hljs-type">int</span> block)</span> &#123; <br>    ...     <br>    hash(dev,block);<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>一路跟下来发现，就是通过</p>
+<p><strong>dev^block % 307</strong></p>
+<p>即</p>
+<p><strong>(设备号^逻辑块号) Mod 307</strong></p>
+<p>找到在 hash_table 里的索引下标，接下来就和 Java 里的 HashMap
+类似，如果哈希冲突就形成链表，画成图就是这样。</p>
+<img src="/2023/04/05/OperatingSystem/Operating-system-source-code-5/640-168069754424439.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>回过头来看看我们目前的进度吧！</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span> &#123;<br>    ...<br>    mem_init(main_memory_start,memory_end);<br>    trap_init();<br>    blk_dev_init();<br>    chr_dev_init();<br>    tty_init();<br>    time_init();<br>    sched_init();<br>    buffer_init(buffer_memory_end);<br>    hd_init();<br>    floppy_init();<br>    <br>    sti();<br>    move_to_user_mode();<br>    <span class="hljs-keyword">if</span> (!fork()) &#123;init();&#125;<br>    <span class="hljs-keyword">for</span>(;;) pause();<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>整个初始化的部分，就差 <strong>hd_init</strong> 和
+<strong>floppy_init</strong> 这两个块设备的初始化还没讲了。</p>
+<p>而且幸运的是，floppy_init
+是软盘初始化，现在软盘几乎都被淘汰了，计算机中也没有软盘驱动器了，所以这个我们完全可以不看，那就剩下一个
+<strong>hd_init 硬盘初始化</strong>了，非常简单！</p>
+<p><strong>任何操作系统的管理都离不开这些初始化工作所建立的数据结构</strong></p>
+<h1 id="第二十回-硬盘初始化">第二十回 | 硬盘初始化</h1>
+<blockquote>
+<p><a
+target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&amp;mid=2247500982&amp;idx=1&amp;sn=3e40716e0054796bdffef8250f478927&amp;chksm=c2c5be1bf5b2370d469c244b99289271e0433e3044b287f366589a3722df99ff4e3f7b08ffb5&amp;cur_album_id=2123743679373688834&amp;scene=189#wechat_redirect">第20回
+| 硬盘初始化 hd_init (qq.com)</a></p>
+</blockquote>
+<p>我们直接看 <code>hd_init</code> 这个硬盘初始化干了什么？</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs reasonml"><span class="hljs-comment">//struct blk_dev_struct &#123;</span><br><span class="hljs-comment">//    void (*request_fn)(void);</span><br><span class="hljs-comment">//    struct request * current_request;</span><br><span class="hljs-comment">//&#125;;</span><br><span class="hljs-comment">//extern struct blk_dev_struct blk_dev[NR_BLK_DEV];</span><br><br>void hd<span class="hljs-constructor">_init(<span class="hljs-params">void</span>)</span> &#123;<br>    blk_dev<span class="hljs-literal">[<span class="hljs-number">3</span>]</span>.request_fn = do_hd_request;<br>    set<span class="hljs-constructor">_intr_gate(0x2E,&amp;<span class="hljs-params">hd_interrupt</span>)</span>;<br>    outb<span class="hljs-constructor">_p(<span class="hljs-params">inb_p</span>(0x21)</span>&amp;<span class="hljs-number">0xfb</span>,<span class="hljs-number">0x21</span>);<br>    outb(inb<span class="hljs-constructor">_p(0xA1)</span>&amp;<span class="hljs-number">0xbf</span>,<span class="hljs-number">0xA1</span>); <br>&#125;<br></code></pre></td></tr></table></figure>
+<p>就这？一共就四行代码。</p>
+<p>没错，初始化嘛，往往都比较简单，尤其是对硬件设备的初始化，大体都是：</p>
+<p><strong>1</strong>. 往某些 IO 端口上读写一些数据，表示开启它；</p>
+<p><strong>2</strong>. 然后再向中断向量表中添加一个中断，使得 CPU
+能够响应这个硬件设备的动作；</p>
+<p><strong>3</strong>.
+最后再初始化一些数据结构来管理。不过像是内存管理可能结构复杂些，外设的管理，相对就简单很多了。</p>
+<p>看第一行代码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">hd_init</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span> &#123;<br>    blk_dev[<span class="hljs-number">3</span>].request_fn = do_hd_request;<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>我们把 <strong>blk_dev</strong> 数组索引 3 位置处的块设备管理结构
+<strong>blk_dev_struct</strong> 的 <strong>request_fn</strong> 赋值为了
+<strong>do_hd_request</strong>，这是啥意思呢？</p>
+<p>因为有很多块设备，所以 Linux 0.11 内核用了一个
+<strong>blk_dev[]</strong> 来进行管理，每一个索引表示一个块设备。</p>
+<p>Linux 0.11 内核用了一个 <strong>blk_dev[]</strong>
+来进行管理，每一个索引表示一个块设备。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">blk_dev_struct</span> <span class="hljs-title">blk_dev</span>[<span class="hljs-title">NR_BLK_DEV</span>] =</span> &#123;<br>    &#123; <span class="hljs-literal">NULL</span>, <span class="hljs-literal">NULL</span> &#125;,     <span class="hljs-comment">/* no_dev */</span><br>    &#123; <span class="hljs-literal">NULL</span>, <span class="hljs-literal">NULL</span> &#125;,     <span class="hljs-comment">/* dev mem */</span><br>    &#123; <span class="hljs-literal">NULL</span>, <span class="hljs-literal">NULL</span> &#125;,     <span class="hljs-comment">/* dev fd */</span><br>    &#123; <span class="hljs-literal">NULL</span>, <span class="hljs-literal">NULL</span> &#125;,     <span class="hljs-comment">/* dev hd */</span><br>    &#123; <span class="hljs-literal">NULL</span>, <span class="hljs-literal">NULL</span> &#125;,     <span class="hljs-comment">/* dev ttyx */</span><br>    &#123; <span class="hljs-literal">NULL</span>, <span class="hljs-literal">NULL</span> &#125;,     <span class="hljs-comment">/* dev tty */</span><br>    &#123; <span class="hljs-literal">NULL</span>, <span class="hljs-literal">NULL</span> &#125;      <span class="hljs-comment">/* dev lp */</span><br>&#125;;<br></code></pre></td></tr></table></figure>
+<p>你看，索引为 3 这个位置，就表示给硬盘 <strong>hd</strong>
+这个块设备留的位置。</p>
+<p>那么每个块设备执行读写请求都有自己的函数实现，在上层看来都是一个统一函数
+<strong>request_fn</strong>
+即可，具体实现各有不同，对于硬盘来说，这个实现就是
+<strong>do_hd_request</strong> 函数。</p>
+<p>我们再看第二行。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">hd_init</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span> &#123;<br>    ...<br>    set_intr_gate(<span class="hljs-number">0x2E</span>,&amp;hd_interrupt);<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>对于中断我们已经很熟悉了，这里就是又设置了一个新的中断，中断号是
+<strong>0x2E</strong>，中断处理函数是
+<strong>hd_interrupt</strong>，也就是说硬盘发生读写时，硬盘会发出中断信号给
+CPU，之后 CPU 便会陷入中断处理程序，也就是执行 <code>hd_interrupt</code>
+函数。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs c">_hd_interrupt:<br>    ...<br>    xchgl _do_hd,%edx<br>    ...<br>    <br><span class="hljs-comment">// 如果是读盘操作，这个 do_hd 是 read_intr</span><br><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">read_intr</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span> &#123;<br>    ...<br>    do_hd_request();<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>好了，又多了一个中断，那我们再次梳理下目前开启的中断都有哪些。</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">中断号</th>
+<th style="text-align: left;">中断处理函数</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>0 ~ 0x10</code></td>
+<td style="text-align: left;"><code>trap_init</code> 里设置的一堆</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>0x20</code></td>
+<td style="text-align: left;"><code>timer_interrupt</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>0x21</code></td>
+<td style="text-align: left;"><code>keyboard_interrupt</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>0x2E</code></td>
+<td style="text-align: left;"><code>hd_interrupt</code></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>0x80</code></td>
+<td style="text-align: left;"><code>system_call</code></td>
+</tr>
+</tbody>
+</table>
+<p>看到最后，你会发现<strong>操作系统就是一个靠中断驱动的死循环而已</strong>，如果不发生任何中断，操作系统会一直在一个死循环里等待。换句话说，让操作系统工作的唯一方式，就是触发中断。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">hd_init</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span> &#123;<br>    ...<br>    outb_p(inb_p(<span class="hljs-number">0x21</span>)&amp;<span class="hljs-number">0xfb</span>,<span class="hljs-number">0x21</span>);<br>    outb(inb_p(<span class="hljs-number">0xA1</span>)&amp;<span class="hljs-number">0xbf</span>,<span class="hljs-number">0xA1</span>); <br>&#125;<br></code></pre></td></tr></table></figure>
+<p>就是往几个 IO
+端口上读写，其作用是<strong>允许硬盘控制器发送中断请求信号</strong>，仅此而已。</p>
+<p>看看读硬盘最最底层的操作流程，是怎样的。</p>
+<p>我们看硬盘的端口表。</p>
+<table>
+
+<thead>
+<tr class="header">
+<th style="text-align: left;">端口</th>
+<th style="text-align: left;">读</th>
+<th style="text-align: left;">写</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">0x1F0</td>
+<td style="text-align: left;">数据寄存器</td>
+<td style="text-align: left;">数据寄存器</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">0x1F1</td>
+<td style="text-align: left;">错误寄存器</td>
+<td style="text-align: left;">特征寄存器</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">0x1F2</td>
+<td style="text-align: left;">扇区计数寄存器</td>
+<td style="text-align: left;">扇区计数寄存器</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">0x1F3</td>
+<td style="text-align: left;">扇区号寄存器或 LBA 块地址 0~7</td>
+<td style="text-align: left;">扇区号或 LBA 块地址 0~7</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">0x1F4</td>
+<td style="text-align: left;">磁道数低 8 位或 LBA 块地址 8~15</td>
+<td style="text-align: left;">磁道数低 8 位或 LBA 块地址 8~15</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">0x1F5</td>
+<td style="text-align: left;">磁道数高 8 位或 LBA 块地址 16~23</td>
+<td style="text-align: left;">磁道数高 8 位或 LBA 块地址 16~23</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">0x1F6</td>
+<td style="text-align: left;">驱动器/磁头或 LBA 块地址 24~27</td>
+<td style="text-align: left;">驱动器/磁头或 LBA 块地址 24~27</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">0x1F7</td>
+<td style="text-align: left;">命令寄存器或状态寄存器</td>
+<td style="text-align: left;">命令寄存器</td>
+</tr>
+</tbody>
+</table>
+<p>那读硬盘就是，往除了第一个以外的后面几个端口写数据，告诉要读硬盘的哪个扇区，读多少。然后再从
+<code>0x1F0</code>
+端口一个字节一个字节的读数据。这就完成了一次硬盘读操作。</p>
+<p><strong>1</strong>. 在 <code>0x1F2</code> 写入要读取的扇区数</p>
+<p><strong>2</strong>. 在 <code>0x1F3 ~ 0x1F6</code>
+这四个端口写入计算好的起始 LBA 地址</p>
+<p><strong>3</strong>. 在 <code>0x1F7</code> 处写入读命令的指令号</p>
+<p><strong>4</strong>. 不断检测 <code>0x1F7</code>
+（此时已成为状态寄存器的含义）的忙位</p>
+<p><strong>5</strong>. 如果第四步骤为不忙，则开始不断从
+<code>0x1F0</code> 处读取数据到内存指定位置，直到读完</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">static</span> <span class="hljs-type">void</span> <span class="hljs-title function_">hd_out</span><span class="hljs-params">(<span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> drive,<span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> nsect,<span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> sect,</span><br><span class="hljs-params">        <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> head,<span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> cyl,<span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> cmd,</span><br><span class="hljs-params">        <span class="hljs-type">void</span> (*intr_addr)(<span class="hljs-type">void</span>))</span> &#123;<br>    ...<br>    do_hd = intr_addr;<br>    outb_p(hd_info[drive].ctl,HD_CMD);<br>    port = <span class="hljs-number">0x1f0</span>;<br>    outb_p(hd_info[drive].wpcom&gt;&gt;<span class="hljs-number">2</span>,++port);<br>    outb_p(nsect,++port);<br>    outb_p(sect,++port);<br>    outb_p(cyl,++port);<br>    outb_p(cyl&gt;&gt;<span class="hljs-number">8</span>,++port);<br>    outb_p(<span class="hljs-number">0xA0</span>|(drive&lt;&lt;<span class="hljs-number">4</span>)|head,++port);<br>    outb(cmd,++port);<br>&#125;<br></code></pre></td></tr></table></figure>
+<h1 id="第二部分完结">第二部分完结</h1>
+<blockquote>
+<p><a
+target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&amp;mid=2247500983&amp;idx=1&amp;sn=ad4c430823c975df97f13de3fbe8c66e&amp;chksm=c2c5be1af5b2370cad4ce3218c5294feee4ae2e4d28804398c1dc8ac252c8dfafbe419ccf58c&amp;cur_album_id=2123743679373688834&amp;scene=189#wechat_redirect">第二部分完结撒花！大战前期的初始化工作
+(qq.com)</a></p>
+</blockquote>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" class="category-chain-item">操作系统</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>你管这破玩意儿叫操作系统源码(五)</div>
+      <div>https://www.spacezxy.top/2023/04/05/OperatingSystem/Operating-system-source-code-5/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Xavier ZXY</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年4月5日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/04/05/OperatingSystem/Operating-system-source-code-4/" title="你管这破玩意儿叫操作系统源码(四)">
+                        <span class="hidden-mobile">你管这破玩意儿叫操作系统源码(四)</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a>
+    </div>
+  
+  
+  
+    <!-- 备案信息 ICP for China -->
+    <div class="beian">
+  <span>
+    <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+      湘ICP备  2021018889
+    </a>
+  </span>
+  
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
