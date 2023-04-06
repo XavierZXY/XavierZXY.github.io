@@ -16,12 +16,12 @@
   <meta name="author" content="Xavier ZXY">
   <meta name="keywords" content="">
   
-    <meta name="description" content="本文为学习操作系统统源码 (低并发编程)所作笔记，仅供学习参考，不做任何商业用途,若有侵权，请联系删除。  第一回 | 最开始的两行代码  你管这破玩意叫操作系统源码 | 第一回 最开始的两行代码 (qq.com)  当你按下开机键的那一刻，在主板上提前写死的固件程序 BIOS 会将硬盘中启动区的 512 字节的数据，原封不动复制到内存中的 0x7c00 这个位置，并跳转">
+    <meta name="description" content="本文为学习操作系统源码 (低并发编程)所作笔记，仅供学习参考，不做任何商业用途,若有侵权，请联系删除。  第一回 | 最开始的两行代码  你管这破玩意叫操作系统源码 | 第一回 最开始的两行代码 (qq.com)  当你按下开机键的那一刻，在主板上提前写死的固件程序 BIOS 会将硬盘中启动区的 512 字节的数据，原封不动复制到内存中的 0x7c00 这个位置，并跳转到">
 <meta property="og:type" content="article">
 <meta property="og:title" content="你管这破玩意儿叫操作系统源码(一)">
 <meta property="og:url" content="https://www.spacezxy.top/2023/02/28/OperatingSystem/Operating-system-source-code/index.html">
 <meta property="og:site_name" content="Xavier ZXY">
-<meta property="og:description" content="本文为学习操作系统统源码 (低并发编程)所作笔记，仅供学习参考，不做任何商业用途,若有侵权，请联系删除。  第一回 | 最开始的两行代码  你管这破玩意叫操作系统源码 | 第一回 最开始的两行代码 (qq.com)  当你按下开机键的那一刻，在主板上提前写死的固件程序 BIOS 会将硬盘中启动区的 512 字节的数据，原封不动复制到内存中的 0x7c00 这个位置，并跳转">
+<meta property="og:description" content="本文为学习操作系统源码 (低并发编程)所作笔记，仅供学习参考，不做任何商业用途,若有侵权，请联系删除。  第一回 | 最开始的两行代码  你管这破玩意叫操作系统源码 | 第一回 最开始的两行代码 (qq.com)  当你按下开机键的那一刻，在主板上提前写死的固件程序 BIOS 会将硬盘中启动区的 512 字节的数据，原封不动复制到内存中的 0x7c00 这个位置，并跳转到">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://www.spacezxy.top/2023/02/28/OperatingSystem/Operating-system-source-code/640.png">
 <meta property="og:image" content="https://www.spacezxy.top/2023/02/28/OperatingSystem/Operating-system-source-code/640-16775752966583.png">
@@ -41,7 +41,7 @@
 <meta property="og:image" content="https://www.spacezxy.top/2023/02/28/OperatingSystem/Operating-system-source-code/640-16778284441636.png">
 <meta property="og:image" content="https://www.spacezxy.top/2023/02/28/OperatingSystem/Operating-system-source-code/640-16778284924179.png">
 <meta property="article:published_time" content="2023-02-28T08:58:22.000Z">
-<meta property="article:modified_time" content="2023-03-03T07:58:37.916Z">
+<meta property="article:modified_time" content="2023-04-06T07:07:18.696Z">
 <meta property="article:author" content="Xavier ZXY">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://www.spacezxy.top/2023/02/28/OperatingSystem/Operating-system-source-code/640.png">
@@ -310,7 +310,7 @@
                 
                 <blockquote>
 <p>本文为学习<a
-target="_blank" rel="noopener" href="https://mp.weixin.qq.com/mp/appmsgalbum?action=getalbum&amp;__biz=Mzk0MjE3NDE0Ng==&amp;scene=1&amp;album_id=2123743679373688834&amp;count=3#wechat_redirect">操作系统统源码
+target="_blank" rel="noopener" href="https://mp.weixin.qq.com/mp/appmsgalbum?action=getalbum&amp;__biz=Mzk0MjE3NDE0Ng==&amp;scene=1&amp;album_id=2123743679373688834&amp;count=3#wechat_redirect">操作系统源码
 (低并发编程)</a>所作笔记，仅供学习参考，不做任何商业用途,若有侵权，请联系删除。</p>
 </blockquote>
 <h1 id="第一回-最开始的两行代码">第一回 | 最开始的两行代码</h1>

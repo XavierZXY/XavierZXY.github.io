@@ -1,0 +1,963 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/logo128.svg">
+  <link rel="icon" href="/img/logo32.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Xavier ZXY">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="本文为学习操作系统源码 (低并发编程)所作笔记，仅供学习参考，不做任何商业用途,若有侵权，请联系删除。  第二十五回 | 一个新进程的诞生(五) 通过fork看一次系统调用  一个新进程的诞生（五）通过 fork 看一次系统调用 (qq.com)  fork 函数 1234567891011121314static _inline _syscall0(int,fork)#d">
+<meta property="og:type" content="article">
+<meta property="og:title" content="你管这破玩意儿叫操作系统源码(七)">
+<meta property="og:url" content="https://www.spacezxy.top/2023/04/06/OperatingSystem/Operating-system-source-code-7/index.html">
+<meta property="og:site_name" content="Xavier ZXY">
+<meta property="og:description" content="本文为学习操作系统源码 (低并发编程)所作笔记，仅供学习参考，不做任何商业用途,若有侵权，请联系删除。  第二十五回 | 一个新进程的诞生(五) 通过fork看一次系统调用  一个新进程的诞生（五）通过 fork 看一次系统调用 (qq.com)  fork 函数 1234567891011121314static _inline _syscall0(int,fork)#d">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/06/OperatingSystem/Operating-system-source-code-7/640.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/06/OperatingSystem/Operating-system-source-code-7/640-16807641009093.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/06/OperatingSystem/Operating-system-source-code-7/640-16807644504476.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/06/OperatingSystem/Operating-system-source-code-7/640-16807645260909.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/06/OperatingSystem/Operating-system-source-code-7/640-168076488155712.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/06/OperatingSystem/Operating-system-source-code-7/640-168076488524315.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/06/OperatingSystem/Operating-system-source-code-7/640-168076492419618.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/06/OperatingSystem/Operating-system-source-code-7/640-168076492419619.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/06/OperatingSystem/Operating-system-source-code-7/640-168076500099124.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/06/OperatingSystem/Operating-system-source-code-7/640-168076502592027.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/06/OperatingSystem/Operating-system-source-code-7/640-168076508201630.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/06/OperatingSystem/Operating-system-source-code-7/640-168076510842033.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/06/OperatingSystem/Operating-system-source-code-7/640-168076520663036.png">
+<meta property="article:published_time" content="2023-04-06T06:29:47.000Z">
+<meta property="article:modified_time" content="2023-04-06T07:21:59.862Z">
+<meta property="article:author" content="Xavier ZXY">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.spacezxy.top/2023/04/06/OperatingSystem/Operating-system-source-code-7/640.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>你管这破玩意儿叫操作系统源码(七) - Xavier ZXY</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.spacezxy.top","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>SapceZXY</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/wallpaper.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="你管这破玩意儿叫操作系统源码(七)"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-04-06 14:29" pubdate>
+          2023年4月6日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          12k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          103 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">你管这破玩意儿叫操作系统源码(七)</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <blockquote>
+<p>本文为学习<a
+target="_blank" rel="noopener" href="https://mp.weixin.qq.com/mp/appmsgalbum?action=getalbum&amp;__biz=Mzk0MjE3NDE0Ng==&amp;scene=1&amp;album_id=2123743679373688834&amp;count=3#wechat_redirect">操作系统源码
+(低并发编程)</a>所作笔记，仅供学习参考，不做任何商业用途,若有侵权，请联系删除。</p>
+</blockquote>
+<h1 id="第二十五回-一个新进程的诞生五-通过fork看一次系统调用">第二十五回
+| 一个新进程的诞生(五) 通过fork看一次系统调用</h1>
+<blockquote>
+<p><a
+target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&amp;mid=2247501700&amp;idx=1&amp;sn=1b0167cf9852f89748a337d9b06c940b&amp;chksm=c2c5bd29f5b2343ff01c68f1cbc654fbb12148f00eff8c21bb2e725a6054a7a6fbddbc253afb&amp;cur_album_id=2123743679373688834&amp;scene=189#wechat_redirect">一个新进程的诞生（五）通过
+fork 看一次系统调用 (qq.com)</a></p>
+</blockquote>
+<p><code>fork 函数</code></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">static</span> _inline _syscall0(<span class="hljs-type">int</span>,fork)<br><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> _syscall0(type,name) \</span><br><span class="hljs-meta">type name(void) \</span><br><span class="hljs-meta">&#123; \</span><br><span class="hljs-meta">long __res; \</span><br><span class="hljs-meta">__asm__ volatile (<span class="hljs-string">&quot;int $0x80&quot;</span> \</span><br><span class="hljs-meta">    : <span class="hljs-string">&quot;=a&quot;</span> (__res) \</span><br><span class="hljs-meta">    : <span class="hljs-string">&quot;0&quot;</span> (__NR_##name)); \</span><br><span class="hljs-meta"><span class="hljs-keyword">if</span> (__res &gt;= 0) \</span><br><span class="hljs-meta">    return (type) __res; \</span><br><span class="hljs-meta">errno = -__res; \</span><br><span class="hljs-meta">return -1; \</span><br><span class="hljs-meta">&#125;</span><br></code></pre></td></tr></table></figure>
+<p>别急，我把它变成稍稍能看得懂的样子，就是这样。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> _syscall0(type,name) \</span><br><span class="hljs-meta">type name(void) \</span><br><span class="hljs-meta">&#123; \</span><br><span class="hljs-meta">    volatile long __res; \</span><br><span class="hljs-meta">    _asm &#123; \</span><br><span class="hljs-meta">        _asm mov eax,__NR_##name \</span><br><span class="hljs-meta">        _asm int 80h \</span><br><span class="hljs-meta">        _asm mov __res,eax \</span><br><span class="hljs-meta">    &#125; \</span><br><span class="hljs-meta">    <span class="hljs-keyword">if</span> (__res &gt;= 0) \</span><br><span class="hljs-meta">        return (type) __res; \</span><br><span class="hljs-meta">    errno = -__res; \</span><br><span class="hljs-meta">    return -1; \</span><br><span class="hljs-meta">&#125;</span><br></code></pre></td></tr></table></figure>
+<p>所以，把宏定义都展开，其实就相当于<strong>定义了一个函数</strong>。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">fork</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span> &#123;<br>     <span class="hljs-keyword">volatile</span> <span class="hljs-type">long</span> __res;<br>    _asm &#123;<br>        _asm mov eax,__NR_fork<br>        _asm <span class="hljs-type">int</span> <span class="hljs-number">80</span>h<br>        _asm mov __res,eax<br>    &#125;<br>    <span class="hljs-keyword">if</span> (__res &gt;= <span class="hljs-number">0</span>)<br>        <span class="hljs-keyword">return</span> (<span class="hljs-type">void</span>) __res;<br>    errno = -__res;<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>关键指令就是一个 0x80 号软中断的触发，<strong>int 80h</strong>。</p>
+<p>其中还有一个 eax 寄存器里的参数是
+**__NR_fork<strong>，这也是个宏定义，值是 </strong>2**。</p>
+<p>OK，还记得 0x80 号中断的处理函数么？这个是我们在 <a
+target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&amp;mid=2247500496&amp;idx=1&amp;sn=3bddde6c68c2b03d9721ba74e949cfa8&amp;chksm=c2c5b87df5b2316b083015a4fdba2df29211f38fcfd1cdb040e02ab410432608e26383a43ef5&amp;scene=21#wechat_redirect">第18回
+| 大名鼎鼎的进程调度就是从这里开始的</a> <strong>sched_init</strong>
+里面设置的。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c">set_system_gate(<span class="hljs-number">0x80</span>, &amp;system_call);<br></code></pre></td></tr></table></figure>
+<p>看这个 system_call 的汇编代码，我们发现这么一行。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c">_system_call:<br>    ...<br>    call [_sys_call_table + eax*<span class="hljs-number">4</span>]<br>    ...<br></code></pre></td></tr></table></figure>
+<p>刚刚那个值就用上了，eax 寄存器里的值是 2，所以这个就是在这个
+<strong>sys_call_table</strong> 表里找下标 2
+位置处的函数，然后跳转过去。</p>
+<p>那我们接着看 sys_call_table 是个啥。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs c">fn_ptr sys_call_table[] = &#123; sys_setup, sys_exit, sys_fork, sys_read,<br>  sys_write, sys_open, sys_close, sys_waitpid, sys_creat, sys_link,<br>  sys_unlink, sys_execve, sys_chdir, sys_time, sys_mknod, sys_chmod,<br>  sys_chown, sys_break, sys_stat, sys_lseek, sys_getpid, sys_mount,<br>  sys_umount, sys_setuid, sys_getuid, sys_stime, sys_ptrace, sys_alarm,<br>  sys_fstat, sys_pause, sys_utime, sys_stty, sys_gtty, sys_access,<br>  sys_nice, sys_ftime, sys_sync, sys_kill, sys_rename, sys_mkdir,<br>  sys_rmdir, sys_dup, sys_pipe, sys_times, sys_prof, sys_brk, sys_setgid,<br>  sys_getgid, sys_signal, sys_geteuid, sys_getegid, sys_acct, sys_phys,<br>  sys_lock, sys_ioctl, sys_fcntl, sys_mpx, sys_setpgid, sys_ulimit,<br>  sys_uname, sys_umask, sys_chroot, sys_ustat, sys_dup2, sys_getppid,<br>  sys_getpgrp, sys_setsid, sys_sigaction, sys_sgetmask, sys_ssetmask,<br>  sys_setreuid, sys_setregid<br>&#125;;<br></code></pre></td></tr></table></figure>
+<p>看到没，就是各种函数指针组成的一个数组，说白了就是个系统调用函数表。</p>
+<p>那下标 2 位置处是啥？从第零项开始数，第二项就是
+<strong>sys_fork</strong> 函数！</p>
+<p>至此，我们终于找到了 fork
+函数，通过系统调用这个中断，最终走到内核层面的函数是什么，就是
+sys_fork。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs c">_sys_fork:<br>    call _find_empty_process<br>    testl %eax,%eax<br>    js <span class="hljs-number">1f</span><br>    push %gs<br>    pushl %esi<br>    pushl %edi<br>    pushl %ebp<br>    pushl %eax<br>    call _copy_process<br>    addl $<span class="hljs-number">20</span>,%esp<br><span class="hljs-number">1</span>:  ret<br></code></pre></td></tr></table></figure>
+<p>至于这个函数是什么，我们下一讲再说。</p>
+<p>从这讲的探索我们也可以看出，操作系统通过<strong>系统调用</strong>，提供给用户态可用的功能，都暴露在
+<strong>sys_call_table</strong> 里了。</p>
+<p>系统调用统一通过 <strong>int 0x80</strong>
+中断来进入，具体调用这个表里的哪个功能函数，就由 <strong>eax</strong>
+寄存器传过来，这里的值是个数组索引的下标，通过这个下标就可以找到在
+sys_call_table 这个数组里的具体函数。</p>
+<p>同时也可以看出，用户进程调用内核的功能，可以直接通过写一句 int 0x80
+汇编指令，并且给 eax 赋值，当然这样就比较麻烦。</p>
+<p>所以也可以直接调用 fork 这样的包装好的方法，而这个方法里本质也是 int
+0x80 以及 eax 赋值而已。</p>
+<img src="/2023/04/06/OperatingSystem/Operating-system-source-code-7/640.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>那我们再多说两句，刚刚定义 fork 的系统调用模板函数时，用的是
+<strong>syscall0</strong>，其实这个表示参数个数为 0，也就是 sys_fork
+函数并不需要任何参数。</p>
+<p>所以其实，在 unistd.h 头文件里，还定义了 syscall0 ~ syscall3
+一共四个宏。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> _syscall0(type,name)</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> _syscall1(type,name,atype,a)</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> _syscall2(type,name,atype,a,btype,b)</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> _syscall3(type,name,atype,a,btype,b,ctype,c)</span><br></code></pre></td></tr></table></figure>
+<p>看都能看出来，其实 <strong>syscall1</strong>
+就表示有<strong>一个参数</strong>，<strong>syscall2</strong>
+就表示有<strong>两个参数</strong>。</p>
+<p>那这些参数放在哪里了呢？总得有个约定的地方吧？</p>
+<p>我们看一个今后要讲的重点函数，<strong>execve</strong>，是一个通常和
+fork 在一起配合的变身函数，在之后的进程 1 创建进程 2
+的过程中，就是这样玩的。</p>
+<figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs lasso"><span class="hljs-literal">void</span> init(<span class="hljs-literal">void</span>) &#123;<br>    <span class="hljs-params">...</span><br>    <span class="hljs-keyword">if</span> (!(pid=fork())) &#123;<br>        <span class="hljs-params">...</span><br>        execve(<span class="hljs-string">&quot;/bin/sh&quot;</span>,argv_rc,envp_rc);<br>        <span class="hljs-params">...</span><br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>当然我们的重点不是研究这个函数的作用，仅仅把它当做研究 syscall3
+的一个例子，因为它的宏定义就是 <strong>syscall3</strong>。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs c">execve(<span class="hljs-string">&quot;/bin/sh&quot;</span>,argv_rc,envp_rc);<br><br>_syscall3(<span class="hljs-type">int</span>,execve,<span class="hljs-type">const</span> <span class="hljs-type">char</span> *,file,<span class="hljs-type">char</span> **,argv,<span class="hljs-type">char</span> **,envp)<br><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> _syscall3(type,name,atype,a,btype,b,ctype,c) \</span><br><span class="hljs-meta">type name(atype a,btype b,ctype c) &#123; \</span><br><span class="hljs-meta">    volatile long __res; \</span><br><span class="hljs-meta">    _asm &#123; \</span><br><span class="hljs-meta">        _asm mov eax,__NR_##name \</span><br><span class="hljs-meta">        _asm mov ebx,a \</span><br><span class="hljs-meta">        _asm mov ecx,b \</span><br><span class="hljs-meta">        _asm mov edx,c \</span><br><span class="hljs-meta">        _asm int 80h \</span><br><span class="hljs-meta">        _asm mov __res,eax\</span><br><span class="hljs-meta">    &#125; \</span><br><span class="hljs-meta">    <span class="hljs-keyword">if</span> (__res &gt;= 0) \</span><br><span class="hljs-meta">        return (type) __res; \</span><br><span class="hljs-meta">    errno = -__res; \</span><br><span class="hljs-meta">    return -1; \</span><br><span class="hljs-meta">&#125;</span><br></code></pre></td></tr></table></figure>
+<p>可以看出，<strong>参数 a 被放在了 ebx 寄存器，参数 b 被放在了 ecx
+寄存器，参数 c 被放在了 edx 寄存器</strong>。</p>
+<h1
+id="第二十六回-一个新进程的诞生六-fork中进程基本信息的复制">第二十六回 |
+一个新进程的诞生(六) fork中进程基本信息的复制</h1>
+<blockquote>
+<p><a
+target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&amp;mid=2247501748&amp;idx=1&amp;sn=2ad618817656321501b2c8e734ffefe6&amp;chksm=c2c5bd19f5b2340f0ae684fa2a2a808a9a5210693736d21019ed542cf5351c3b65b2784d40ee&amp;cur_album_id=2123743679373688834&amp;scene=189#wechat_redirect">一个新进程的诞生（六）fork
+中进程基本信息的复制 (qq.com)</a></p>
+</blockquote>
+<p><strong>sys_fork</strong> 函数干了啥。</p>
+<p>还是个汇编代码，但我们要关注的地方不多。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs asm">_sys_fork:<br>    call _find_empty_process<br>    testl %eax,%eax<br>    js 1f<br>    push %gs<br>    pushl %esi<br>    pushl %edi<br>    pushl %ebp<br>    pushl %eax<br>    call _copy_process<br>    addl $20,%esp<br>1:  ret<br></code></pre></td></tr></table></figure>
+<p>先是
+<strong>find_empty_process</strong>，就是找到空闲的进程槽位。</p>
+<p>然后 <strong>copy_process</strong>，就是复制进程。</p>
+<p>那妥了，这个方法的意思非常简单，因为存储进程的数据结构是一个 task[64]
+数组，这个是在之前 <a
+target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&amp;mid=2247500496&amp;idx=1&amp;sn=3bddde6c68c2b03d9721ba74e949cfa8&amp;chksm=c2c5b87df5b2316b083015a4fdba2df29211f38fcfd1cdb040e02ab410432608e26383a43ef5&amp;scene=21#wechat_redirect">第18回
+| 大名鼎鼎的进程调度就是从这里开始的</a> <strong>sched_init</strong>
+函数的时候设置的。</p>
+<img src="/2023/04/06/OperatingSystem/Operating-system-source-code-7/640-16807641009093.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>就是先在这个数组中找一个空闲的位置，准备存一个新的进程的结构
+<strong>task_struct</strong>，这个结构之前在 <a
+target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&amp;mid=2247501576&amp;idx=1&amp;sn=657e1c89d1007a935820d394d64f4035&amp;chksm=c2c5bda5f5b234b3654c5ea2113cc0d48eee854f9f035ec69ec44bf9d964ae6cd4c181ed5880&amp;scene=21#wechat_redirect">一个新进程的诞生（三）如果让你来设计进程调度</a>
+也简单说过了。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">task_struct</span> &#123;</span><br>    <span class="hljs-type">long</span> state;<br>    <span class="hljs-type">long</span> counter;<br>    <span class="hljs-type">long</span> priority;<br>    ...<br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">tss_struct</span> <span class="hljs-title">tss</span>;</span><br>&#125;<br></code></pre></td></tr></table></figure>
+<p>通过 <strong>copy_process</strong>
+这个名字我们知道，就是复制原来的进程，也就是当前进程。</p>
+<p>当前只有一个进程，就是数组中位置 0 处的
+<strong>init_task.init</strong>，也就是零号进程，那自然就复制它咯。</p>
+<p>好了，以上只是我们的猜测，有了猜测再看代码会非常轻松，我们一个个函数看。</p>
+<p>先来 <strong>find_empty_process</strong>。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">long</span> last_pid = <span class="hljs-number">0</span>;<br><br><span class="hljs-type">int</span> <span class="hljs-title function_">find_empty_process</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span> &#123;<br>    <span class="hljs-type">int</span> i;<br>    repeat:<br>        <span class="hljs-keyword">if</span> ((++last_pid)&lt;<span class="hljs-number">0</span>) last_pid=<span class="hljs-number">1</span>;<br>        <span class="hljs-keyword">for</span>(i=<span class="hljs-number">0</span> ; i&lt;<span class="hljs-number">64</span> ; i++)<br>            <span class="hljs-keyword">if</span> (task[i] &amp;&amp; task[i]-&gt;pid == last_pid) <span class="hljs-keyword">goto</span> repeat;<br>    <span class="hljs-keyword">for</span>(i=<span class="hljs-number">1</span> ; i&lt;<span class="hljs-number">64</span>; i++)<br>        <span class="hljs-keyword">if</span> (!task[i])<br>            <span class="hljs-keyword">return</span> i;<br>    <span class="hljs-keyword">return</span> -EAGAIN;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>一共三步，很简单。</p>
+<p><strong>第一步</strong>，判断 ++last_pid
+是不是小于零了，小于零说明已经超过 long 的最大值了，重新赋值为
+1，起到一个保护作用，这没什么好说的。</p>
+<p><strong>第二步</strong>，一个 for 循环，看看刚刚的 last_pid 在所有
+task[]
+数组中，是否已经被某进程占用了。如果被占用了，那就重复执行，再次加一，然后再次判断，直到找到一个
+pid 号没有被任何进程用为止。</p>
+<p><strong>第三步</strong>，又是个 for 循环，刚刚已经找到一个可用的 pid
+号了，那这一步就是再次遍历这个 task[]
+试图找到一个空闲项，找到了就返回素组索引下标。</p>
+<p><strong>最终，这个方法就返回 task[]
+数组的索引，表示找到了一个空闲项</strong>，之后就开始往这里塞一个新的进程吧。</p>
+<p>来看 <strong>copy_process</strong> 方法。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">copy_process</span><span class="hljs-params">(<span class="hljs-type">int</span> nr,<span class="hljs-type">long</span> ebp,<span class="hljs-type">long</span> edi,<span class="hljs-type">long</span> esi,<span class="hljs-type">long</span> gs,<span class="hljs-type">long</span> none,</span><br><span class="hljs-params">        <span class="hljs-type">long</span> ebx,<span class="hljs-type">long</span> ecx,<span class="hljs-type">long</span> edx,</span><br><span class="hljs-params">        <span class="hljs-type">long</span> fs,<span class="hljs-type">long</span> es,<span class="hljs-type">long</span> ds,</span><br><span class="hljs-params">        <span class="hljs-type">long</span> eip,<span class="hljs-type">long</span> cs,<span class="hljs-type">long</span> eflags,<span class="hljs-type">long</span> esp,<span class="hljs-type">long</span> ss)</span><br>&#123;<br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">task_struct</span> *<span class="hljs-title">p</span>;</span><br>    <span class="hljs-type">int</span> i;<br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">file</span> *<span class="hljs-title">f</span>;</span><br><br><br>    p = (<span class="hljs-keyword">struct</span> task_struct *) get_free_page();<br>    <span class="hljs-keyword">if</span> (!p)<br>        <span class="hljs-keyword">return</span> -EAGAIN;<br>    task[nr] = p;<br>    *p = *current;  <span class="hljs-comment">/* NOTE! this doesn&#x27;t copy the supervisor stack */</span><br>    p-&gt;state = TASK_UNINTERRUPTIBLE;<br>    p-&gt;pid = last_pid;<br>    p-&gt;father = current-&gt;pid;<br>    p-&gt;counter = p-&gt;priority;<br>    p-&gt;signal = <span class="hljs-number">0</span>;<br>    p-&gt;alarm = <span class="hljs-number">0</span>;<br>    p-&gt;leader = <span class="hljs-number">0</span>;      <span class="hljs-comment">/* process leadership doesn&#x27;t inherit */</span><br>    p-&gt;utime = p-&gt;stime = <span class="hljs-number">0</span>;<br>    p-&gt;cutime = p-&gt;cstime = <span class="hljs-number">0</span>;<br>    p-&gt;start_time = jiffies;<br>    p-&gt;tss.back_link = <span class="hljs-number">0</span>;<br>    p-&gt;tss.esp0 = PAGE_SIZE + (<span class="hljs-type">long</span>) p;<br>    p-&gt;tss.ss0 = <span class="hljs-number">0x10</span>;<br>    p-&gt;tss.eip = eip;<br>    p-&gt;tss.eflags = eflags;<br>    p-&gt;tss.eax = <span class="hljs-number">0</span>;<br>    p-&gt;tss.ecx = ecx;<br>    p-&gt;tss.edx = edx;<br>    p-&gt;tss.ebx = ebx;<br>    p-&gt;tss.esp = esp;<br>    p-&gt;tss.ebp = ebp;<br>    p-&gt;tss.esi = esi;<br>    p-&gt;tss.edi = edi;<br>    p-&gt;tss.es = es &amp; <span class="hljs-number">0xffff</span>;<br>    p-&gt;tss.cs = cs &amp; <span class="hljs-number">0xffff</span>;<br>    p-&gt;tss.ss = ss &amp; <span class="hljs-number">0xffff</span>;<br>    p-&gt;tss.ds = ds &amp; <span class="hljs-number">0xffff</span>;<br>    p-&gt;tss.fs = fs &amp; <span class="hljs-number">0xffff</span>;<br>    p-&gt;tss.gs = gs &amp; <span class="hljs-number">0xffff</span>;<br>    p-&gt;tss.ldt = _LDT(nr);<br>    p-&gt;tss.trace_bitmap = <span class="hljs-number">0x80000000</span>;<br>    <span class="hljs-keyword">if</span> (last_task_used_math == current)<br>        __asm__(<span class="hljs-string">&quot;clts ; fnsave %0&quot;</span>::<span class="hljs-string">&quot;m&quot;</span> (p-&gt;tss.i387));<br>    <span class="hljs-keyword">if</span> (copy_mem(nr,p)) &#123;<br>        task[nr] = <span class="hljs-literal">NULL</span>;<br>        free_page((<span class="hljs-type">long</span>) p);<br>        <span class="hljs-keyword">return</span> -EAGAIN;<br>    &#125;<br>    <span class="hljs-keyword">for</span> (i=<span class="hljs-number">0</span>; i&lt;NR_OPEN;i++)<br>        <span class="hljs-keyword">if</span> (f=p-&gt;filp[i])<br>            f-&gt;f_count++;<br>    <span class="hljs-keyword">if</span> (current-&gt;pwd)<br>        current-&gt;pwd-&gt;i_count++;<br>    <span class="hljs-keyword">if</span> (current-&gt;root)<br>        current-&gt;root-&gt;i_count++;<br>    <span class="hljs-keyword">if</span> (current-&gt;executable)<br>        current-&gt;executable-&gt;i_count++;<br>    set_tss_desc(gdt+(nr&lt;&lt;<span class="hljs-number">1</span>)+FIRST_TSS_ENTRY,&amp;(p-&gt;tss));<br>    set_ldt_desc(gdt+(nr&lt;&lt;<span class="hljs-number">1</span>)+FIRST_LDT_ENTRY,&amp;(p-&gt;ldt));<br>    p-&gt;state = TASK_RUNNING;    <span class="hljs-comment">/* do this last, just in case */</span><br>    <span class="hljs-keyword">return</span> last_pid;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>艾玛，这也太多了！</p>
+<p>别急，大部分都是 tss
+结构的复制，以及一些无关紧要的分支，看我简化下。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">copy_process</span><span class="hljs-params">(<span class="hljs-type">int</span> nr, ...)</span> &#123;<br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">task_struct</span> <span class="hljs-title">p</span> =</span> <br>        (<span class="hljs-keyword">struct</span> task_struct *) get_free_page();<br>    task[nr] = p;<br>    *p = *current;<br><br>    p-&gt;state = TASK_UNINTERRUPTIBLE;<br>    p-&gt;pid = last_pid;<br>    p-&gt;counter = p-&gt;priority;<br>    ..<br>    p-&gt;tss.edx = edx;<br>    p-&gt;tss.ebx = ebx;<br>    p-&gt;tss.esp = esp;<br>    ...<br>    copy_mem(nr,p);<br>    ...<br>    set_tss_desc(gdt+(nr&lt;&lt;<span class="hljs-number">1</span>)+FIRST_TSS_ENTRY,&amp;(p-&gt;tss));<br>    set_ldt_desc(gdt+(nr&lt;&lt;<span class="hljs-number">1</span>)+FIRST_LDT_ENTRY,&amp;(p-&gt;ldt));<br>    p-&gt;state = TASK_RUNNING;<br>    <span class="hljs-keyword">return</span> last_pid;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>这个函数本来就是 fork 的难点了，所以我们慢慢来。</p>
+<p>首先 <strong>get_free_page</strong>
+会在主内存末端申请一个空闲页面，<strong>就是遍历 mem_map[]
+这个数组，找出值为零的项，就表示找到了空闲的一页内存</strong>。然后把该项置为
+1，表示该页已经被使用。最后，算出这个页的内存起始地址，返回。</p>
+<img src="/2023/04/06/OperatingSystem/Operating-system-source-code-7/640-16807644504476.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>然后，拿到的这个内存起始地址，就给了 task_struct 结构的 p。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">copy_process</span><span class="hljs-params">(<span class="hljs-type">int</span> nr, ...)</span> &#123;<br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">task_struct</span> <span class="hljs-title">p</span> =</span> <br>        (<span class="hljs-keyword">struct</span> task_struct *) get_free_page();<br>    task[nr] = p;<br>    *p = *current;<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>于是乎，一个进程结构 task_struct
+就在内存中有了一块空间，但此时还没有赋值具体的字段。别急。</p>
+<p>首先将这个 p 记录在进程管理结构 task[] 中。</p>
+<p>然后下一句 <em>p = </em>current
+很简单，<strong>就是把当前进程，也就是 0 号进程的 task_struct
+的全部值都复制给即将创建的进程
+p</strong>，目前它们两者就完全一样了。</p>
+<p>嗯，这就附上值了，就完全复制之前的进程的 task_struct
+而已，很粗暴。</p>
+<p>最后的内存布局的效果就是这样。</p>
+<img src="/2023/04/06/OperatingSystem/Operating-system-source-code-7/640-16807645260909.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>然后，进程 1 和进程 0
+目前是完全复制的关系，但有一些值是需要个性化处理的，下面的代码就是把这些不一样的值覆盖掉。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">copy_process</span><span class="hljs-params">(<span class="hljs-type">int</span> nr, ...)</span> &#123;<br>    ...<br>    p-&gt;state = TASK_UNINTERRUPTIBLE;<br>    p-&gt;pid = last_pid;<br>    p-&gt;counter = p-&gt;priority;<br>    ..<br>    p-&gt;tss.edx = edx;<br>    p-&gt;tss.ebx = ebx;<br>    p-&gt;tss.esp = esp;<br>    ...<br>    p-&gt;tss.esp0 = PAGE_SIZE + (<span class="hljs-type">long</span>) p;<br>    p-&gt;tss.ss0 = <span class="hljs-number">0x10</span>;<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>不一样的值，一部分是
+<strong>state</strong>，<strong>pid</strong>，<strong>counter</strong>
+这种<strong>进程的元信息</strong>，另一部分是 <strong>tss</strong>
+里面保存的各种寄存器的信息，即<strong>上下文</strong>。</p>
+<h1
+id="第二十七回-一个新进程的诞生七-透过fork来看进程的内存规划">第二十七回
+| 一个新进程的诞生(七) 透过fork来看进程的内存规划</h1>
+<blockquote>
+<p><a
+target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&amp;mid=2247501866&amp;idx=1&amp;sn=64adec9179345945d095a1a1bdebcdac&amp;chksm=c2c5b287f5b23b9175d8eacf7731b22823a576f78e14d8b93b2e8c9814bcb11076967d878a12&amp;cur_album_id=2123743679373688834&amp;scene=189#wechat_redirect">一个新进程的诞生（七）透过
+fork 来看进程的内存规划 (qq.com)</a></p>
+</blockquote>
+<p><code>copy_mem() function</code></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">copy_mem</span><span class="hljs-params">(<span class="hljs-type">int</span> nr,<span class="hljs-keyword">struct</span> task_struct * p)</span> &#123;<br>    <span class="hljs-comment">// 局部描述符表 LDT 赋值</span><br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> old_data_base,new_data_base,data_limit;<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> old_code_base,new_code_base,code_limit;<br>    code_limit = get_limit(<span class="hljs-number">0x0f</span>);<br>    data_limit = get_limit(<span class="hljs-number">0x17</span>);<br>    new_code_base = nr * <span class="hljs-number">0x4000000</span>;<br>    new_data_base = nr * <span class="hljs-number">0x4000000</span>;<br>    set_base(p-&gt;ldt[<span class="hljs-number">1</span>],new_code_base);<br>    set_base(p-&gt;ldt[<span class="hljs-number">2</span>],new_data_base);<br>    <span class="hljs-comment">// 拷贝页表</span><br>    old_code_base = get_base(current-&gt;ldt[<span class="hljs-number">1</span>]);<br>    old_data_base = get_base(current-&gt;ldt[<span class="hljs-number">2</span>]);<br>    copy_page_tables(old_data_base,new_data_base,data_limit);<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p><strong>新进程 LDT 表项的赋值，以及页表的拷贝</strong>。</p>
+<h2 id="ldt的赋值">LDT的赋值</h2>
+<p>那我们先看 LDT 表项的赋值，要说明白这个赋值的意义，得先回忆一下我们在
+<a
+target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&amp;mid=2247499821&amp;idx=1&amp;sn=df90a7c57607bf501b5ef535f8440d98&amp;chksm=c2c5ba80f5b233969bf591f919107e28e7be51f066821cba1ea39bf19cc0332b95b94d29467d&amp;scene=21#wechat_redirect">第九回
+| Intel 内存管理两板斧：分段与分页</a> 刚设置完页表时说过的问题。</p>
+<p>程序员给出的逻辑地址最终转化为物理地址要经过这几步骤。</p>
+<img src="/2023/04/06/OperatingSystem/Operating-system-source-code-7/640-168076488155712.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>而我们已经开启了分页，那么分页机制的具体转化是这样的。</p>
+<img src="/2023/04/06/OperatingSystem/Operating-system-source-code-7/640-168076488524315.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>不考虑段限长的话，32 位的 CPU 线性地址空间应为
+4G。现在只有四个页目录表，也就是将前 16M 的线性地址空间，与 16M
+的物理地址空间一一对应起来了。</p>
+<img src="/2023/04/06/OperatingSystem/Operating-system-source-code-7/640-168076492419618.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>把这个图和全局描述符表 GDT
+联系起来，这个线性地址空间，就是经过分段机制（段可能是 GDT 也可能是
+LDT）后的地址，是这样对应的。</p>
+<img src="/2023/04/06/OperatingSystem/Operating-system-source-code-7/640-168076492419619.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>我们给进程 0 准备的 LDT 的代码段和数据段，段基址都是 0，段限长是
+640K。给进程 1，也就是我们现在正在 fork
+的这个进程，其代码段和数据段还没有设置。</p>
+<p>所以第一步，<strong>局部描述符表 LDT
+的赋值</strong>，就是给上图中那两个还未设置的代码段和数据段赋值。</p>
+<p>其中<strong>段限长</strong>，就是取自进程 0 设置好的段限长，也就是
+640K。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">copy_mem</span><span class="hljs-params">(<span class="hljs-type">int</span> nr,<span class="hljs-keyword">struct</span> task_struct * p)</span> &#123;<br>    ...<br>    code_limit = get_limit(<span class="hljs-number">0x0f</span>);<br>    data_limit = get_limit(<span class="hljs-number">0x17</span>);<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>而<strong>段基址</strong>有点意思，是取决于当前是几号进程，也就是 nr
+的值。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">copy_mem</span><span class="hljs-params">(<span class="hljs-type">int</span> nr,<span class="hljs-keyword">struct</span> task_struct * p)</span> &#123;<br>    ...<br>    new_code_base = nr * <span class="hljs-number">0x4000000</span>;<br>    new_data_base = nr * <span class="hljs-number">0x4000000</span>;<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>这里的 0x4000000 等于 64M。</p>
+<p>也就是说，今后每个进程通过段基址的手段，分别在线性地址空间中占用 64M
+的空间（暂不考虑段限长），且紧挨着。</p>
+<p>接着就把 LDT 设置进了 LDT 表里。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">copy_mem</span><span class="hljs-params">(<span class="hljs-type">int</span> nr,<span class="hljs-keyword">struct</span> task_struct * p)</span> &#123;<br>    ...<br>    set_base(p-&gt;ldt[<span class="hljs-number">1</span>],new_code_base);<br>    set_base(p-&gt;ldt[<span class="hljs-number">2</span>],new_data_base);<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>最终效果如图。</p>
+<img src="/2023/04/06/OperatingSystem/Operating-system-source-code-7/640-168076500099124.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<h2 id="页表的复制">页表的复制</h2>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">copy_mem</span><span class="hljs-params">(<span class="hljs-type">int</span> nr,<span class="hljs-keyword">struct</span> task_struct * p)</span> &#123;<br>    ...<br>    <span class="hljs-comment">// old=0, new=64M, limit=640K</span><br>    copy_page_tables(old_data_base,new_data_base,data_limit)<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>原来进程 0
+有<strong>一个页目录表</strong>和<strong>四个页表</strong>，将线性地址空间的
+0-16M 原封不动映射到了物理地址空间的 0-16M。</p>
+<img src="/2023/04/06/OperatingSystem/Operating-system-source-code-7/640-168076502592027.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>那么新诞生的这个进程
+2，也需要一套映射关系的页表，那我们看看这些页表是怎么建立的。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">/*</span><br><span class="hljs-comment"> *  Well, here is one of the most complicated functions in mm. It</span><br><span class="hljs-comment"> * copies a range of linerar addresses by copying only the pages.</span><br><span class="hljs-comment"> * Let&#x27;s hope this is bug-free, &#x27;cause this one I don&#x27;t want to debug :-)</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">int</span> <span class="hljs-title function_">copy_page_tables</span><span class="hljs-params">(<span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> from,<span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> to,<span class="hljs-type">long</span> size)</span><br>&#123;<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> * from_page_table;<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> * to_page_table;<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> this_page;<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> * from_dir, * to_dir;<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> nr;<br><br>    from_dir = (<span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> *) ((from&gt;&gt;<span class="hljs-number">20</span>) &amp; <span class="hljs-number">0xffc</span>);<br>    to_dir = (<span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> *) ((to&gt;&gt;<span class="hljs-number">20</span>) &amp; <span class="hljs-number">0xffc</span>);<br>    size = ((<span class="hljs-type">unsigned</span>) (size+<span class="hljs-number">0x3fffff</span>)) &gt;&gt; <span class="hljs-number">22</span>;<br>    <span class="hljs-keyword">for</span>( ; size--&gt;<span class="hljs-number">0</span> ; from_dir++,to_dir++) &#123;<br>        <span class="hljs-keyword">if</span> (!(<span class="hljs-number">1</span> &amp; *from_dir))<br>            <span class="hljs-keyword">continue</span>;<br>        from_page_table = (<span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> *) (<span class="hljs-number">0xfffff000</span> &amp; *from_dir);<br>        to_page_table = (<span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> *) get_free_page()<br>        *to_dir = ((<span class="hljs-type">unsigned</span> <span class="hljs-type">long</span>) to_page_table) | <span class="hljs-number">7</span>;<br>        nr = (from==<span class="hljs-number">0</span>)?<span class="hljs-number">0xA0</span>:<span class="hljs-number">1024</span>;<br>        <span class="hljs-keyword">for</span> ( ; nr-- &gt; <span class="hljs-number">0</span> ; from_page_table++,to_page_table++) &#123;<br>            this_page = *from_page_table;<br>            <span class="hljs-keyword">if</span> (!(<span class="hljs-number">1</span> &amp; this_page))<br>                <span class="hljs-keyword">continue</span>;<br>            this_page &amp;= ~<span class="hljs-number">2</span>;<br>            *to_page_table = this_page;<br>            <span class="hljs-keyword">if</span> (this_page &gt; LOW_MEM) &#123;<br>                *from_page_table = this_page;<br>                this_page -= LOW_MEM;<br>                this_page &gt;&gt;= <span class="hljs-number">12</span>;<br>                mem_map[this_page]++;<br>            &#125;<br>        &#125;<br>    &#125;<br>    invalidate();<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>现在进程 0 的线性地址空间是 0 - 64M，进程 1 的线性地址空间是 64M -
+128M。<strong>我们现在要造一个进程 1 的页表，使得进程 1 和进程 0
+最终被映射到的物理空间都是 0 - 64M</strong>，这样进程 1
+才能顺利运行起来，不然就乱套了。</p>
+<img src="/2023/04/06/OperatingSystem/Operating-system-source-code-7/640-168076508201630.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>假设现在正在运行进程 0，代码中给出一个虚拟地址 0x03，由于进程 0 的
+LDT 中代码段基址是 0，所以线性地址也是 0x03，最终由进程 0
+页表映射到物理地址 0x03 处。</p>
+<p>假设现在正在运行进程 1，代码中给出一个虚拟地址 0x03，由于进程 1 的
+LDT 中代码段基址是 64M，所以线性地址是 64M + 3，最终由进程 1
+页表映射到物理地址也同样是 0x03 处。</p>
+<img src="/2023/04/06/OperatingSystem/Operating-system-source-code-7/640-168076510842033.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p><strong>即，进程 0 和进程 1 目前共同映射物理内存的前 640K
+的空间。</strong></p>
+<p>至于如何将不同地址通过不同页表映射到相同物理地址空间，很简单，举个刚刚的例子。</p>
+<p>刚刚的进程 1 的线性地址 64M + 0x03 用二进制表示是：</p>
+<p>0000010000_0000000000_000000000011</p>
+<p>刚刚的进程 0 的线性地址 0x03 用二进制表示是：</p>
+<p>0000000000_0000000000_000000000011</p>
+<p>根据分页机制的转化规则，<strong>前 10 位表示页目录项，中间 10
+位表示页表项，后 12 位表页内偏移。</strong></p>
+<p>进程 1 要找的是页目录项 16 中的第 0 号页表</p>
+<p>进程 0 要找的是页目录项 0 中的第 0 号页表</p>
+<p>那只要让这俩最终找到的两个页表里的数据一模一样即可。</p>
+<p><a
+target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&amp;mid=2247500507&amp;idx=1&amp;sn=a7863ac6144a1fce942a91a9d573ef1a&amp;chksm=c2c5b876f5b23160502f3d1e7a7d00ad43231aa49eea9809e063f010d65846c512ec87e752a0&amp;scene=21#wechat_redirect">我居然会认为权威书籍写错了...</a></p>
+<p>由于理解起来非常简单，但代码中的计算就非常绕，所以我们就不细致分析代码了，只要理解其最终的作用就好。</p>
+<p>OK，本章的内容就讲完了，再稍稍展开一个未来要说的东西。还记得页表的结构吧？</p>
+<img src="/2023/04/06/OperatingSystem/Operating-system-source-code-7/640-168076520663036.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>其中 RW 位表示读写状态，0
+表示只读（或可执行），1表示可读写（或可执行）。当然，在内核态也就是 0
+特权级时，这个标志位是没用的。</p>
+<p>那我们看下面的代码。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">copy_page_tables</span><span class="hljs-params">(<span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> from,<span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> to,<span class="hljs-type">long</span> size)</span> &#123;<br>    ...<br>    <span class="hljs-keyword">for</span>( ; size--&gt;<span class="hljs-number">0</span> ; from_dir++,to_dir++) &#123;<br>        ...<br>        <span class="hljs-keyword">for</span> ( ; nr-- &gt; <span class="hljs-number">0</span> ; from_page_table++,to_page_table++) &#123;<br>            ...<br>            this_page &amp;= ~<span class="hljs-number">2</span>;<br>            ...<br>            <span class="hljs-keyword">if</span> (this_page &gt; LOW_MEM) &#123;<br>                *from_page_table = this_page;<br>                ...<br>            &#125;<br>        &#125;<br>    &#125;<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>~2 表示取反，2 用二进制表示是 10，取反就是 01，其目的是把 this_page
+也就是当前的页表的 RW
+位置零，也就是是<strong>把该页变成只读</strong>。</p>
+<p>而 *from_page_table = this_page
+表示<strong>又把源页表也变成只读</strong>。</p>
+<p>也就是说，经过 fork
+创建出的新进程，其页表项都是只读的，而且导致源进程的页表项也变成了只读。</p>
+<p>这个就是<strong>写时复制</strong>的基础，新老进程一开始共享同一个物理内存空间，如果只有读，那就相安无事，但如果任何一方有写操作，由于页面是只读的，将触发缺页中断，然后就会分配一块新的物理内存给产生写操作的那个进程，此时这一块内存就不再共享了。</p>
+<h1 id="第三部分一个新进程的诞生完结">第三部分一个新进程的诞生完结</h1>
+<blockquote>
+<p><a
+target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&amp;mid=2247501947&amp;idx=1&amp;sn=cb94f53c75d674d30fb4903778c74c08&amp;chksm=c2c5b2d6f5b23bc027d9652d3e9949e55fd3b101beb87f6f80dd77d8233c0b51bede73edad46&amp;scene=178&amp;cur_album_id=2123743679373688834#rd">一个新进程的诞生
+完结撒花！！！ (qq.com)</a></p>
+</blockquote>
+<h1 id="写时复制">写时复制</h1>
+<blockquote>
+<p><a
+target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&amp;mid=2247502033&amp;idx=1&amp;sn=1acfd8b7f4c805906ecd51c33d0010eb&amp;chksm=c2c5b27cf5b23b6a41051c7f93407afc97094a4b0a36ea050616778f4d072f074602f98983b2&amp;scene=178&amp;cur_album_id=2123743679373688834#rd">写时复制就这么几行代码，麻烦你先看看再
+BB 行吗？ (qq.com)</a></p>
+</blockquote>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" class="category-chain-item">操作系统</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>你管这破玩意儿叫操作系统源码(七)</div>
+      <div>https://www.spacezxy.top/2023/04/06/OperatingSystem/Operating-system-source-code-7/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Xavier ZXY</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年4月6日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/04/06/OperatingSystem/Operating-system-source-code-8/" title="你管这破玩意儿叫操作系统源码(八)">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">你管这破玩意儿叫操作系统源码(八)</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/04/06/OperatingSystem/Operating-system-source-code-6/" title="你管这破玩意儿叫操作系统源码(六)">
+                        <span class="hidden-mobile">你管这破玩意儿叫操作系统源码(六)</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a>
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+    <!-- 备案信息 ICP for China -->
+    <div class="beian">
+  <span>
+    <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+      湘ICP备  2021018889
+    </a>
+  </span>
+  
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

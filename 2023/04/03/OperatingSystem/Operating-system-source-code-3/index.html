@@ -16,12 +16,12 @@
   <meta name="author" content="Xavier ZXY">
   <meta name="keywords" content="">
   
-    <meta name="description" content="本文为学习操作系统统源码 (低并发编程)所作笔记，仅供学习参考，不做任何商业用途,若有侵权，请联系删除。  第九回 | Intel 内存管理两板斧：分段与分页  第九回 | Intel 内存管理两板斧：分段与分页 (qq.com)  上回head.s代码重新设置了gdt与idt。  1234567891011jmp after_page_tables...after_pa">
+    <meta name="description" content="本文为学习操作系统源码 (低并发编程)所作笔记，仅供学习参考，不做任何商业用途,若有侵权，请联系删除。  第九回 | Intel 内存管理两板斧：分段与分页  第九回 | Intel 内存管理两板斧：分段与分页 (qq.com)  上回head.s代码重新设置了gdt与idt。  1234567891011jmp after_page_tables...after_pag">
 <meta property="og:type" content="article">
 <meta property="og:title" content="你管这破玩意儿叫操作系统源码(三)">
 <meta property="og:url" content="https://www.spacezxy.top/2023/04/03/OperatingSystem/Operating-system-source-code-3/index.html">
 <meta property="og:site_name" content="Xavier ZXY">
-<meta property="og:description" content="本文为学习操作系统统源码 (低并发编程)所作笔记，仅供学习参考，不做任何商业用途,若有侵权，请联系删除。  第九回 | Intel 内存管理两板斧：分段与分页  第九回 | Intel 内存管理两板斧：分段与分页 (qq.com)  上回head.s代码重新设置了gdt与idt。  1234567891011jmp after_page_tables...after_pa">
+<meta property="og:description" content="本文为学习操作系统源码 (低并发编程)所作笔记，仅供学习参考，不做任何商业用途,若有侵权，请联系删除。  第九回 | Intel 内存管理两板斧：分段与分页  第九回 | Intel 内存管理两板斧：分段与分页 (qq.com)  上回head.s代码重新设置了gdt与idt。  1234567891011jmp after_page_tables...after_pag">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://www.spacezxy.top/2023/04/03/OperatingSystem/Operating-system-source-code-3/640.png">
 <meta property="og:image" content="https://www.spacezxy.top/2023/04/03/OperatingSystem/Operating-system-source-code-3/640-16804845957623.png">
@@ -41,7 +41,7 @@
 <meta property="og:image" content="https://www.spacezxy.top/2023/04/03/OperatingSystem/Operating-system-source-code-3/640-168068169823910.png">
 <meta property="og:image" content="https://www.spacezxy.top/2023/04/03/OperatingSystem/Operating-system-source-code-3/640-168068246802913.png">
 <meta property="article:published_time" content="2023-04-03T01:05:17.000Z">
-<meta property="article:modified_time" content="2023-04-05T08:18:35.228Z">
+<meta property="article:modified_time" content="2023-04-06T07:07:05.431Z">
 <meta property="article:author" content="Xavier ZXY">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://www.spacezxy.top/2023/04/03/OperatingSystem/Operating-system-source-code-3/640.png">
@@ -310,7 +310,7 @@
                 
                 <blockquote>
 <p>本文为学习<a
-target="_blank" rel="noopener" href="https://mp.weixin.qq.com/mp/appmsgalbum?action=getalbum&amp;__biz=Mzk0MjE3NDE0Ng==&amp;scene=1&amp;album_id=2123743679373688834&amp;count=3#wechat_redirect">操作系统统源码
+target="_blank" rel="noopener" href="https://mp.weixin.qq.com/mp/appmsgalbum?action=getalbum&amp;__biz=Mzk0MjE3NDE0Ng==&amp;scene=1&amp;album_id=2123743679373688834&amp;count=3#wechat_redirect">操作系统源码
 (低并发编程)</a>所作笔记，仅供学习参考，不做任何商业用途,若有侵权，请联系删除。</p>
 </blockquote>
 <h1 id="第九回-intel-内存管理两板斧分段与分页">第九回 | Intel
