@@ -1,0 +1,1021 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/logo128.svg">
+  <link rel="icon" href="/img/logo32.svg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Xavier ZXY">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="本文为学习操作系统源码 (低并发编程)所作笔记，仅供学习参考，不做任何商业用途,若有侵权，请联系删除。  第三十五回 | 扒开execve的皮  第35回 | 扒开 execve 的皮 (qq.com)  我们先打开 execve，开一下它的调用链。 123456789101112131415161718192021222324252627static char * argv">
+<meta property="og:type" content="article">
+<meta property="og:title" content="你管这破玩意儿叫操作系统源码(九)">
+<meta property="og:url" content="https://www.spacezxy.top/2023/04/08/OperatingSystem/Operating-system-source-code-9/index.html">
+<meta property="og:site_name" content="Xavier ZXY">
+<meta property="og:description" content="本文为学习操作系统源码 (低并发编程)所作笔记，仅供学习参考，不做任何商业用途,若有侵权，请联系删除。  第三十五回 | 扒开execve的皮  第35回 | 扒开 execve 的皮 (qq.com)  我们先打开 execve，开一下它的调用链。 123456789101112131415161718192021222324252627static char * argv">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/08/OperatingSystem/Operating-system-source-code-9/640.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/08/OperatingSystem/Operating-system-source-code-9/640-16809212862453.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/08/OperatingSystem/Operating-system-source-code-9/640-16809213030156.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/08/OperatingSystem/Operating-system-source-code-9/640-16809213306299.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/08/OperatingSystem/Operating-system-source-code-9/640-168092163446212.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/08/OperatingSystem/Operating-system-source-code-9/640-168092166464215.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/08/OperatingSystem/Operating-system-source-code-9/640-168092196725418.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/08/OperatingSystem/Operating-system-source-code-9/640-168092213880121.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/08/OperatingSystem/Operating-system-source-code-9/640-168092244715024.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/08/OperatingSystem/Operating-system-source-code-9/640-168092253380027.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/08/OperatingSystem/Operating-system-source-code-9/640-168092253380128.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/08/OperatingSystem/Operating-system-source-code-9/640-168092284866733.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/08/OperatingSystem/Operating-system-source-code-9/640-168092290216036.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/08/OperatingSystem/Operating-system-source-code-9/640-168092294077339.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/08/OperatingSystem/Operating-system-source-code-9/640-168092318639042.png">
+<meta property="og:image" content="https://www.spacezxy.top/2023/04/08/OperatingSystem/Operating-system-source-code-9/640-168092321189345.png">
+<meta property="article:published_time" content="2023-04-08T02:20:30.000Z">
+<meta property="article:modified_time" content="2023-04-08T03:11:00.120Z">
+<meta property="article:author" content="Xavier ZXY">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://www.spacezxy.top/2023/04/08/OperatingSystem/Operating-system-source-code-9/640.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>你管这破玩意儿叫操作系统源码(九) - Xavier ZXY</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"www.spacezxy.top","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>SapceZXY</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/wallpaper.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="你管这破玩意儿叫操作系统源码(九)"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-04-08 10:20" pubdate>
+          2023年4月8日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          12k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          100 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">你管这破玩意儿叫操作系统源码(九)</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <blockquote>
+<p>本文为学习<a
+target="_blank" rel="noopener" href="https://mp.weixin.qq.com/mp/appmsgalbum?action=getalbum&amp;__biz=Mzk0MjE3NDE0Ng==&amp;scene=1&amp;album_id=2123743679373688834&amp;count=3#wechat_redirect">操作系统源码
+(低并发编程)</a>所作笔记，仅供学习参考，不做任何商业用途,若有侵权，请联系删除。</p>
+</blockquote>
+<h1 id="第三十五回-扒开execve的皮">第三十五回 | 扒开execve的皮</h1>
+<blockquote>
+<p><a
+target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&amp;mid=2247502475&amp;idx=1&amp;sn=4fcdbaa03bf6a1ca04db4013309c6aa3&amp;chksm=c2c5b026f5b2393049efca68c429df5038fa0f317eea79fbd9ec2c661c3ec12b47a0701376a7&amp;scene=178&amp;cur_album_id=2123743679373688834#rd">第35回
+| 扒开 execve 的皮 (qq.com)</a></p>
+</blockquote>
+<p>我们先打开 execve，开一下它的调用链。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">static</span> <span class="hljs-type">char</span> * argv_rc[] = &#123; <span class="hljs-string">&quot;/bin/sh&quot;</span>, <span class="hljs-literal">NULL</span> &#125;;<br><span class="hljs-type">static</span> <span class="hljs-type">char</span> * envp_rc[] = &#123; <span class="hljs-string">&quot;HOME=/&quot;</span>, <span class="hljs-literal">NULL</span> &#125;;<br><br><span class="hljs-comment">// 调用方</span><br>execve(<span class="hljs-string">&quot;/bin/sh&quot;</span>,argv_rc,envp_rc);<br><br><span class="hljs-comment">// 宏定义</span><br>_syscall3(<span class="hljs-type">int</span>,execve,<span class="hljs-type">const</span> <span class="hljs-type">char</span> *,file,<span class="hljs-type">char</span> **,argv,<span class="hljs-type">char</span> **,envp)<br><br><span class="hljs-comment">// 通过系统调用进入到这里</span><br>EIP = <span class="hljs-number">0x1C</span><br>_sys_execve:<br>    lea EIP(%esp),%eax<br>    pushl %eax<br>    call _do_execve<br>    addl $<span class="hljs-number">4</span>,%esp<br>    ret<br><br><span class="hljs-comment">// 最终执行的函数</span><br><span class="hljs-type">int</span> do_execve(<br>        <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> * eip,<br>        <span class="hljs-type">long</span> tmp,<br>        <span class="hljs-type">char</span> * filename,<br>        <span class="hljs-type">char</span> ** argv,<br>        <span class="hljs-type">char</span> ** envp) &#123;<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>我们在 <a
+target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&amp;mid=2247501700&amp;idx=1&amp;sn=1b0167cf9852f89748a337d9b06c940b&amp;chksm=c2c5bd29f5b2343ff01c68f1cbc654fbb12148f00eff8c21bb2e725a6054a7a6fbddbc253afb&amp;scene=21#wechat_redirect">第25回
+| 通过 fork 看一次系统调用</a>
+已经详细分析了整个调用链中的栈以及参数传递的过程。</p>
+<p><strong>eip</strong> 调用方触发系统调用时由 CPU 压入栈空间中的 eip
+的指针 。</p>
+<p><strong>tmp</strong> 是一个无用的占位参数。</p>
+<p><strong>filename</strong> 是 "/bin/sh"</p>
+<p><strong>argv</strong> 是 { "/bin/sh", NULL }</p>
+<p><strong>envp</strong> 是 { "HOME=/", NULL }</p>
+<p>好了，接下来我们看看整个 <strong>do_execve</strong>
+函数，它非常非常长！我先把整个结构列出。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">do_execve</span><span class="hljs-params">(...)</span> &#123;<br>    <span class="hljs-comment">// 检查文件类型和权限等</span><br>    ...<br>    <span class="hljs-comment">// 读取文件的第一块数据到缓冲区</span><br>    ...<br>    <span class="hljs-comment">// 如果是脚本文件，走这里</span><br>    <span class="hljs-keyword">if</span> (脚本文件判断逻辑) &#123;<br>        ...<br>    &#125;<br>    <span class="hljs-comment">// 如果是可执行文件，走这里</span><br>    <span class="hljs-comment">// 一堆校验可执行文件是否能执行的判断</span><br>    ...<br>    <span class="hljs-comment">// 进程管理结构的调整</span><br>    ...<br>    <span class="hljs-comment">// 释放进程占有的页面</span><br>    ...<br>    <span class="hljs-comment">// 调整线性地址空间、参数列表、堆栈地址等</span><br>    ...<br>    <span class="hljs-comment">// 设置 eip 和 esp，这里是 execve 变身大法的关键！</span><br>    eip[<span class="hljs-number">0</span>] = ex.a_entry;<br>    eip[<span class="hljs-number">3</span>] = p;<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>整理起来的步骤就是。</p>
+<p><strong>1</strong> 检查文件类型和权限等</p>
+<p><strong>2</strong> 读取文件的第一块数据到缓冲区</p>
+<p><strong>3</strong> 脚本文件与可执行文件的判断</p>
+<p><strong>4</strong> 校验可执行文件是否能执行</p>
+<p><strong>5</strong> 进程管理结构的调整</p>
+<p><strong>6</strong> 释放进程占有的页面</p>
+<p><strong>7</strong> 调整线性地址空间、参数列表、堆栈地址等</p>
+<p><strong>8</strong> 设置 eip 和 esp，完成摇身一变</p>
+<p>如果去掉一些逻辑校验和判断，那核心逻辑就是<strong>加载文件</strong>、<strong>调整内存</strong>、<strong>开始执行</strong>三个步骤，由于这些部分的内容已经非常复杂了，所以我们就去掉那些逻辑校验的部分，直接挑主干逻辑进行讲解，以便带大家认清
+execve 的本质。</p>
+<h2 id="读取文件开头-1kb-的数据">读取文件开头 1KB 的数据</h2>
+<p>先是根据文件名，找到并读取文件里的内容</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">// exec.c</span><br><span class="hljs-type">int</span> <span class="hljs-title function_">do_execve</span><span class="hljs-params">(...)</span> &#123;<br>    ...<br>    <span class="hljs-comment">// 根据文件名 /bin/sh 获取 inode</span><br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">m_inode</span> * <span class="hljs-title">inode</span> =</span> namei(filename);<br>    <span class="hljs-comment">// 根据 inode 读取文件第一块数据（1024KB）</span><br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">buffer_head</span> * <span class="hljs-title">bh</span> =</span> bread(inode-&gt;i_dev,inode-&gt;i_zone[<span class="hljs-number">0</span>]);<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>很简单，就是读取了文件（/bin/sh）第一个块，也就是 1KB 的数据，在 <a
+target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&amp;mid=2247502181&amp;idx=1&amp;sn=b6dcbd1d2cf930002852008a1c4e6a65&amp;chksm=c2c5b3c8f5b23ade1532b725995dbc3b0138202555e44a6e308b84d668a2ef3041eb5cf77f86&amp;scene=21#wechat_redirect">第32回
+| 加载根文件系统</a> 里说过文件系统的结构，所以代码里 <strong>inode
+-&gt; i_zone[0]</strong> 就刚好是文件开头的 1KB 数据。</p>
+<img src="/2023/04/08/OperatingSystem/Operating-system-source-code-9/640.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<h2 id="解析这-1kb-的数据为-exec-结构">解析这 1KB 的数据为 exec
+结构</h2>
+<p>接下来的工作就是解析它，本质上就是按照指定的数据结构来解读罢了。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">// exec.c</span><br><span class="hljs-type">int</span> <span class="hljs-title function_">do_execve</span><span class="hljs-params">(...)</span> &#123;<br>    ...<br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">exec</span> <span class="hljs-title">ex</span> =</span> *((<span class="hljs-keyword">struct</span> exec *) bh-&gt;b_data);<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>先从刚刚读取文件返回的缓冲头指针中取出数据部分 bh -&gt;
+data，也就是文件前 1024 个字节，此时还是一段读不懂的二进制数据。</p>
+<p>然后按照 exec 这个结构体对其进行解析，它便有了生命。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">exec</span> &#123;</span><br>    <span class="hljs-comment">// 魔数</span><br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> a_magic;<br>    <span class="hljs-comment">// 代码区长度</span><br>    <span class="hljs-type">unsigned</span> a_text;<br>    <span class="hljs-comment">// 数据区长度</span><br>    <span class="hljs-type">unsigned</span> a_data;<br>    <span class="hljs-comment">// 未初始化数据区长度</span><br>    <span class="hljs-type">unsigned</span> a_bss;<br>    <span class="hljs-comment">// 符号表长度</span><br>    <span class="hljs-type">unsigned</span> a_syms;<br>    <span class="hljs-comment">// 执行开始地址</span><br>    <span class="hljs-type">unsigned</span> a_entry;<br>    <span class="hljs-comment">// 代码重定位信息长度</span><br>    <span class="hljs-type">unsigned</span> a_trsize;<br>    <span class="hljs-comment">// 数据重定位信息长度</span><br>    <span class="hljs-type">unsigned</span> a_drsize;<br>&#125;;<br></code></pre></td></tr></table></figure>
+<p>上面的代码就是 exec 结构体，这是 <strong>a.out</strong>
+格式文件的头部结构，现在的 Linux 已经弃用了这种古老的格式，改用 ELF
+格式了，但大体的思想是一致的。</p>
+<h2 id="判断是脚本文件还是可执行文件">判断是脚本文件还是可执行文件</h2>
+<p>我们写一个 Linux 脚本文件的时候，通常可以看到前面有这么一坨东西。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs c">#!/bin/sh<br>#!/usr/bin/python<br></code></pre></td></tr></table></figure>
+<p>你有没有想过为什么我们通常可以直接执行这样的文件？其实逻辑就在下面这个代码里。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">// exec.c</span><br><span class="hljs-type">int</span> <span class="hljs-title function_">do_execve</span><span class="hljs-params">(...)</span> &#123;<br>    ...<br>    <span class="hljs-keyword">if</span> ((bh-&gt;b_data[<span class="hljs-number">0</span>] == <span class="hljs-string">&#x27;#&#x27;</span>) &amp;&amp; (bh-&gt;b_data[<span class="hljs-number">1</span>] == <span class="hljs-string">&#x27;!&#x27;</span>) &#123;<br>        ...<br>    &#125;<br>    brelse(bh);<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>可以看到，很简单粗暴地判断前面两个字符是不是
+<strong>#!</strong>，如果是的话，就走<strong>脚本文件</strong>的执行逻辑。</p>
+<p>当然，我们现在的 /bin/sh
+是个<strong>可执行的二进制文件</strong>，不符合这样的条件，所以这个 if
+语句里面的内容我们也可以不看了，直接看外面，执行可执行二进制文件的逻辑。</p>
+<p>第一步就是 brelse 释放这个缓冲块，因为已经把这个缓冲块内容解析成 exec
+结构保存到我们程序的栈空间里了，那么这个缓冲块就可以释放，用于其他读取磁盘时的缓冲区。</p>
+<h2 id="准备参数空间">准备参数空间</h2>
+<p>我们执行 /bin/sh 时，还给它传了 argc 和 envp
+参数，就是通过下面这一系列代码来实现的。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> PAGE_SIZE 4096</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MAX_ARG_PAGES 32</span><br><br><span class="hljs-comment">// exec.c</span><br><span class="hljs-type">int</span> <span class="hljs-title function_">do_execve</span><span class="hljs-params">(...)</span> &#123;<br>    ...<br>    <span class="hljs-comment">// p = 0x1FFFC = 128K - 4</span><br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> p = PAGE_SIZE * MAX_ARG_PAGES - <span class="hljs-number">4</span>;<br>    ...<br>    <span class="hljs-comment">// p = 0x1FFF5 = 128K - 4 - 7</span><br>    p = copy_strings(envc,envp,page,p,<span class="hljs-number">0</span>);<br>    <span class="hljs-comment">// p = 0x1FFED = 128K - 4 - 7 - 8</span><br>    p = copy_strings(argc,argv,page,p,<span class="hljs-number">0</span>);<br>    ...<br>    <span class="hljs-comment">// p = 0x3FFFFED = 64M - 4 - 7 - 8</span><br>    p += change_ldt(ex.a_text,page)-MAX_ARG_PAGES*PAGE_SIZE;<br>    <span class="hljs-comment">// p = 0x3FFFFD0</span><br>    p = (<span class="hljs-type">unsigned</span> <span class="hljs-type">long</span>) create_tables((<span class="hljs-type">char</span> *)p,argc,envc);<br>    ...<br>    <span class="hljs-comment">// 设置栈指针</span><br>    eip[<span class="hljs-number">3</span>] = p;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>准备参数空间的过程，同时也伴随着一个表示地址的 unsigned long p
+的计算轨迹。</p>
+<p>开头一行计算出的 p 值为</p>
+<p><strong>p = 4096 * 32 - 4 = 0x20000 - 4 = 128K - 4</strong></p>
+<p>为什么是这个数呢？整个这块讲完你就会知道，这表示<strong>参数表</strong>，每个进程的参数表大小为
+<strong>128K</strong>，在每个进程地址空间的<strong>最末端</strong>。</p>
+<img src="/2023/04/08/OperatingSystem/Operating-system-source-code-9/640-16809212862453.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>我们说过，<strong>每个进程通过不同的局部描述符在线性地址空间中瓜分出不同的空间</strong>，一个进程占
+<strong>64M</strong>，我们单独把这部分表达出来。</p>
+<img src="/2023/04/08/OperatingSystem/Operating-system-source-code-9/640-16809213030156.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>参数表为 128K，就表示每个进程的线性地址空间的末端
+128K，是为参数表保留的，目前这个 p 就指向了参数表的开始处（偏移 4
+字节）。</p>
+<p>参数表为 128K，就表示每个进程的线性地址空间的末端
+128K，是为参数表保留的，目前这个 p 就指向了参数表的开始处（偏移 4
+字节）。</p>
+<img src="/2023/04/08/OperatingSystem/Operating-system-source-code-9/640-16809213306299.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>接下来两个 <strong>copy_strings</strong>
+就是往这个参数表里面存放信息，不过具体存放的只是字符串常量值的信息，随后他们将被引用，有点像
+Java 里 class 文件的字符串常量池思想。</p>
+<p>接下来两个 <strong>copy_strings</strong>
+就是往这个参数表里面存放信息，不过具体存放的只是字符串常量值的信息，随后他们将被引用，有点像
+Java 里 class 文件的字符串常量池思想。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">// exec.c</span><br><span class="hljs-type">int</span> <span class="hljs-title function_">do_execve</span><span class="hljs-params">(...)</span> &#123;<br>    ...<br>    <span class="hljs-comment">// p = 0x1FFF5 = 128K - 4 - 7</span><br>    p = copy_strings(envc,envp,page,p,<span class="hljs-number">0</span>);<br>    <span class="hljs-comment">// p = 0x1FFED = 128K - 4 - 7 - 8</span><br>    p = copy_strings(argc,argv,page,p,<span class="hljs-number">0</span>);<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>具体说来，<strong>envp</strong> 表示字符串参数
+<strong>"HOME=/"</strong>，<strong>argv</strong> 表示字符串参数
+<strong>"/bin/sh"</strong>，两个 copy
+就表示把这个字符串参数往参数表里存，相应地指针 p 也往下移动（共移动了 7
++ 8 = 15 个字节），和压栈的效果是一样的。</p>
+<img src="/2023/04/08/OperatingSystem/Operating-system-source-code-9/640-168092163446212.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>当然，这个只是示意图，实际上这些字符串都是紧挨着的，我们通过 debug
+查看参数表位置处的内存便可以看到真正存放的方式。</p>
+<img src="/2023/04/08/OperatingSystem/Operating-system-source-code-9/640-168092166464215.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>可以看到，两个字符串乖乖地被安排在了参数表内存处，且参数与参数之间用
+00 也就是 NULL 来分隔。</p>
+<p>接下来是<strong>更新局部描述符</strong>。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> PAGE_SIZE 4096</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MAX_ARG_PAGES 32</span><br><br><span class="hljs-comment">// exec.c</span><br><span class="hljs-type">int</span> <span class="hljs-title function_">do_execve</span><span class="hljs-params">(...)</span> &#123;<br>    ...<br>    <span class="hljs-comment">// p = 0x3FFFFED = 64M - 4 - 7 - 8</span><br>    p += change_ldt(ex.a_text,page)-MAX_ARG_PAGES*PAGE_SIZE;<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>很简单，就是根据 <strong>ex.a_text</strong>
+修改局部描述符中的<strong>代码段限长</strong> code_limit，其他没动。</p>
+<p>由于这个函数返回值是数据段限长，也就是 64M，所以最终的 p
+值被调整为了以每个进程的线性地址空间视角下的地址偏移，大家可以仔细想想怎么算的。</p>
+<img src="/2023/04/08/OperatingSystem/Operating-system-source-code-9/640-168092196725418.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>接下来就是真正<strong>构造参数表</strong>的环节了。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> PAGE_SIZE 4096</span><br><span class="hljs-meta">#<span class="hljs-keyword">define</span> MAX_ARG_PAGES 32</span><br><br><span class="hljs-comment">// exec.c</span><br><span class="hljs-type">int</span> <span class="hljs-title function_">do_execve</span><span class="hljs-params">(...)</span> &#123;<br>    ...<br>    <span class="hljs-comment">// p = 0x3FFFFD0</span><br>    p = (<span class="hljs-type">unsigned</span> <span class="hljs-type">long</span>) create_tables((<span class="hljs-type">char</span> *)p,argc,envc);<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>刚刚仅仅是往参数表里面丢入了需要的字符串常量值信息，现在就需要真正把参数表构建起来。</p>
+<p>我们展开 <strong>create_tables</strong>。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">/*</span><br><span class="hljs-comment"> * create_tables() parses the env- and arg-strings in new user</span><br><span class="hljs-comment"> * memory and creates the pointer tables from them, and puts their</span><br><span class="hljs-comment"> * addresses on the &quot;stack&quot;, returning the new stack pointer value.</span><br><span class="hljs-comment"> */</span><br><span class="hljs-type">static</span> <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> * <span class="hljs-title function_">create_tables</span><span class="hljs-params">(<span class="hljs-type">char</span> * p,<span class="hljs-type">int</span> argc,<span class="hljs-type">int</span> envc)</span> &#123;<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> *argv,*envp;<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> * sp;<br><br>    sp = (<span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> *) (<span class="hljs-number">0xfffffffc</span> &amp; (<span class="hljs-type">unsigned</span> <span class="hljs-type">long</span>) p);<br>    sp -= envc+<span class="hljs-number">1</span>;<br>    envp = sp;<br>    sp -= argc+<span class="hljs-number">1</span>;<br>    argv = sp;<br>    put_fs_long((<span class="hljs-type">unsigned</span> <span class="hljs-type">long</span>)envp,--sp);<br>    put_fs_long((<span class="hljs-type">unsigned</span> <span class="hljs-type">long</span>)argv,--sp);<br>    put_fs_long((<span class="hljs-type">unsigned</span> <span class="hljs-type">long</span>)argc,--sp);<br>    <span class="hljs-keyword">while</span> (argc--&gt;<span class="hljs-number">0</span>) &#123;<br>        put_fs_long((<span class="hljs-type">unsigned</span> <span class="hljs-type">long</span>) p,argv++);<br>        <span class="hljs-keyword">while</span> (get_fs_byte(p++)) <span class="hljs-comment">/* nothing */</span> ;<br>    &#125;<br>    put_fs_long(<span class="hljs-number">0</span>,argv);<br>    <span class="hljs-keyword">while</span> (envc--&gt;<span class="hljs-number">0</span>) &#123;<br>        put_fs_long((<span class="hljs-type">unsigned</span> <span class="hljs-type">long</span>) p,envp++);<br>        <span class="hljs-keyword">while</span> (get_fs_byte(p++)) <span class="hljs-comment">/* nothing */</span> ;<br>    &#125;<br>    put_fs_long(<span class="hljs-number">0</span>,envp);<br>    <span class="hljs-keyword">return</span> sp;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>可能稍稍有点烧脑，不过如果你一行一行仔细分析，不难分析出就是把参数表空间变成了如下样子。</p>
+<img src="/2023/04/08/OperatingSystem/Operating-system-source-code-9/640-168092213880121.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>最后，将 sp 返回给 p，这个 p
+将作为一个新的栈顶指针，给即将要完成替换的 /bin/sh
+程序，也就是下面的代码。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">// exec.c</span><br><span class="hljs-type">int</span> <span class="hljs-title function_">do_execve</span><span class="hljs-params">(...)</span> &#123;<br>    ...<br>    <span class="hljs-comment">// 设置栈指针</span><br>    eip[<span class="hljs-number">3</span>] = p;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>为什么这样操作就可以达到更换栈顶指针的作用呢？那我们结合着更换代码指针
+PC 来进行讲解。</p>
+<h2 id="设置eip和esp完成摇身一变">设置eip和esp，完成摇身一变</h2>
+<p>下面这两行就是 execve
+完成摇身一变的关键，解释了它为什么能做到变成一个新程序开始执行的关键密码。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">// exec.c</span><br><span class="hljs-type">int</span> <span class="hljs-title function_">do_execve</span><span class="hljs-params">(<span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> * eip, ...)</span> &#123;<br>    ...<br>    eip[<span class="hljs-number">0</span>] = ex.a_entry;<br>    eip[<span class="hljs-number">3</span>] = p; <br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>什么叫一个新程序开始执行呢？</p>
+<p>其实本质上就是，<strong>代码指针 eip 和栈指针 esp
+指向了一个新的地方</strong>。</p>
+<p>代码指针 eip 决定了 CPU 将执行哪一段指令，栈指针 esp 决定了 CPU
+压栈操作的位置，以及读取栈空间数据的位置，在高级语言视角下就是<strong>局部变量</strong>以及<strong>函数调用链的栈帧</strong>。</p>
+<p>所以这两行代码，第一行重新设置了<strong>代码指针 eip</strong>
+的值，指向 /bin/sh 这个 a.out 格式文件的头结构 exec 中的 a_entry
+字段，表示该<strong>程序的入口地址</strong>。</p>
+<p>第二行重新设置了<strong>栈指针 esp</strong>
+的值，指向了我们经过一路计算得到的 p，也就是图中 sp
+的值。将这个值作为新的栈顶十分合理。</p>
+<img src="/2023/04/08/OperatingSystem/Operating-system-source-code-9/640-168092244715024.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>eip 和 esp
+都设置好了，那么程序摇身一变的工作，自然就结束了，非常简单。</p>
+<p>至于为什么往 eip 的 0 和 3 索引位置处写入数据，就可以达到替换 eip 和
+esp 的目的，那我们就得看看这个 eip 变量是怎么来的了。</p>
+<h2 id="计算机的世界没有魔法">计算机的世界没有魔法</h2>
+<p>还记得 execve 的调用链么？</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs reasonml">static <span class="hljs-built_in">char</span><span class="hljs-operator"> * </span>argv_rc<span class="hljs-literal">[]</span> = &#123; <span class="hljs-string">&quot;/bin/sh&quot;</span>, NULL &#125;;<br>static <span class="hljs-built_in">char</span><span class="hljs-operator"> * </span>envp_rc<span class="hljs-literal">[]</span> = &#123; <span class="hljs-string">&quot;HOME=/&quot;</span>, NULL &#125;;<br><br><span class="hljs-comment">// 调用方</span><br>execve(<span class="hljs-string">&quot;/bin/sh&quot;</span>,argv_rc,envp_rc);<br><br><span class="hljs-comment">// 宏定义</span><br><span class="hljs-constructor">_syscall3(<span class="hljs-params">int</span>,<span class="hljs-params">execve</span>,<span class="hljs-params">const</span> <span class="hljs-params">char</span> <span class="hljs-operator">*</span>,<span class="hljs-params">file</span>,<span class="hljs-params">char</span> <span class="hljs-operator">**</span>,<span class="hljs-params">argv</span>,<span class="hljs-params">char</span> <span class="hljs-operator">**</span>,<span class="hljs-params">envp</span>)</span><br><br><span class="hljs-comment">// 通过系统调用进入到这里</span><br>EIP = <span class="hljs-number">0x1C</span><br>_sys_execve:<br>    lea <span class="hljs-constructor">EIP(%<span class="hljs-params">esp</span>)</span>,%eax<br>    pushl %eax<br>    call _do_execve<br>    addl $<span class="hljs-number">4</span>,%esp<br>    ret<br><br><span class="hljs-comment">// exec.c</span><br><span class="hljs-built_in">int</span> <span class="hljs-keyword">do</span><span class="hljs-constructor">_execve(<span class="hljs-params">unsigned</span> <span class="hljs-params">long</span> <span class="hljs-operator">*</span> <span class="hljs-params">eip</span>, <span class="hljs-operator">...</span>)</span> &#123;<span class="hljs-operator"></span><br><span class="hljs-operator">    ...</span><br><span class="hljs-operator">    </span>eip<span class="hljs-literal">[<span class="hljs-number">0</span>]</span> = ex.a_entry;<br>    eip<span class="hljs-literal">[<span class="hljs-number">3</span>]</span> = p;<span class="hljs-operator"> </span><br><span class="hljs-operator">    ...</span><br><span class="hljs-operator"></span>&#125;<br></code></pre></td></tr></table></figure>
+<p>千万别忘了，我们这个 <strong>do_execve</strong> 函数，是通过一开始的
+<strong>execve</strong>
+函数触发了<strong>系统调用</strong>来到的这里。</p>
+<p>系统调用是一种<strong>中断</strong>，前面说过，中断时 CPU
+会给栈空间里压入一定的信息，这部分信息是死的，查手册可以查得到。</p>
+<img src="/2023/04/08/OperatingSystem/Operating-system-source-code-9/640-168092253380027.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>然后，进入中断以后，通过系统调用查表进入到 **_sys_execve** 这里。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs c">EIP = <span class="hljs-number">0x1C</span><br>_sys_execve:<br>    lea EIP(%esp),%eax<br>    pushl %eax<br>    call _do_execve<br>    addl $<span class="hljs-number">4</span>,%esp<br>    ret<br></code></pre></td></tr></table></figure>
+<p>看到没？在真正调用 <strong>do_execve</strong> 函数时，**_sys_execve**
+这段代码偷偷地插入了一个小步骤，就是把当前栈顶指针 esp 偏移到 EIP
+处的地址值给当做第一个参数 <strong>unsigned long * eip</strong>
+传入进来了。</p>
+<p>而偏移 EIP 处的位置，恰好就是中断时压入的 EIP
+的值的位置，表示中断发生前的指令寄存器的值。</p>
+<p>所以 eip[0] 就表示栈空间里的 EIP 位置，eip[3] 就表示栈空间里的 ESP
+位置。</p>
+<img src="/2023/04/08/OperatingSystem/Operating-system-source-code-9/640-168092253380128.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>由于我们现在处于中断，所以<strong>中断返回</strong>后，也就是
+do_execve 这个函数 return 之后，就会寻找中断返回前的这几个值（包括 eip
+和 esp）进行恢复。</p>
+<p>这里有疑惑的同学，看下我之前写的 <a
+target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&amp;mid=2247498208&amp;idx=1&amp;sn=b784f8b4e627ebd1bfb9810d194fdb80&amp;chksm=c2c5834df5b20a5bdee331002bfc61c90eb468da325bf67abeef780c303a9f51c8543e1a5981&amp;scene=21#wechat_redirect">认认真真的聊聊中断</a>
+和 <a
+target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&amp;mid=2247498246&amp;idx=1&amp;sn=efca37b5dcb06271eb19500b2c2597f1&amp;chksm=c2c580abf5b209bdacd5cba9728723af1f725016960d334067f9cc979b721f29f860d612ec1b&amp;scene=21#wechat_redirect">认认真真的聊聊"软"中断</a>
+这两篇文章，我认为把中断的原理彻底讲清楚了，不过其实就是读 CPU
+手册罢了。</p>
+<h1 id="调式linux最早期的代码">调式Linux最早期的代码</h1>
+<blockquote>
+<p><a
+target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&amp;mid=2247502498&amp;idx=1&amp;sn=01cf816694f74ca8437374a9aa23ab64&amp;chksm=c2c5b00ff5b23919c43ac96a38bc8b09f42ea17f92ea933157db3e7f0c77bb876bf7d0524afa&amp;cur_album_id=2123743679373688834&amp;scene=189#wechat_redirect">调试
+Linux 最早期的代码 (qq.com)</a></p>
+</blockquote>
+<h1 id="第三十六回-缺页中断">第三十六回 | 缺页中断</h1>
+<blockquote>
+<p><a
+target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&amp;mid=2247502511&amp;idx=1&amp;sn=eacddbb11dd2402c561a611f708ee045&amp;chksm=c2c5b002f5b23914ccd645d94bdc59e0322776f71f41e6744fddeca2bfa027d12a25ec6bfc8a&amp;cur_album_id=2123743679373688834&amp;scene=189#wechat_redirect">第36回
+| 缺页中断 (qq.com)</a></p>
+</blockquote>
+<p>书接上回，上回书咱们说到，进程 2 通过 <strong>execve</strong>
+函数，将自己摇身一变成为 <strong>/bin/sh</strong> 程序，也就是
+<strong>shell</strong> 程序开始执行。</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs scss"><span class="hljs-comment">// main.c</span><br>void <span class="hljs-built_in">init</span>(void) &#123;<br>    ...<br>    if (!(pid=fork())) &#123;<br>        <span class="hljs-built_in">close</span>(<span class="hljs-number">0</span>);<br>        <span class="hljs-built_in">open</span>(&quot;/etc/rc&quot;,O_RDONLY,<span class="hljs-number">0</span>);<br>        <span class="hljs-built_in">execve</span>(&quot;/bin/sh&quot;,argv_rc,envp_rc);<br>        <span class="hljs-built_in">_exit</span>(<span class="hljs-number">2</span>);<br>    &#125;<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>那么此时进程 2 就是 shell 程序了。</p>
+<p>再进一步讲，相当于之前的进程 1 通过 <strong>fork + execve</strong>
+这两个函数的组合，创建了一个新的进程去加载并执行了 shell 程序。</p>
+<p>我们在 Linux 里执行一个程序，比如在命令行中 ./xxx，其内部实现逻辑都是
+fork + execve 这个原理。</p>
+<p>但有个问题是，我们仅仅将 /bin/sh
+文件的头部加载到了内存，其他部分并没有进行加载，那我们是怎么执行到的
+/bin/sh 的程序指令呢？</p>
+<img src="/2023/04/08/OperatingSystem/Operating-system-source-code-9/640-168092284866733.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>我们就带着这个问题，开始今天的探索。</p>
+<h2
+id="跳转到一个不存在的地址会发生什么">跳转到一个不存在的地址会发生什么</h2>
+<p>/bin/sh 这个文件并不是 Linux 0.11 源码里的内容，Linux 0.11 只管按照
+a.out 这种格式去解读它，跳转到 a.out 格式头部数据结构
+<strong>exec.a_entry</strong> 所指向的内存地址去执行指令。</p>
+<p>所以这个 a_entry 的值是多少，就完全取决于硬盘中 /bin/sh
+这个文件是怎么构造的了，我们简单点，就假设它为
+<strong>0</strong>，这表示随后的 CPU 将跳转到 0 地址处进行执行。</p>
+<p>当然，这个 0
+仅仅表示<strong>逻辑地址</strong>，既没有进行分段，也没有进行分页。</p>
+<p>之前说过无数次了，Linux 0.11
+的每个进程是通过不同的局部描述符在线性地址空间中瓜分出不同的空间，一个进程占
+64M。</p>
+<img src="/2023/04/08/OperatingSystem/Operating-system-source-code-9/640-168092290216036.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>由于我们现在所处的代码是属于进程 2，所以逻辑地址 0
+通过分段机制映射到线性地址空间，就是 <strong>0x8000000</strong>，表示
+<strong>128M</strong> 位置处。</p>
+<p>好，128M
+这个线性地址，随后将会通过<strong>分页机制</strong>的映射转化为物理地址，这才定位到最终的真实物理内存。</p>
+<p>可是，128M
+这个线性地址并没有页表映射它，也就是因为上面我们说的，我们除了 /bin/sh
+文件的头部加载到了内存外，其他部分并没有进行加载操作。</p>
+<p><strong>再准确点说，是 0x8000000
+这个线性地址的访问，遇到了页表项的存在位 P 等于 0 的情况。</strong></p>
+<p>一旦遇到了这种情况，CPU
+会触发一个中断：<strong>页错误（Page-Fault）</strong>，这在 Intel 手册
+Volume-3 Chapter 4.7 章节里给出了这个信息。</p>
+<img src="/2023/04/08/OperatingSystem/Operating-system-source-code-9/640-168092294077339.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>当然，Page-Fault 在很多情况都会触发，具体是因为什么情况触发的，CPU
+会帮我们保存在中断的出错码 <strong>Error Code</strong> 里，这在随后的
+Figure 4-12 中给出了详细的出错码说明。</p>
+<p>当触发这个 Page-Fault 中断后，就会进入 Linux 0.11 源码中的
+<strong>page_fault</strong> 方法，由于 Linux 0.11 的 page_fault
+是汇编写的，很不直观，这里我选 Linux 1.0
+的代码给大家看，逻辑是一样的。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">do_page_fault</span><span class="hljs-params">(..., <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> error_code)</span> &#123;<br>    ...   <br>    <span class="hljs-keyword">if</span> (error_code &amp; <span class="hljs-number">1</span>)<br>        do_wp_page(error_code, address, current, user_esp);<br>    <span class="hljs-keyword">else</span><br>        do_no_page(error_code, address, current, user_esp);<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>根据 <strong>error_code</strong> 的不同，有不同的逻辑。</p>
+<p>刚刚说了，这个中断是由于 <strong>0x8000000</strong>
+这个线性地址的访问，遇到了页表项的<strong>存在位 P</strong> 等于 0
+的情况，所以 error_code 的第 0 位就是 0，会走
+<strong>do_no_page</strong> 逻辑。</p>
+<p>之前在讲 <a
+target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&amp;mid=2247502033&amp;idx=1&amp;sn=1acfd8b7f4c805906ecd51c33d0010eb&amp;chksm=c2c5b27cf5b23b6a41051c7f93407afc97094a4b0a36ea050616778f4d072f074602f98983b2&amp;scene=21#wechat_redirect">第30回
+| 番外篇 - 写时复制就这么几行代码</a> 的时候，讲了
+<strong>do_wp_page</strong>，这是在 P=1
+时的逻辑，文章的结尾我说过，后面会把页表项的存在位 P 为 0 时触发的
+do_no_page 逻辑讲给大家，这不就来了么。</p>
+<p>do_wp_page 叫<strong>页写保护中断</strong>，do_no_page
+叫<strong>缺页中断</strong>。</p>
+<p>好了，我们用了很大篇幅，说明白了跳转到一个 P=0
+的地址会发生什么，接下来就是具体看 do_no_page 函数的逻辑咯。</p>
+<h2 id="缺页中断-do_no_page">缺页中断 do_no_page</h2>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">// memory.c</span><br><span class="hljs-comment">// address 缺页产生的线性地址 0x8000000</span><br><span class="hljs-type">void</span> <span class="hljs-title function_">do_no_page</span><span class="hljs-params">(<span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> error_code,<span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> address)</span> &#123;<br>    <span class="hljs-type">int</span> nr[<span class="hljs-number">4</span>];<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> tmp;<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> page;<br>    <span class="hljs-type">int</span> block,i;<br><br>    address &amp;= <span class="hljs-number">0xfffff000</span>;<br>    tmp = address - current-&gt;start_code;<br>    <span class="hljs-keyword">if</span> (!current-&gt;executable || tmp &gt;= current-&gt;end_data) &#123;<br>        get_empty_page(address);<br>        <span class="hljs-keyword">return</span>;<br>    &#125;<br>    <span class="hljs-keyword">if</span> (share_page(tmp))<br>        <span class="hljs-keyword">return</span>;<br>    <span class="hljs-keyword">if</span> (!(page = get_free_page()))<br>        oom();<br><span class="hljs-comment">/* remember that 1 block is used for header */</span><br>    block = <span class="hljs-number">1</span> + tmp/BLOCK_SIZE;<br>    <span class="hljs-keyword">for</span> (i=<span class="hljs-number">0</span> ; i&lt;<span class="hljs-number">4</span> ; block++,i++)<br>        nr[i] = bmap(current-&gt;executable,block);<br>    bread_page(page,current-&gt;executable-&gt;i_dev,nr);<br>    i = tmp + <span class="hljs-number">4096</span> - current-&gt;end_data;<br>    tmp = page + <span class="hljs-number">4096</span>;<br>    <span class="hljs-keyword">while</span> (i-- &gt; <span class="hljs-number">0</span>) &#123;<br>        tmp--;<br>        *(<span class="hljs-type">char</span> *)tmp = <span class="hljs-number">0</span>;<br>    &#125;<br>    <span class="hljs-keyword">if</span> (put_page(page,address))<br>        <span class="hljs-keyword">return</span>;<br>    free_page(page);<br>    oom();<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>我们仍然是去掉一些不重要的分支，假设跳转不会超过数据末端
+end_data，也没有共享内存页面，申请空闲内存时也不会内存不足产生 oom
+等，将程序简化如下。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">// memory.c</span><br><span class="hljs-comment">// address 缺页产生的线性地址 0x8000000</span><br><span class="hljs-type">void</span> <span class="hljs-title function_">do_no_page</span><span class="hljs-params">(<span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> address)</span> &#123;<br>    <span class="hljs-comment">// 线性地址的页面地址 0x8000000</span><br>    address &amp;= <span class="hljs-number">0xfffff000</span>;<br>    <span class="hljs-comment">// 计算相对于进程基址的偏移 0</span><br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> tmp = address - current-&gt;start_code;<br>    <span class="hljs-comment">// 寻找空闲的一页内存</span><br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> page = get_free_page();<br>    <span class="hljs-comment">// 计算这个地址在文件中的哪个数据块 1</span><br>    <span class="hljs-type">int</span> block = <span class="hljs-number">1</span> + tmp/BLOCK_SIZE;<br>    <span class="hljs-comment">// 一个数据块 1024 字节，所以一页内存需要读 4 个数据块</span><br>    <span class="hljs-type">int</span> nr[<span class="hljs-number">4</span>];<br>    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i=<span class="hljs-number">0</span> ; i&lt;<span class="hljs-number">4</span> ; block++,i++)<br>        nr[i] = bmap(current-&gt;executable,block);<br>    bread_page(page,current-&gt;executable-&gt;i_dev,nr);<br>    ...<br>    <span class="hljs-comment">// 完成页表的映射</span><br>    put_page(page,address);<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>这就简单多了，我们还是一点点看。</p>
+<p>好，那我们再往上看，我们之前是在进程 2 里执行了 execve
+函数将程序替换成 /bin/sh，也就是 shell 程序。</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs scss"><span class="hljs-comment">// main.c</span><br>void <span class="hljs-built_in">init</span>(void) &#123;<br>    ...<br>    if (!(pid=fork())) &#123;<br>        <span class="hljs-built_in">close</span>(<span class="hljs-number">0</span>);<br>        <span class="hljs-built_in">open</span>(&quot;/etc/rc&quot;,O_RDONLY,<span class="hljs-number">0</span>);<br>        <span class="hljs-built_in">execve</span>(&quot;/bin/sh&quot;,argv_rc,envp_rc);<br>        <span class="hljs-built_in">_exit</span>(<span class="hljs-number">2</span>);<br>    &#125;<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>execve 函数返回后，CPU 就跳转到 /bin/sh
+程序的第一行开始执行，但由于跳转到的线性地址不存在，所以引发了今天我们讲的<strong>缺页中断</strong>，把硬盘里
+/bin/sh 所需要的内容加载到了内存，此时缺页中断返回。</p>
+<p>返回后，CPU 会再次尝试跳转到 0x8000000
+这个线性地址，此时由于缺页中断的处理结果，<strong>使得该线性地址已有对应的页表进行映射</strong>，所以顺利地映射到了物理地址，也就是
+/bin/sh 的代码部分（从硬盘加载过来的），那接下来就终于可以执行 /bin/sh
+程序，也就是 shell 程序了。</p>
+<p>那这个 shell 程序到底是啥呢？他的代码并不在 Linux 0.11
+的源码里，所以我们的重点将不是分析它的源码，仅仅了解它的原理即可。</p>
+<h1 id="第三十七回-shell程序跑起来了">第三十七回 |
+shell程序跑起来了</h1>
+<blockquote>
+<p><a
+target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&amp;mid=2247502581&amp;idx=1&amp;sn=df3f2c19ce511ac24145091892f47837&amp;chksm=c2c5b058f5b2394ee095d679071b43c23853dc86d5cfd4cc961568643110ab734f635b899984&amp;cur_album_id=2123743679373688834&amp;scene=189#wechat_redirect">第37回
+| shell 程序跑起来了 (qq.com)</a></p>
+</blockquote>
+<p>xv6
+是一个非常非常经典且简单的操作系统，是由麻省理工学院为操作系统工程的课程开发的一个<strong>教学目的的操作系统</strong>，所以非常适合操作系统的学习。</p>
+<img src="/2023/04/08/OperatingSystem/Operating-system-source-code-9/640-168092318639042.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>而在它的源代码中，又恰好实现了一个简单的 shell
+程序，所以阅读它的代码，对我们这个系列课程来说，简直再合适不过了。</p>
+<img src="/2023/04/08/OperatingSystem/Operating-system-source-code-9/640-168092321189345.png" srcset="/img/loading.gif" lazyload class="" title="图片">
+<p>但我仍然十分贪婪，即便是这么短的代码，我也帮你把一些多余的校验逻辑去掉，再去掉关于
+cd 命令的特殊处理分支，来一个最干净的版本。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-comment">// xv6-public sh.c</span><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span> &#123;<br>    <span class="hljs-type">static</span> <span class="hljs-type">char</span> buf[<span class="hljs-number">100</span>];<br>    <span class="hljs-comment">// 读取命令</span><br>    <span class="hljs-keyword">while</span>(getcmd(buf, <span class="hljs-keyword">sizeof</span>(buf)) &gt;= <span class="hljs-number">0</span>)&#123;<br>        <span class="hljs-comment">// 创建新进程</span><br>        <span class="hljs-keyword">if</span>(fork() == <span class="hljs-number">0</span>)<br>            <span class="hljs-comment">// 执行命令</span><br>            runcmd(parsecmd(buf));<br>        <span class="hljs-comment">// 等待进程退出</span><br>        wait();<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>看，shell 程序变得异常简单了！</p>
+<p>总得来说，shell
+程序就是个死循环，它永远不会自己退出，除非我们手动终止了这个 shell
+进程。</p>
+<p>在死循环里面，shell
+就是不断读取（<strong>getcmd</strong>）我们用户输入的命令，创建一个新的进程（<strong>fork</strong>），在新进程里执行（<strong>runcmd</strong>）刚刚读取到的命令，最后等待（<strong>wait</strong>）进程退出，再次进入读取下一条命令的循环中。</p>
+<p>我们之前说过 shell 就是不断 <strong>fork + execve</strong>
+完成执行一个新程序的功能的，那 execve 在哪呢？</p>
+<p>那我们就要看执行命令的 runcmd 代码了。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">runcmd</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> cmd *cmd)</span> &#123;<br>    ...<br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">execcmd</span> <span class="hljs-title">ecmd</span> =</span> (<span class="hljs-keyword">struct</span> execcmd*)cmd;<br>    ...<br>    exec(ecmd-&gt;argv[<span class="hljs-number">0</span>], ecmd-&gt;argv);<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>这里我又省略了很多代码，比如遇到管道命令 PIPE，遇到命令集合 LIST
+时的处理逻辑，我们仅仅看单纯执行一条命令的逻辑。</p>
+<p>可以看到，就是简简单单调用了个 exec 函数，这个 exec 是 xv6
+代码里的名字，在 Linux 0.11 里就是我们在 <a
+target="_blank" rel="noopener" href="http://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&amp;mid=2247502475&amp;idx=1&amp;sn=4fcdbaa03bf6a1ca04db4013309c6aa3&amp;chksm=c2c5b026f5b2393049efca68c429df5038fa0f317eea79fbd9ec2c661c3ec12b47a0701376a7&amp;scene=21#wechat_redirect">第35回
+| execve 加载并执行 shell 程序</a> 里讲的 execve 函数。</p>
+<p>shell 执行一个我们所指定的程序，就和我们在 Linux 0.11 里通过 fork +
+execve 函数执行了 /bin/sh 程序是一个道理。</p>
+<h1 id="第三十八回-操作系统启动完毕">第三十八回 | 操作系统启动完毕</h1>
+<blockquote>
+<p><a
+target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&amp;mid=2247502613&amp;idx=1&amp;sn=d7e85595323d3de138e5ac52bf8e61dd&amp;chksm=c2c5b1b8f5b238ae8785f45bf83434839689e7e5a697026d9ebde5738f11a83c4379a16c349f&amp;cur_album_id=2123743679373688834&amp;scene=189#wechat_redirect">第38回
+| 操作系统启动完毕！ (qq.com)</a></p>
+</blockquote>
+<h1 id="第四部分完结">第四部分完结</h1>
+<blockquote>
+<p><a
+target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=Mzk0MjE3NDE0Ng==&amp;mid=2247502650&amp;idx=1&amp;sn=ad947d70d372a1bc46741c459fd0ef9a&amp;chksm=c2c5b197f5b23881a5e61c5581300beb4b3f1db8cab79eabec22fd847f1cdc0e11d3a713fd9f&amp;cur_album_id=2123743679373688834&amp;scene=189#wechat_redirect">第四部分完结！操作系统启动完毕！
+(qq.com)</a></p>
+</blockquote>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" class="category-chain-item">操作系统</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>你管这破玩意儿叫操作系统源码(九)</div>
+      <div>https://www.spacezxy.top/2023/04/08/OperatingSystem/Operating-system-source-code-9/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Xavier ZXY</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年4月8日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/04/06/OperatingSystem/Operating-system-source-code-8/" title="你管这破玩意儿叫操作系统源码(八)">
+                        <span class="hidden-mobile">你管这破玩意儿叫操作系统源码(八)</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a>
+    </div>
+  
+  
+    <div class="statistics">
+  
+  
+
+  
+    
+      <span id="busuanzi_container_site_pv" style="display: none">
+        总访问量 
+        <span id="busuanzi_value_site_pv"></span>
+         次
+      </span>
+    
+    
+      <span id="busuanzi_container_site_uv" style="display: none">
+        总访客数 
+        <span id="busuanzi_value_site_uv"></span>
+         人
+      </span>
+    
+    
+  
+</div>
+
+  
+  
+    <!-- 备案信息 ICP for China -->
+    <div class="beian">
+  <span>
+    <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+      湘ICP备  2021018889
+    </a>
+  </span>
+  
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
